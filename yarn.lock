@@ -1567,6 +1567,11 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
+ac-multi-tabs@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npm.taobao.org/ac-multi-tabs/download/ac-multi-tabs-1.0.3.tgz#5aeecf5fb51bce6f28ce5ba76efb698470d90387"
+  integrity sha1-Wu7PX7Ubzm8ozlunbvtphHDZA4c=
+
 accepts@~1.3.4, accepts@~1.3.5, accepts@~1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.7.tgz#531bc726517a3b2b41f850021c6cc15eaab507cd"
@@ -1818,6 +1823,11 @@ array-unique@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
+
+array.prototype.fill@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npm.taobao.org/array.prototype.fill/download/array.prototype.fill-1.0.2.tgz#ab33207f21d57d1ab2f7f0d1cf122d3419c38ef5"
+  integrity sha1-qzMgfyHVfRqy9/DRzxItNBnDjvU=
 
 arrify@^1.0.1:
   version "1.0.1"
@@ -2226,7 +2236,7 @@ bee-button-group@2.0.1:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-button@2.0.11, bee-button@latest:
+bee-button@2.0.11, bee-button@^2.0.10, bee-button@latest:
   version "2.0.11"
   resolved "https://registry.npm.taobao.org/bee-button/download/bee-button-2.0.11.tgz#c3e46d223b438e0eb0863aa2883ea7df25d14a9d"
   integrity sha1-w+RtIjtDjg6whjqiiD6n3yXRSp0=
@@ -2273,7 +2283,7 @@ bee-cascader@2.1.6:
     tinper-bee-core latest
     warning "^4.0.3"
 
-bee-checkbox@2.0.7, bee-checkbox@^2.0.3, bee-checkbox@latest:
+bee-checkbox@2.0.7, bee-checkbox@^2.0.3, bee-checkbox@^2.0.5, bee-checkbox@latest:
   version "2.0.7"
   resolved "https://registry.npm.taobao.org/bee-checkbox/download/bee-checkbox-2.0.7.tgz#d44ecd4fce29ad4b78fe3198f439dba1715a790e"
   integrity sha1-1E7NT84prUt4/jGY9DnboXFaeQ4=
@@ -2554,7 +2564,7 @@ bee-input-number@2.1.4, bee-input-number@^2.0.7:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-label@1.0.0, bee-label@latest:
+bee-label@1.0.0, bee-label@^1.0.0, bee-label@latest:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/bee-label/download/bee-label-1.0.0.tgz#0b8beb364ecc0fcc80f764e36c433c3b6a7c9051"
   integrity sha1-C4vrNk7MD8yA92TjbEM8O2p8kFE=
@@ -2595,6 +2605,16 @@ bee-loading@2.0.2, bee-loading@latest:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-2.0.2.tgz#e6f51113081dd9a19cb9df8b78e968e1d735b0f6"
   integrity sha1-5vUREwgd2aGcud+LeOlo4dc1sPY=
+  dependencies:
+    bee-icon "^1.0.10"
+    bee-overlay "^1.0.2"
+    classnames "^2.2.5"
+    tinper-bee-core latest
+
+bee-loading@^1.0.9:
+  version "1.1.3"
+  resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-1.1.3.tgz#4fc733b48b6fd86f43ff36765d52e0012e812ff2"
+  integrity sha1-T8cztItv2G9D/zZ2XVLgAS6BL/I=
   dependencies:
     bee-icon "^1.0.10"
     bee-overlay "^1.0.2"
@@ -2676,7 +2696,7 @@ bee-message@latest:
     tinper-bee-core latest
     warning "^4.0.3"
 
-bee-modal@2.1.2, bee-modal@^2.0.13, bee-modal@^2.0.2, bee-modal@latest:
+bee-modal@2.1.2, bee-modal@^2.0.13, bee-modal@^2.0.2, bee-modal@^2.0.3, bee-modal@^2.0.4, bee-modal@latest:
   version "2.1.2"
   resolved "https://registry.npm.taobao.org/bee-modal/download/bee-modal-2.1.2.tgz#a6677909c58ce76ce758496fa31f8fbac5753fe8"
   integrity sha1-pmd5CcWM52znWElvox+PusV1P+g=
@@ -2756,7 +2776,7 @@ bee-page-layout@1.0.1:
     classnames "^2.2.6"
     tinper-bee-core latest
 
-bee-pagination@2.0.10, bee-pagination@^2.0.4:
+bee-pagination@2.0.10, bee-pagination@^2.0.4, bee-pagination@^2.0.5, bee-pagination@^2.0.6:
   version "2.0.10"
   resolved "https://registry.npm.taobao.org/bee-pagination/download/bee-pagination-2.0.10.tgz#5217244c1740c1ead933881314d4ae1f08f62214"
   integrity sha1-UhckTBdAwerZM4gTFNSuHwj2IhQ=
@@ -2833,7 +2853,7 @@ bee-radio@2.0.16:
     classnames "^2.2.5"
     tinper-bee-core "^2.0.28"
 
-bee-radio@^2.0.14, bee-radio@^2.0.16:
+bee-radio@^2.0.14, bee-radio@^2.0.16, bee-radio@^2.0.8:
   version "2.0.17"
   resolved "https://registry.npm.taobao.org/bee-radio/download/bee-radio-2.0.17.tgz#8a3cf5ea68cc76880a5f7f68818cbcee14f2f6d8"
   integrity sha1-ijz16mjMdogKX39ogYy87hTy9tg=
@@ -2855,6 +2875,18 @@ bee-search-panel@3.0.1:
   version "3.0.1"
   resolved "https://registry.npm.taobao.org/bee-search-panel/download/bee-search-panel-3.0.1.tgz#800b2b987a1a19f959bb3e0f49d4ba422425a1d3"
   integrity sha1-gAsrmHoaGflZuz4PSdS6QiQlodM=
+  dependencies:
+    babel-runtime "^6.23.0"
+    bee-locale "^0.0.13"
+    bee-panel latest
+    classnames "^2.2.5"
+    is-instance-of "^1.0.1"
+    tinper-bee-core latest
+
+bee-search-panel@^2.0.14:
+  version "2.0.14"
+  resolved "https://registry.npm.taobao.org/bee-search-panel/download/bee-search-panel-2.0.14.tgz#fc8a7acf8d800941e62966c20021160a1e690ec9"
+  integrity sha1-/Ip6z42ACUHmKWbCACEWCh5pDsk=
   dependencies:
     babel-runtime "^6.23.0"
     bee-locale "^0.0.13"
@@ -2926,7 +2958,7 @@ bee-switch@2.0.6:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-table@2.2.12, bee-table@^2.1.15-beta.1:
+bee-table@2.2.12, bee-table@^2.0.10, bee-table@^2.0.11, bee-table@^2.1.15-beta.1:
   version "2.2.12"
   resolved "https://registry.npm.taobao.org/bee-table/download/bee-table-2.2.12.tgz#44c5762e01b6ead226ced251743618c5a56fb19a"
   integrity sha1-RMV2LgG26tImztJRdDYYxaVvsZo=
@@ -3031,7 +3063,7 @@ bee-tooltip@^2.1.2, bee-tooltip@latest:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-transfer@2.0.12:
+bee-transfer@2.0.12, bee-transfer@^2.0.12:
   version "2.0.12"
   resolved "https://registry.npm.taobao.org/bee-transfer/download/bee-transfer-2.0.12.tgz#4f1edc4cc2fb2d7951fae5eca277a2f11f452a50"
   integrity sha1-Tx7cTML7LXlR+uXsonei8R9FKlA=
@@ -3090,6 +3122,19 @@ bee-tree@2.1.6:
     bee-checkbox latest
     bee-modal "^2.0.13"
     classnames "^2.2.5"
+    tinper-bee-core latest
+
+bee-tree@^2.0.7:
+  version "2.1.8"
+  resolved "https://registry.npm.taobao.org/bee-tree/download/bee-tree-2.1.8.tgz#dba4f98fdbbe3c6060dc060f0790d0ae1ba8d4ae"
+  integrity sha1-26T5j9u+PGBg3AYPB5DQrhuo1K4=
+  dependencies:
+    babel-runtime "^6.23.0"
+    bee-animate "^1.0.0"
+    bee-checkbox latest
+    bee-modal "^2.0.13"
+    classnames "^2.2.5"
+    omit.js "^1.0.2"
     tinper-bee-core latest
 
 bee-upload@2.0.1:
@@ -3607,6 +3652,11 @@ clone-deep@^4.0.1:
     kind-of "^6.0.2"
     shallow-clone "^3.0.0"
 
+clone@^2.1.1, clone@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.npm.taobao.org/clone/download/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
+  integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -3966,6 +4016,13 @@ create-react-class@15.x, create-react-class@^15.5.2, create-react-class@^15.5.3:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
+
+cross-env@^5.2.0:
+  version "5.2.1"
+  resolved "https://registry.npm.taobao.org/cross-env/download/cross-env-5.2.1.tgz#b2c76c1ca7add66dc874d11798466094f551b34d"
+  integrity sha1-ssdsHKet1m3IdNEXmEZglPVRs00=
+  dependencies:
+    cross-spawn "^6.0.5"
 
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -4724,10 +4781,10 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
   integrity sha512-D9f7V0JSRwIxlRI2mjMqufDrRDnx8p+eEOz7aUM9SuvF8gsBzra0/6tbjl1m8eQHrZlYj6PxqE00hZ1SAIKPLw==
 
-errno@^0.1.3, errno@~0.1.7:
+errno@^0.1.1, errno@^0.1.3, errno@~0.1.7:
   version "0.1.7"
-  resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.7.tgz#4684d71779ad39af177e3f007996f7c67c852618"
-  integrity sha512-MfrRBDWzIWifgq6tJj60gkAwtLNb6sQPlcFrSOflcP1aFmmruKQ2wRnze/8V6kgyz7H3FF8Npzv78mZ7XLLflg==
+  resolved "https://registry.npm.taobao.org/errno/download/errno-0.1.7.tgz#4684d71779ad39af177e3f007996f7c67c852618"
+  integrity sha1-RoTXF3mtOa8Xfj8AeZb3xnyFJhg=
   dependencies:
     prr "~1.0.1"
 
@@ -5255,6 +5312,11 @@ fbjs@^0.8.16, fbjs@^0.8.9:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
+
+fetch-jsonp@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.npm.taobao.org/fetch-jsonp/download/fetch-jsonp-1.1.3.tgz#9eb9e585ba08aaf700563538d17bbebbcd5a3db2"
+  integrity sha1-nrnlhboIqvcAVjU40Xu+u81aPbI=
 
 ffn@^2.1.0:
   version "2.1.0"
@@ -6074,10 +6136,20 @@ ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
+image-size@~0.5.0:
+  version "0.5.5"
+  resolved "https://registry.npm.taobao.org/image-size/download/image-size-0.5.5.tgz?cache=0&sync_timestamp=1569840751769&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fimage-size%2Fdownload%2Fimage-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
+  integrity sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=
+
 immer@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
+
+immutable@^4.0.0-rc.12:
+  version "4.0.0-rc.12"
+  resolved "https://registry.npm.taobao.org/immutable/download/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
+  integrity sha1-ylmn5MGa6Nm/dKl73w9uLypdAhc=
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -7254,6 +7326,31 @@ left-pad@^1.3.0:
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
   integrity sha512-XI5MPzVNApjAyhQzphX8BkmKsKUxD4LdyK24iZeQGinBN9yTQT3bFlCBy/aVx2HrNcqQGsdot8ghrjyrvMCoEA==
 
+less-loader@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npm.taobao.org/less-loader/download/less-loader-5.0.0.tgz#498dde3a6c6c4f887458ee9ed3f086a12ad1b466"
+  integrity sha1-SY3eOmxsT4h0WO6e0/CGoSrRtGY=
+  dependencies:
+    clone "^2.1.1"
+    loader-utils "^1.1.0"
+    pify "^4.0.1"
+
+less@3.10.3:
+  version "3.10.3"
+  resolved "https://registry.npm.taobao.org/less/download/less-3.10.3.tgz#417a0975d5eeecc52cff4bcfa3c09d35781e6792"
+  integrity sha1-QXoJddXu7MUs/0vPo8CdNXgeZ5I=
+  dependencies:
+    clone "^2.1.2"
+  optionalDependencies:
+    errno "^0.1.1"
+    graceful-fs "^4.1.2"
+    image-size "~0.5.0"
+    mime "^1.4.1"
+    mkdirp "^0.5.0"
+    promise "^7.1.1"
+    request "^2.83.0"
+    source-map "~0.6.0"
+
 leven@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"
@@ -7614,7 +7711,7 @@ mime-types@^2.1.12, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24:
   dependencies:
     mime-db "1.40.0"
 
-mime@1.6.0:
+mime@1.6.0, mime@^1.4.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
   integrity sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==
@@ -8391,6 +8488,19 @@ pako@~1.0.5:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
+
+pap-refer@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.npm.taobao.org/pap-refer/download/pap-refer-1.0.9.tgz#de80a08e48a2d1ceedba73f8f892201b261adfc8"
+  integrity sha1-3oCgjkii0c7tunP4+JIgGyYa38g=
+  dependencies:
+    bee-form "^2.0.11"
+    ref-combobox "~2.0.4"
+    ref-core "^0.2.5"
+    ref-multiple-table "~2.0.4"
+    ref-tree "~2.0.14"
+    ref-tree-table "~2.0.6"
+    ref-tree-transfer "~2.0.6"
 
 parallel-transform@^1.1.0:
   version "1.2.0"
@@ -9374,6 +9484,11 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
+promise-polyfill@^8.1.0:
+  version "8.1.3"
+  resolved "https://registry.npm.taobao.org/promise-polyfill/download/promise-polyfill-8.1.3.tgz#8c99b3cf53f3a91c68226ffde7bde81d7f904116"
+  integrity sha1-jJmzz1PzqRxoIm/9573oHX+QQRY=
+
 promise@8.0.3:
   version "8.0.3"
   resolved "https://registry.yarnpkg.com/promise/-/promise-8.0.3.tgz#f592e099c6cddc000d538ee7283bb190452b0bf6"
@@ -10232,6 +10347,97 @@ redux@^4.0.0, redux@^4.0.1:
     loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
 
+ref-combobox@~2.0.4:
+  version "2.0.9"
+  resolved "https://registry.npm.taobao.org/ref-combobox/download/ref-combobox-2.0.9.tgz#4640dc5b1f9ba7cf07d169bcd2b2b9944fe29e3c"
+  integrity sha1-RkDcWx+bp88H0Wm80rK5lE/injw=
+  dependencies:
+    axios "^0.18.0"
+    bee-button "^2.0.10"
+    bee-form "^2.0.11"
+    bee-form-control "^2.0.1"
+    bee-icon "^1.0.10"
+    bee-input-group "^2.0.2"
+    bee-loading "^1.0.9"
+    bee-pagination "^2.0.6"
+    fetch-jsonp "^1.1.3"
+    immutable "^4.0.0-rc.12"
+    rc-trigger "^2.6.2"
+
+ref-core@^0.2.5, ref-core@^0.2.8:
+  version "0.2.16"
+  resolved "https://registry.npm.taobao.org/ref-core/download/ref-core-0.2.16.tgz#4a3c8edbb4ba25feaa0319cbda4861171f234d7a"
+  integrity sha1-SjyO27S6Jf6qAxnL2khhFx8jTXo=
+  dependencies:
+    array.prototype.fill "^1.0.2"
+    axios "^0.18.0"
+    bee-button "^2.0.10"
+    bee-checkbox "^2.0.5"
+    bee-form-control "^2.0.1"
+    bee-icon "^1.0.10"
+    bee-input-group "^2.0.2"
+    bee-pagination "^2.0.5"
+    bee-table "^2.0.10"
+    bee-tree "^2.0.7"
+    fetch-jsonp "^1.1.3"
+    immutable "^4.0.0-rc.12"
+    object-assign "^4.1.1"
+    promise-polyfill "^8.1.0"
+    whatwg-fetch "^3.0.0"
+
+ref-multiple-table@~2.0.4:
+  version "2.0.10"
+  resolved "https://registry.npm.taobao.org/ref-multiple-table/download/ref-multiple-table-2.0.10.tgz#334eba073f97e6cccc5d0c26ce52605dce8505f7"
+  integrity sha1-M066Bz+X5szMXQwmzlJgXc6FBfc=
+  dependencies:
+    bee-checkbox "^2.0.5"
+    bee-form "^2.0.11"
+    bee-label "^1.0.0"
+    bee-loading "^1.0.9"
+    bee-modal "^2.0.4"
+    bee-pagination "^2.0.6"
+    bee-radio "^2.0.8"
+    bee-search-panel "^2.0.14"
+    bee-table "^2.0.11"
+    ref-core "^0.2.8"
+
+ref-tree-table@~2.0.6:
+  version "2.0.9"
+  resolved "https://registry.npm.taobao.org/ref-tree-table/download/ref-tree-table-2.0.9.tgz#c5344dc430ef62b198c19ac8a720f6fdf81edb56"
+  integrity sha1-xTRNxDDvYrGYwZrIpyD2/fge21Y=
+  dependencies:
+    bee-checkbox "^2.0.5"
+    bee-icon "^1.0.10"
+    bee-loading "^1.0.9"
+    bee-modal "^2.0.3"
+    bee-pagination "^2.0.5"
+    bee-table "^2.0.10"
+    bee-tree "^2.0.7"
+    cross-env "^5.2.0"
+    ref-core "^0.2.8"
+
+ref-tree-transfer@~2.0.6:
+  version "2.0.7"
+  resolved "https://registry.npm.taobao.org/ref-tree-transfer/download/ref-tree-transfer-2.0.7.tgz#7577ffec4045d195d6563aaf6712af90959e4f7e"
+  integrity sha1-dXf/7EBF0ZXWVjqvZxKvkJWeT34=
+  dependencies:
+    bee-form-control "^2.0.1"
+    bee-icon "^1.0.10"
+    bee-modal "^2.0.3"
+    bee-transfer "^2.0.12"
+    bee-tree "^2.0.7"
+    ref-core "^0.2.8"
+
+ref-tree@~2.0.14:
+  version "2.0.14"
+  resolved "https://registry.npm.taobao.org/ref-tree/download/ref-tree-2.0.14.tgz#662317de2ef8527debb946cb739eefbc42c1a6fd"
+  integrity sha1-ZiMX3i74Un3ruUbLc57vvELBpv0=
+  dependencies:
+    bee-loading "^1.0.9"
+    bee-modal "^2.0.4"
+    ref-core "^0.2.8"
+    shallowequal "^1.1.0"
+
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"
@@ -10362,10 +10568,10 @@ request-promise-native@^1.0.5:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.87.0, request@^2.88.0:
+request@^2.83.0, request@^2.87.0, request@^2.88.0:
   version "2.88.0"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
-  integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==
+  resolved "https://registry.npm.taobao.org/request/download/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
+  integrity sha1-nC/KT301tZLv5Xx/ClXoEFIST+8=
   dependencies:
     aws-sign2 "~0.7.0"
     aws4 "^1.8.0"
@@ -10808,7 +11014,7 @@ shallowequal@^0.2.2:
   dependencies:
     lodash.keys "^3.1.2"
 
-shallowequal@^1.0.1, shallowequal@^1.0.2:
+shallowequal@^1.0.1, shallowequal@^1.0.2, shallowequal@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/shallowequal/download/shallowequal-1.1.0.tgz?cache=0&sync_timestamp=1565343484171&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fshallowequal%2Fdownload%2Fshallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
   integrity sha1-GI1SHelbkIdAT9TctosT3wrk5/g=
@@ -12164,7 +12370,7 @@ whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3, whatwg-encoding@^1.0.5:
   dependencies:
     iconv-lite "0.4.24"
 
-whatwg-fetch@3.0.0, whatwg-fetch@>=0.10.0:
+whatwg-fetch@3.0.0, whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.0.0.tgz#fc804e458cc460009b1a2b966bc8817d2578aefb"
   integrity sha512-9GSJUgz1D4MfyKU7KRqwOjXCXTqWdFNvEr7eUBYchQiVc744mqK/MzXPNR2WsPkmkOa4ywfg8C2n8h+13Bey1Q==

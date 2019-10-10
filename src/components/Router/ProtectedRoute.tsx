@@ -3,6 +3,8 @@ import { Route, Redirect } from 'react-router-dom';
 import AppConsts from  '../../lib/appconst';
 
 const ProtectedRoute = ({ path, component: Component, permission, render, ...rest }: any) => {
+
+  console.log('path:'+path+"  permission:"+permission);
   return (
     <Route
       {...rest}

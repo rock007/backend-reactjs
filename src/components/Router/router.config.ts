@@ -5,8 +5,15 @@ export const userRouter: any = [
     path: '/account',
     name: 'account',
     title: '帐号',
-    component: LoadableComponent(() => import('../../pages/Account')),
+    component: LoadableComponent(() => import('../../components/Layout/UserLayout')),
     isLayout: true,
+    showInMenu: false
+  },
+  {
+    path: '/account/login',
+    name: 'login',
+    title: 'LogIn',
+    component: LoadableComponent(() => import('../../pages/Account/Login')),
     showInMenu: false,
   }
 ];
@@ -19,45 +26,59 @@ export const appRouters: any = [
     permission: '',
     title: '首页',
     icon: 'home',
-    component: LoadableComponent(() => import('../../pages/Home')),
+    component: LoadableComponent(() => import('../../components/Layout/AppLayout')),
     isLayout: true,
-    showInMenu: false,
+    showInMenu: false
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     permission: '',
     title: 'Dashboard',
-    icon: 'home',
+    icon: 'wechat',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Dashboard')),
   },
   {
-    path: '/man',
     permission: '',
     title: '档案管理',
-    name: 'man',
+    name: 'man_mg',
+    icon: 'search',
+    showInMenu: true,
+    childs:[{
+      path: '/man',
+      title: '档案库',
+      name: 'man',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Man'))
+    },
+    {
+      path: '/visitor/2',
+      title: '走访记录',
+      name: 'visitor',
+      icon: 'appstore',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Vistitor'))
+    }]  
+  },
+  {
+    path: '/niaojian',
+   // permission: 'Pages.Tenants',
+    title: '康复检查',
+    name: 'niaojian',
     icon: 'appstore',
     showInMenu: true,
-    childs: [,
-      {
-        path: '/niaojian',
-        permission: 'Pages.Tenants',
-        title: 'Tenants',
-        name: 'tenant',
-        icon: 'appstore',
-        showInMenu: true,
-        component: LoadableComponent(() => import('../../pages/Niaojian')),
-      },
-      {
-        path: '/visitor',
-        permission: 'Pages.Tenants',
-        title: 'Tenants',
-        name: 'tenant',
-        icon: 'appstore',
-        showInMenu: true,
-        component: LoadableComponent(() => import('../../pages/Vistitor')),
-      }]
+    component: LoadableComponent(() => import('../../pages/Niaojian'))
+  },
+  {
+    path: '/visitor',
+    //permission: 'Pages.Tenants',
+    title: '走访记录',
+    name: 'visitor',
+    icon: 'appstore',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Vistitor'))
   },
   {
     path: '/exception',
@@ -66,7 +87,7 @@ export const appRouters: any = [
     name: 'exception',
     icon: 'info-circle',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Exception')),
+    component: LoadableComponent(() => import('../../pages/Exception'))
   }
 ];
 

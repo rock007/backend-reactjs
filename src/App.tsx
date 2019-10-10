@@ -1,5 +1,5 @@
 import  React from 'react';
-import './App.css';
+import './App.less';
 
 import Router from './components/Router';
 import 'tinper-bee/assets/tinper-bee.css';
