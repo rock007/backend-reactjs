@@ -1,4 +1,4 @@
-//import './AppLayout.less';
+//import './AppLayout.scss';
 
 import * as React from 'react';
 
@@ -6,7 +6,6 @@ import { Redirect, Switch } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 
-import AcMultiTabs from 'ac-multi-tabs';
 import 'ac-multi-tabs/dist/index.css';
 
 import { PageLayout,Navbar ,SearchPanel, FormControl,Row, Col,Label,Form,Icon,Menu  } from 'tinper-bee';

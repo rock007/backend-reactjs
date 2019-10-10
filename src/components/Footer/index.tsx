@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Col } from 'tinper-bee';
-import './index.less';
+import './index.scss';
 
 const Footer = () => {
   return (

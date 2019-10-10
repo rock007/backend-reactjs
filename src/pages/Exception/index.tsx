@@ -1,4 +1,4 @@
-import './index.less';
+import './index.scss';
 
 import * as React from 'react';
 import { Col, Row,Button,Avatar } from 'tinper-bee';

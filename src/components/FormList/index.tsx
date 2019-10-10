@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Label, Row, Col, Form } from 'tinper-bee'
-import './index.less'
+import './index.scss'
 
 const FormItem = Form.FormItem;
 

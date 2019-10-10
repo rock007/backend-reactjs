@@ -1,4 +1,4 @@
-import './UserLayout.less';
+import './UserLayout.scss';
 
 import * as React from 'react';
 

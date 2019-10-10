@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Icon, Button, Label, FormControl, Form } from 'tinper-bee';
+import './index.scss';
 
 export class Login extends React.Component<any> {
     componentDidMount() {

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BeeSearchPanel from 'bee-search-panel'
 import 'bee-search-panel/build/SearchPanel.css';
-import "./index.less"
+import "./index.scss"
 
 const AdvancedContainer = BeeSearchPanel.AdvancedContainer;
 

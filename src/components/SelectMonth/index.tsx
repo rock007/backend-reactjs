@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Select } from 'tinper-bee'
+import './index.scss';
 
 const {Option} = Select;
 

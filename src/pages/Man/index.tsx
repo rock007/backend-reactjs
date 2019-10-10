@@ -15,7 +15,7 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
-//import './index.less';
+import './index.scss';
 
 const FormItem = Form.FormItem;
 

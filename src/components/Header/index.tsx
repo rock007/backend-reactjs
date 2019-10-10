@@ -1,4 +1,4 @@
-import './index.less';
+import './index.scss';
 
 import * as React from 'react';
 
