@@ -9,19 +9,12 @@ body {
     margin: 0;
     background: $mainBgColor;
     box-sizing: border-box;
-    padding: 16px 8px 16px 16px;
+    padding: 10px 6px 10px 6px;
     overflow-x: hidden;
     overflow-y: scroll;
     * {
         box-sizing: border-box;
     }
-}
-
-#app {
-    min-height: 100%;
-    position: relative;
-    background: rgba(255, 255, 255, 1);
-    //box-shadow: 0 2px 7px 0 rgba(25,40,66,0.24);
 }
 
 .table-space {

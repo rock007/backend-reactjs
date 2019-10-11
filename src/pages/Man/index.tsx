@@ -1,11 +1,10 @@
 import * as React from 'react';
 
-
 import {Tree , PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import FormList from '../../components/FormList';
+import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
@@ -17,7 +16,7 @@ import InputNumber from 'bee-input-number';
 
 import './index.scss';
 
-const FormItem = Form.FormItem;
+const FormItem = FormListItem;
 
 interface IPageProps {
     form:any

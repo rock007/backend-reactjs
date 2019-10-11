@@ -6,9 +6,9 @@ import PropTypes from 'prop-types'
 import { Label, Row, Col, Form } from 'tinper-bee'
 import './index.scss'
 
-const FormItem = Form.FormItem;
+ const FormItem = Form.FormItem;
 
-class FormListItem extends Component<any>{
+export class FormListItem extends Component<any>{
     constructor(props ) {
         super(props)
     }
@@ -38,7 +38,7 @@ class FormListItem extends Component<any>{
     }
 }
 
-class FormList extends Component<any> {
+export class FormList extends Component<any> {
 
     //wrapLayoutOpt: any;
 
@@ -58,7 +58,9 @@ class FormList extends Component<any> {
     static createForm = Form.createForm;
 
     getLayoutOption = () => {
+        
         const {size, layoutOpt} = this.props;
+
         if (layoutOpt) {
             return layoutOpt
         } else {
@@ -90,7 +92,7 @@ class FormList extends Component<any> {
                     {_childern.map((child, index) => {
                         if (child ) {
                             return (
-                              <Col key={index} {...this.getLayoutOption}>
+                              <Col key={index} {...this.getLayoutOption()}>
                                   {child}
                               </Col>
                             )

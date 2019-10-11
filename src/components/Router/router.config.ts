@@ -52,14 +52,6 @@ export const appRouters: any = [
       icon: 'caven',
       showInMenu: true,
       component: LoadableComponent(() => import('../../pages/Man'))
-    },
-    {
-      path: '/visitor/2',
-      title: '走访记录',
-      name: 'visitor',
-      icon: 'appstore',
-      showInMenu: true,
-      component: LoadableComponent(() => import('../../pages/Vistitor'))
     }]  
   },
   {

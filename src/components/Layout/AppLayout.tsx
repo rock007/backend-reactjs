@@ -1,4 +1,4 @@
-//import './AppLayout.scss';
+import './AppLayout.scss';
 
 import * as React from 'react';
 
@@ -8,35 +8,16 @@ import DocumentTitle from 'react-document-title';
 
 import 'ac-multi-tabs/dist/index.css';
 
-import { PageLayout,Navbar ,SearchPanel, FormControl,Row, Col,Label,Form,Icon,Menu  } from 'tinper-bee';
+import { PageLayout,Icon,Menu  } from 'tinper-bee';
 
 import ProtectedRoute from '../../components/Router/ProtectedRoute';
 
 import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
 import AppConsts from '../../lib/appconst';
-
-const Header = PageLayout.Header;
-const SearchArea = PageLayout.SearchArea;
-const Content = PageLayout.Content;
-const TableContent = PageLayout.TableContent;
-const LeftContent = PageLayout.LeftContent;
-const RightContent = PageLayout.RightContent;
-
-let HeadContainer = SearchPanel.HeadContainer;
-let AdvancedContainer = SearchPanel.AdvancedContainer;
-
-const FormItem = Form.FormItem;
-
+import Footer from '../Footer'
+import Header from '../Header'
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
-
-const NavItem = Navbar.NavItem;
-
-const Brand = Navbar.Brand;
-const Collapse = Navbar.Collapse;
-const Toggle = Navbar.Toggle;
-const Nav = Navbar.Nav;
 
 interface IPageProps {
   history:any,
@@ -69,11 +50,7 @@ class AppLayout extends React.Component<IPageProps,IPageState> {
     selectedkey:null
 }
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  };
+
 
   onCollapse = (collapsed: any) => {
     this.setState({ collapsed });
@@ -94,13 +71,6 @@ handleChange = (v) => {
     })
 }
 
-onToggle = (value) => {
-    this.setState({expanded: value});
-}
-
-handleSelect = (index) => {
-    this.setState({selectedkey: index});
-}
 
   render() {
 
@@ -149,38 +119,13 @@ handleSelect = (index) => {
     }
     
     const layout = (
-      <div className="app">
-      <div className="header-container">
-          <Navbar
-          
-          expanded={this.state.expanded}
-          onToggle={this.onToggle}>
-          <Header>
-              <Brand>
-                  <a href="#">标题在这里</a>
-              </Brand>
-              <Toggle />
-          </Header>
+      <div  className="main">
 
-          <Collapse>
-              <Nav
-                  selectedkey={this.state.selectedkey}
-                  onSelect={this.handleSelect}>
-                  <NavItem eventKey={1}>选项</NavItem>
-                  <NavItem href="#" eventKey={2}>
-                      选项
-                  </NavItem>
-              </Nav>
-              
-              <Navbar.Form pullRight>
-                  <FormControl type="text" placeholder="Search"/>
-              </Navbar.Form>
-          </Collapse>
-      </Navbar>
-      </div>
+      <Header/>
+     
       <PageLayout>
-          <Content>
-              <LeftContent md="3">
+          <PageLayout.Content>
+              <PageLayout.LeftContent md="2">
 
               <Menu  mode="inline" defaultOpenKeys={['man_mg']} >
         {appRouters
@@ -198,8 +143,8 @@ handleSelect = (index) => {
           })}
       </Menu>
              
-              </LeftContent>
-              <RightContent md="9">
+              </PageLayout.LeftContent>
+              <PageLayout.RightContent md="10">
               <Switch>
               {routeList
                 .filter((item: any) => !item.isLayout)
@@ -211,10 +156,10 @@ handleSelect = (index) => {
 
               <Redirect from="/" to="/dashboard" />
               </Switch>
-
-              </RightContent>
-          </Content>
+              </PageLayout.RightContent>
+          </PageLayout.Content>
       </PageLayout>
+      <Footer/>
   </div>
     );
 
