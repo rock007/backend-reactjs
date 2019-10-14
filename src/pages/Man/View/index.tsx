@@ -4,19 +4,20 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import {FormList ,FormListItem}from '../../components/FormList';
-import SearchPanel from '../../components/SearchPanel';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
+import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
+import './index.scss';
+
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
-
 
 interface IPageProps {
     form:any
@@ -27,10 +28,18 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+class ManView extends React.Component<IPageProps,IPageState> {
+    
+    state:IPageState={
+        expanded:false,
+        current:null,
+        selectedkey:null
+    }
+
     componentDidMount() {
 
     }
+
     handleSelect = (index) => {
         this.setState({selectedkey: index});
     }
@@ -65,7 +74,9 @@ interface IPageState {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
     render() {
+        
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
@@ -131,7 +142,7 @@ interface IPageState {
 			      Library
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检计录
+			      Data
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -139,12 +150,11 @@ interface IPageState {
                 reset={()=>{}}
                 onCallback={()=>{}}
                 search={()=>{}}
-                searchOpen={true}
             >
 
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="身份证号"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
@@ -155,6 +165,17 @@ interface IPageState {
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
+                    <FormItem
+                        label="电话号码"
+                    >
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+
+                    <FormItem
+                        label="性别"
+                    >
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
 
                     <FormItem
                         label="司龄"
@@ -185,19 +206,29 @@ interface IPageState {
                     </FormItem>
 
                     <FormItem
-                        label="是否超标"
+                        label="性别"
                     >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">请选择</Option>
                             <Option value="0">未超标</Option>
                             <Option value="1">超标</Option>
                         </Select>
                     </FormItem>
+                    <FormItem
+                        label="执行状态"
+                    >
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">未超标</Option>
+                            <Option value="1">超标</Option>
+                        </Select>
+                    </FormItem>
+
                 </FormList>
                 </SearchPanel>
 
 
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
           data={data}
@@ -210,4 +241,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(ManView);

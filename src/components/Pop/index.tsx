@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { findDOMNode } from 'react-dom'
 import PropTypes from "prop-types";
 import { Modal, Icon } from 'tinper-bee'
 import Button from '../../components/Button';
-import './index.less';
+import './index.scss';
 
 const ButtonBrand = Button;
 const ButtonWarning = Button;
@@ -31,7 +31,7 @@ const propTypes = {
 };
 
 
-class PopDialog extends Component<any> {
+class PopDialog extends React.Component<any> {
 
   modalNode:any
   modalEle:any
@@ -63,7 +63,7 @@ class PopDialog extends Component<any> {
     if (this.props.btns) {
       this.props.btns.map((da, i) => {
         let _button = null, icon = {} as any;
-        da.icon ? icon.iconType = da.icon : "";
+        icon.iconType =da.icon==null ?  da.icon : "";
         let _className = da.className ? da.className : null;
         let _defultAlphaButton = <ButtonDefaultLine colors={da.colors} shape={da.shape} key={"pop_btn" + i} {...icon} onClick={(e) => { this.btnClick(e, da) }} className={`${_className} ${btn}`} >{da.label}</ButtonDefaultLine>
         if (this.props.type == "delete") {

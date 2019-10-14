@@ -8,7 +8,7 @@ import DocumentTitle from 'react-document-title';
 
 import 'ac-multi-tabs/dist/index.css';
 
-import { PageLayout,Icon,Menu  } from 'tinper-bee';
+import { PageLayout,Icon,Menu ,Drawer } from 'tinper-bee';
 
 import ProtectedRoute from '../../components/Router/ProtectedRoute';
 
@@ -29,7 +29,8 @@ interface IPageState {
   collapsed:boolean,
   current:any,
   menus: any[],
-  selectedkey:any
+  selectedkey:any,
+  showDrawer:boolean
 }
 
 class AppLayout extends React.Component<IPageProps,IPageState> {
@@ -38,6 +39,7 @@ class AppLayout extends React.Component<IPageProps,IPageState> {
     expanded:false,
     collapsed: false,
     current:null,
+    showDrawer:true,
     menus:[{
         id: 0,
         router: 'visitor',
@@ -70,7 +72,16 @@ handleChange = (v) => {
         menus : v
     })
 }
-
+fPopDrawer=()=>{
+  this.setState({
+      showDrawer: true
+  })
+}
+fCloseDrawer=()=>{
+  this.setState({
+      showDrawer: false
+  })
+}
 
   render() {
 
@@ -160,6 +171,13 @@ handleChange = (v) => {
           </PageLayout.Content>
       </PageLayout>
       <Footer/>
+      <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true}  title={"消息"} show={this.state.showDrawer} placement='right' onClose={this.fCloseDrawer}>
+                    <div style={{padding: "10px 20px;"}}>
+                        <p>这是第一行文字</p>
+                        <p>这是第二行文字</p>
+                        <p>这是第三行文字，啦啦啦~</p>                                                 
+                    </div>
+      </Drawer>
   </div>
     );
 

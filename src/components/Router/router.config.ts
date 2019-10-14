@@ -55,6 +55,15 @@ export const appRouters: any = [
     }]  
   },
   {
+    path: '/process',
+   // permission: 'Pages.Tenants',
+    title: '社戒执行管理',
+    name: 'process',
+    icon: 'uf-file-s',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Process'))
+  },
+  {
     path: '/niaojian',
    // permission: 'Pages.Tenants',
     title: '康复检查',

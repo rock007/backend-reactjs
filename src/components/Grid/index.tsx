@@ -60,7 +60,7 @@ class Grid extends Component<any> {
         return (
             <div className='bs-grid-wrapper'>
                 <BeeGrid
-                    className="ucf-example-grid"
+                    className="ucf-bs-grid"
                     data={data}
                     {...otherProps}
                     exportData={_exportData}

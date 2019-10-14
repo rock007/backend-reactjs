@@ -4,19 +4,20 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import {FormList ,FormListItem}from '../../components/FormList';
-import SearchPanel from '../../components/SearchPanel';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
+import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
+import './index.scss';
+
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
-
 
 interface IPageProps {
     form:any
@@ -27,10 +28,18 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+class VisitorPage extends React.Component<IPageProps,IPageState> {
+    
+    state:IPageState={
+        expanded:false,
+        current:null,
+        selectedkey:null
+    }
+
     componentDidMount() {
 
     }
+
     handleSelect = (index) => {
         this.setState({selectedkey: index});
     }
@@ -65,7 +74,9 @@ interface IPageState {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
     render() {
+        
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
@@ -131,7 +142,7 @@ interface IPageState {
 			      Library
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检计录
+			      Data
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -139,7 +150,6 @@ interface IPageState {
                 reset={()=>{}}
                 onCallback={()=>{}}
                 search={()=>{}}
-                searchOpen={true}
             >
 
                 <FormList size="sm">
@@ -197,7 +207,7 @@ interface IPageState {
                 </SearchPanel>
 
 
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
           data={data}
@@ -210,4 +220,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(VisitorPage);

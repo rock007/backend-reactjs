@@ -1,14 +1,21 @@
 import * as React from 'react';
+import LoadableComponent from '../../components/Loadable/index';
+import {Panel,Tabs , PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+
+import utils from '../../utils/utils';
 
 import AcMultiTabs from 'ac-multi-tabs';
 import 'ac-multi-tabs/dist/index.css';
+
+import Login from '../Account/index'
 
 interface IPageProps {
     
 }
 interface IPageState {
  
-    menus: any[]
+    menus: any[],
+    curPanel?:any
 
 }
 
@@ -39,17 +46,32 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
 
     }
 
-    handleChange = (v) => {
-        console.log(v)
-        this.setState({
-            menus : v
-        })
+    handleChange = (v,target) => {
+       
+        console.log(target)
+        
+       var mm= utils.getRoute(target.router);
+
+       //let component= LoadableComponent(() => import('../Account/index'))
+
+       this.setState({curPanel:mm.component});
+    }
+    onChange = (activeKey) => {
+        console.log(`onChange ${activeKey} o-^-o`);
+       
     }
     render() {
         const { menus } = this.state;
-        return (  <div>
-            <AcMultiTabs menus={menus} onChange={this.handleChange}/>
-            </div>)
+
+        let component= LoadableComponent(() => import('../Account/index')) ;
+
+        return ( <Panel>
+          <AcMultiTabs menus={menus} onChange={this.handleChange}/>
+            <Panel>
+
+                {React.createElement(this.state.curPanel||component) }
+            </Panel>
+            </Panel>)
     }
 }
 

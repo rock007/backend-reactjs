@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Tree , PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
+import {Tree ,Tabs ,Panel,Breadcrumb, PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
@@ -13,6 +13,8 @@ import SelectMonth from '../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
+import Alert from '../../components/Alert';
+import PopupModal from './Edit';
 
 import './index.scss';
 
@@ -25,7 +27,8 @@ interface IPageState {
     expanded:boolean,
     current:any,
     menus: any[],
-    selectedkey:any
+    selectedkey:any,
+    editModelVisible:boolean
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
 
@@ -41,7 +44,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             router: 'niaojian',
             title: "niaojian"
         }],
-        selectedkey:null
+        selectedkey:null,
+        editModelVisible:false
     }
     componentDidMount() {
 
@@ -116,13 +120,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
+    onClickShowModel = (btnFlag) => {
+        this.setState({editModelVisible: true});
+    }
+
+    /**
+     * 关闭修改model
+     */
+    onCloseEdit = () => {
+        this.setState({editModelVisible: false});
+    }
     render() {
-        const Header = PageLayout.Header;
-        const SearchArea = PageLayout.SearchArea;
-        const Content = PageLayout.Content;
-        const TableContent = PageLayout.TableContent;
-        const LeftContent = PageLayout.LeftContent;
-        const RightContent = PageLayout.RightContent;
 
         const { getFieldProps, getFieldError } = this.props.form;
 
@@ -150,7 +159,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             value:'新增',
             
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            onClick:() => {
+                this.onClickShowModel(0);
+            }
         },{
             value:'导出',
             iconType:'uf-search',
@@ -185,39 +197,50 @@ export  class Man extends React.Component<IPageProps,IPageState> {
           
         return (
 
-                <PageLayout>
-                    <Content>
-                        <LeftContent md="3">
-                        <Tree className="myCls" showLine checkable
+            <Panel>
+                 <Breadcrumb>
+			    <Breadcrumb.Item href="#">
+			      Home
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item>
+			      Library
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item active>
+			      人员档案
+			    </Breadcrumb.Item>
+			</Breadcrumb>
 
-					checkStrictly
-					showIcon
-					cancelUnSelect={true}
-					
-	      >
-	        <Tree.TreeNode title="parent 1" key="0-0"  icon={<Icon type="uf-treefolder"  />}>
-	          <Tree.TreeNode title="parent 1-0" key="0-0-0" disabled  icon={<Icon type="uf-treefolder" />}>
-	            <Tree.TreeNode title="leaf" key="0-0-0-0" disableCheckbox icon={<Icon type="uf-list-s-o" />}/>
-	            <Tree.TreeNode title="leaf" key="0-0-0-1" icon={<Icon type="uf-list-s-o" />}/>
-	          </Tree.TreeNode>
-	          <Tree.TreeNode title="parent 1-1" key="0-0-1" icon={<Icon type="uf-treefolder" />}>
-	            <Tree.TreeNode title={<span>sss</span>} key="0-0-1-0" icon={<Icon type="uf-list-s-o" />}/>
-	          </Tree.TreeNode>
-	        </Tree.TreeNode>
-	      </Tree>
-                        </LeftContent>
-                        <RightContent md="9">
-                        
-                            <Row>
-                            <SearchPanel
+            <Row>
+                <Col md="2">
+
+                <Tree className="myCls" showLine checkable
+
+checkStrictly
+showIcon
+cancelUnSelect={true}
+>
+<Tree.TreeNode title="parent 1" key="0-0"  icon={<Icon type="uf-treefolder"  />}>
+<Tree.TreeNode title="parent 1-0" key="0-0-0" disabled  icon={<Icon type="uf-treefolder" />}>
+<Tree.TreeNode title="leaf" key="0-0-0-0" disableCheckbox icon={<Icon type="uf-list-s-o" />}/>
+<Tree.TreeNode title="leaf" key="0-0-0-1" icon={<Icon type="uf-list-s-o" />}/>
+</Tree.TreeNode>
+<Tree.TreeNode title="parent 1-1" key="0-0-1" icon={<Icon type="uf-treefolder" />}>
+<Tree.TreeNode title={<span>sss</span>} key="0-0-1-0" icon={<Icon type="uf-list-s-o" />}/>
+</Tree.TreeNode>
+</Tree.TreeNode>
+</Tree>
+                </Col>
+                <Col md="10">
+                <SearchPanel
                 reset={()=>{}}
                 onCallback={()=>{}}
                 search={()=>{}}
+                searchOpen={true}
             >
 
                 <FormList size="sm">
-                    <FormItem
-                        label="员工编号"
+                <FormItem
+                        label="身份证号"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
@@ -228,28 +251,19 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
-
                     <FormItem
-                        label="司龄"
+                        label="电话号码"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="年份"
+                        label="性别"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
+
+                   
 
                     <FormItem
                         label="月份"
@@ -258,9 +272,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     </FormItem>
 
                     <FormItem
-                        label="是否超标"
+                        label="性别"
                     >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">未超标</Option>
+                            <Option value="1">超标</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="执行状态"
+                    >
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">请选择</Option>
                             <Option value="0">未超标</Option>
                             <Option value="1">超标</Option>
@@ -268,22 +291,32 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                 </FormList>
                 </SearchPanel>
-               
-            </Row>
-                         
-                            <TableContent>
-                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
+                <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+              
+            <Grid
           columns={columns}
           data={data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
         />
-                            </TableContent>
-                        </RightContent>
-                    </Content>
-                </PageLayout>
-           
+                </Col>
+            </Row>
+
+            <PopupModal
+                    editModelVisible={this.state.editModelVisible}
+                    onCloseEdit={this.onCloseEdit}
+                    currentIndex={1}
+                    btnFlag={1}
+                />
+            <Alert show={false} context="是否要删除 ?"
+                           confirmFn={() => {
+                             //  this.confirmGoBack(1);
+                           }}
+                           cancelFn={() => {
+                              // this.confirmGoBack(2);
+                           }}
+                    />
+            </Panel>
         )
     }
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
+import {Tree ,Tabs ,Panel,Breadcrumb, PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
@@ -8,15 +8,15 @@ import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
+
 import SelectMonth from '../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
-const FormItem = FormListItem;
-const {Option} = Select;
-const format = "YYYY";
+import './index.scss';
 
+const FormItem = FormListItem;
 
 interface IPageProps {
     form:any
@@ -24,13 +24,64 @@ interface IPageProps {
 interface IPageState {
     expanded:boolean,
     current:any,
+    menus: any[],
     selectedkey:any
 }
+export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+    state:IPageState={
+        expanded:false,
+        current:null,
+        menus:[{
+            id: 0,
+            router: 'visitor',
+            title: "visitor"
+        },{
+            id: 1,
+            router: 'niaojian',
+            title: "niaojian"
+        }],
+        selectedkey:null
+    }
     componentDidMount() {
 
     }
+
+    search=()=>{
+        this.props.form.validateFields((err, values) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('提交成功', values)
+            }
+        });
+    }
+    clear=()=>{
+        this.props.form.resetFields()
+    }
+    onChange = () => {
+        this.setState({expanded: !this.state.expanded})
+    }
+
+    handleClick = (e) => {
+        console.log(e);
+
+        this.setState({
+            current: e.key,
+        });
+    }
+
+    handleChange = (v) => {
+        console.log(v)
+        this.setState({
+            menus : v
+        })
+    }
+
+    onToggle = (value) => {
+        this.setState({expanded: value});
+    }
+
     handleSelect = (index) => {
         this.setState({selectedkey: index});
     }
@@ -66,7 +117,17 @@ interface IPageState {
       console.log('--dispatch---del')
     }
     render() {
+        const Header = PageLayout.Header;
+        const SearchArea = PageLayout.SearchArea;
+        const Content = PageLayout.Content;
+        const TableContent = PageLayout.TableContent;
+        const LeftContent = PageLayout.LeftContent;
+        const RightContent = PageLayout.RightContent;
+
         const { getFieldProps, getFieldError } = this.props.form;
+
+        const {Option} = Select;
+        const format = "YYYY";
 
         const columns = [
             { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
@@ -121,9 +182,11 @@ interface IPageState {
             showJump:false,
             noBorder:true
           }
-        return ( <Panel>
+          
+        return (
 
-            <Breadcrumb>
+            <Panel>
+                 <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      Home
 			    </Breadcrumb.Item>
@@ -131,11 +194,33 @@ interface IPageState {
 			      Library
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检计录
+			      人员档案
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
-            <SearchPanel
+            <Row>
+                <Col md="3">
+
+                <Tree className="myCls" showLine checkable
+
+checkStrictly
+showIcon
+cancelUnSelect={true}
+
+>
+<Tree.TreeNode title="parent 1" key="0-0"  icon={<Icon type="uf-treefolder"  />}>
+<Tree.TreeNode title="parent 1-0" key="0-0-0" disabled  icon={<Icon type="uf-treefolder" />}>
+<Tree.TreeNode title="leaf" key="0-0-0-0" disableCheckbox icon={<Icon type="uf-list-s-o" />}/>
+<Tree.TreeNode title="leaf" key="0-0-0-1" icon={<Icon type="uf-list-s-o" />}/>
+</Tree.TreeNode>
+<Tree.TreeNode title="parent 1-1" key="0-0-1" icon={<Icon type="uf-treefolder" />}>
+<Tree.TreeNode title={<span>sss</span>} key="0-0-1-0" icon={<Icon type="uf-list-s-o" />}/>
+</Tree.TreeNode>
+</Tree.TreeNode>
+</Tree>
+                </Col>
+                <Col md="9">
+                <SearchPanel
                 reset={()=>{}}
                 onCallback={()=>{}}
                 search={()=>{}}
@@ -195,19 +280,25 @@ interface IPageState {
                     </FormItem>
                 </FormList>
                 </SearchPanel>
+                <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                
+                <Tabs
+                defaultActiveKey="1"
+                onChange={this.onChange}
+                className="demo1-tabs"
+            >
+                <Tabs.TabPane tab='未执行' key="1">Content of Tab Pane 1</Tabs.TabPane>
+                <Tabs.TabPane tab='执行中' key="2">
+                   
+                </Tabs.TabPane>
+                <Tabs.TabPane tab='已完成' key="3">Content of Tab Pane 3</Tabs.TabPane>
+            </Tabs>
 
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
-          columns={columns}
-          data={data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
-
-
-        </Panel >)
+                </Col>
+            </Row>
+            </Panel>
+        )
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(ProcessPage);

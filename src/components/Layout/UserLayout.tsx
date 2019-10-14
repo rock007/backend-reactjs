@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { Col } from 'tinper-bee';
+import { Row,Col } from 'tinper-bee';
 import DocumentTitle from 'react-document-title';
 
 import { userRouter } from '../Router/router.config';
@@ -18,10 +18,8 @@ class UserLayout extends React.Component<any> {
 
     return (
       <DocumentTitle title={utils.getPageTitle(pathname)}>
-        <Col className="container">
-          <div className={'lang'}>
-            选择
-          </div>
+        <Row>
+          
           <Switch>
             {userRouter
               .filter((item: any) => !item.isLayout)
@@ -33,7 +31,7 @@ class UserLayout extends React.Component<any> {
             <Redirect from="/account" to="/account/login" />
           </Switch>
           
-        </Col>
+        </Row>
       </DocumentTitle>
     );
   }
