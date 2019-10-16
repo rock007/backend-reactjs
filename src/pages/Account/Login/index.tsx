@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon, Button, Label, FormControl, Form } from 'tinper-bee';
+import { Icon, Button, Label, FormControl, Form ,Panel,Col,Row} from 'tinper-bee';
 import './index.scss';
 
 export class Login extends React.Component<any> {
@@ -20,6 +20,9 @@ export class Login extends React.Component<any> {
         const { getFieldProps, getFieldError } = this.props.form;
 
         return ( <div className="login-page">
+           
+        <Panel style={{width:"450px",margin:"30px"}}>
+              
         <Form >
             <Form.FormItem>
                 <Label>用户名</Label>
@@ -54,6 +57,7 @@ export class Login extends React.Component<any> {
                 <Button colors="primary" className="login" onClick={this.submit}>登录</Button>
             </Form.FormItem>
         </Form>
+        </Panel>
     </div>
             )
     }

@@ -13,10 +13,11 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
+import './index.scss';
+
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
-
 
 interface IPageProps {
     form:any
@@ -27,10 +28,18 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+class VisitPage extends React.Component<IPageProps,IPageState> {
+    
+    state:IPageState={
+        expanded:false,
+        current:null,
+        selectedkey:null
+    }
+
     componentDidMount() {
 
     }
+
     handleSelect = (index) => {
         this.setState({selectedkey: index});
     }
@@ -65,7 +74,9 @@ interface IPageState {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
     render() {
+        
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
@@ -95,22 +106,17 @@ interface IPageState {
             iconType:'uf-search',
             onClick:this.export
         },{
-            value:'上传',
-            iconType:'uf-cloud-up',
+            value:'打印',
+            iconType:'uf-print',
         },{
             value:'批量操作',
             //onClick:this.dispatchOpt,
             children:[
                 {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
                     value:'删除',  
                     onClick:this.dispatchDel
                 }
             ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -131,7 +137,7 @@ interface IPageState {
 			      社戒管控
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检记录
+			      走访记录
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -197,7 +203,7 @@ interface IPageState {
                 </SearchPanel>
 
 
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
           data={data}
@@ -210,4 +216,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(VisitPage);

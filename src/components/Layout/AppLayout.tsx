@@ -15,8 +15,8 @@ import ProtectedRoute from '../../components/Router/ProtectedRoute';
 import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
 import AppConsts from '../../lib/appconst';
-import Footer from '../Footer'
-import Header from '../Header'
+import Footer from '../Footer';
+import Header from '../Header';
 const SubMenu = Menu.SubMenu;
 
 interface IPageProps {
@@ -138,7 +138,7 @@ fCloseDrawer=()=>{
           <PageLayout.Content>
               <PageLayout.LeftContent md="2">
 
-              <Menu  mode="inline" defaultOpenKeys={['man_mg']} >
+              <Menu  mode="inline" defaultOpenKeys={['process_mg']} >
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {

@@ -4,11 +4,11 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import {FormList ,FormListItem}from '../../components/FormList';
-import SearchPanel from '../../components/SearchPanel';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
+import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
@@ -27,7 +27,7 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+ class AuditManTransPage extends React.Component<IPageProps,IPageState> {
     componentDidMount() {
 
     }
@@ -128,10 +128,10 @@ interface IPageState {
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item>
-			      社戒管控
+			      业务审核
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检记录
+			      社区转移
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -210,4 +210,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(AuditManTransPage);

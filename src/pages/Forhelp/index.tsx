@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Tabs,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -27,7 +27,7 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+ class ForhelpPage extends React.Component<IPageProps,IPageState> {
     componentDidMount() {
 
     }
@@ -86,31 +86,13 @@ interface IPageState {
           ];
 
           const toolBtns = [{
-            value:'新增',
-            
+            value:'生成计划',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -131,7 +113,7 @@ interface IPageState {
 			      社戒管控
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检记录
+			      求助
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -196,18 +178,26 @@ interface IPageState {
                 </FormList>
                 </SearchPanel>
 
+                <Tabs
+                defaultActiveKey="1"
+                onChange={()=>{}}
+            >
+                <Tabs.TabPane tab='未处理' key="1">
+                    <Grid
+                        columns={columns}
+                        data={data}
+                        getSelectedDataFunc={this.getSelectedDataFunc}
+                        paginationObj={paginationObj}
+                    />
 
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
-          columns={columns}
-          data={data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
-
+                </Tabs.TabPane>
+                <Tabs.TabPane tab='已处理' key="2">
+                    Content of Tab Pane 2
+                </Tabs.TabPane>
+            </Tabs>    
 
         </Panel >)
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(ForhelpPage);

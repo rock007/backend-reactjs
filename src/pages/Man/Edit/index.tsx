@@ -18,6 +18,7 @@ import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
+import {RefWalsinLevel, RefIuapDept} from '../../../components/RefViews'
 
 import './index.scss';
 
@@ -224,7 +225,27 @@ class ManEdit extends React.Component<any,IPageState> {
                     </Select>
                     <FormError errorMsg={getFieldError('sex')}/>
                 </FormItem>
-
+                <FormItem
+                        required
+                        label="部门"
+                    >
+                        <RefIuapDept
+                            disabled={btnFlag === 2}
+                            placeholder="请选择部门"
+                            {...getFieldProps('dept', {
+                                initialValue: JSON.stringify({
+                                    refname: deptName || '',
+                                    refpk: dept || ''
+                                }),
+                                rules: [{
+                                    message: '请选择部门',
+                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
+                                }],
+                            })}
+                            backdrop={false}
+                        />
+                        <FormError errorMsg={getFieldError('dept')}/>
+                </FormItem>
                 <FormItem
                     className="time"
                     required

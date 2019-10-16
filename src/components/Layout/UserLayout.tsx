@@ -6,6 +6,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { Row,Col } from 'tinper-bee';
 import DocumentTitle from 'react-document-title';
+import Footer from '../Footer';
 
 import { userRouter } from '../Router/router.config';
 import utils from '../../utils/utils';
@@ -18,6 +19,7 @@ class UserLayout extends React.Component<any> {
 
     return (
       <DocumentTitle title={utils.getPageTitle(pathname)}>
+        
         <Row>
           
           <Switch>
@@ -32,6 +34,7 @@ class UserLayout extends React.Component<any> {
           </Switch>
           
         </Row>
+
       </DocumentTitle>
     );
   }

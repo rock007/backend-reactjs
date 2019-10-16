@@ -4,11 +4,11 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import {FormList ,FormListItem}from '../../components/FormList';
-import SearchPanel from '../../components/SearchPanel';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
+import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
@@ -27,7 +27,7 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+ class NiaojianSchedulePage extends React.Component<IPageProps,IPageState> {
     componentDidMount() {
 
     }
@@ -86,31 +86,13 @@ interface IPageState {
           ];
 
           const toolBtns = [{
-            value:'新增',
-            
+            value:'生成计划',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -131,7 +113,7 @@ interface IPageState {
 			      社戒管控
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检记录
+			      尿检计划
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -210,4 +192,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(NiaojianSchedulePage);

@@ -27,7 +27,7 @@ interface IPageState {
     selectedkey:any
 }
 
- class NiaojianPage extends React.Component<IPageProps,IPageState> {
+ class CheckinPage extends React.Component<IPageProps,IPageState> {
     componentDidMount() {
 
     }
@@ -86,31 +86,13 @@ interface IPageState {
           ];
 
           const toolBtns = [{
-            value:'新增',
-            
+            value:'生成计划',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -131,7 +113,7 @@ interface IPageState {
 			      社戒管控
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      尿检记录
+			      签到
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -210,4 +192,4 @@ interface IPageState {
     }
 }
 
-export default Form.createForm()(NiaojianPage);
+export default Form.createForm()(CheckinPage);

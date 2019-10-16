@@ -1,4 +1,7 @@
 const AppConsts = {
+
+  Host:"",
+
   userManagement: {
     defaultAdminUserName: 'admin',
   },

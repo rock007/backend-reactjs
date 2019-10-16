@@ -34,52 +34,207 @@ export const appRouters: any = [
     path: '/dashboard',
     name: 'dashboard',
     permission: '',
-    title: 'Dashboard',
-    icon: 'wechat',
+    title: '工作台',
+    icon: 'pc',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Dashboard')),
   },
   {
     permission: '',
-    title: '档案管理',
-    name: 'man_mg',
-    icon: 'search',
+    title: '档案库',
+    name: 'man_doc',
+    icon: 'pencil-s',
+    path: '/man',
     showInMenu: true,
-    childs:[{
-      path: '/man',
-      title: '档案库',
-      name: 'man',
-      icon: 'caven',
-      showInMenu: true,
-      component: LoadableComponent(() => import('../../pages/Man'))
-    }]  
+    component: LoadableComponent(() => import('../../pages/Man'))
   },
   {
+    permission: '',
+    title: '社戒管理',
     path: '/process',
-   // permission: 'Pages.Tenants',
-    title: '社戒执行管理',
-    name: 'process',
-    icon: 'uf-file-s',
+    name: 'man_process',
+    icon: '9square-2',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Process'))
   },
   {
-    path: '/niaojian',
-   // permission: 'Pages.Tenants',
-    title: '康复检查',
-    name: 'niaojian',
-    icon: 'appstore',
+    permission: '',
+    title: '社戒管控',
+    name: 'process_mg',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Niaojian'))
+    childs:[{
+      path: '/niaojian',
+      title: '尿检记录',
+      name: 'niaojian',
+      icon: 'pencil',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Niaojian'))
+    },{
+      path: '/niaojian-schedule',
+      title: '尿检计划',
+      name: 'niaojian_schedule',
+      icon: 'calendar',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Niaojian/Schedule'))
+    },{
+      path: '/visit',
+      title: '走访记录',
+      name: 'visit',
+      icon: 'rulerpen-o',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Visit'))
+    },{
+      path: '/dayoff',
+      title: '请假',
+      name: 'dayoff',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Dayoff'))
+    },{
+      path: '/forhelp',
+      title: '求助',
+      name: 'forhelp',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Forhelp'))
+    },{
+      path: '/location',
+      title: '位置轨迹',
+      name: 'location',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Location'))
+    },{
+      path: '/checkin',
+      title: '签到',
+      name: 'checkin',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Checkin'))
+    }]  
   },
   {
-    path: '/visitor',
-    //permission: 'Pages.Tenants',
-    title: '走访记录',
-    name: 'visitor',
-    icon: 'appstore',
+    permission: '',
+    title: '业务审核',
+    name: 'buss_audit',
+    icon: 'security-2',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Vistitor'))
+    childs:[{
+      path: '/audit-noticewarn',
+      title: '通知函',
+      name: 'audit_noticewarn',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Audit/NoticeWarn'))
+    },{
+      path: '/audit-mantrans',
+      title: '社区转移',
+      name: 'audit_mantrans',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Audit/ManTrans'))
+    },{
+      path: '/audit-mancate',
+      title: '人员分类',
+      name: 'audit_mancate',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Audit/ManCate'))
+    }]
+  },
+  {
+    permission: '',
+    title: '业务查询',
+    name: 'buss_search',
+    icon: 'search-light-2',
+    showInMenu: true,
+    childs:[{
+      path: '/notices',
+      title: '告诫书',
+      name: 'notices',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Notices'))
+    },{
+      path: '/yellowcard',
+      title: '红黄牌',
+      name: 'yellowcard',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/YellowCard'))
+    }]
+  },
+  {
+    permission: '',
+    title: '统计分析',
+    name: 'man_mg3',
+    icon: 'histogram-s-o-2',
+    showInMenu: true,
+    childs:[{
+      path: '/man13',
+      title: '今日签到',
+      name: 'man1',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Man'))
+    }]
+  },
+  {
+    permission: '',
+    title: '系统管理',
+    name: 'sys_mg',
+    icon: 'settings',
+    showInMenu: true,
+    childs:[{
+      path: '/org',
+      title: '组织机构',
+      name: 'sys_org',
+      icon: 'group-2',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Sys/Org'))
+    },{
+      path: '/roles',
+      title: '角色管理',
+      name: 'sys_role',
+      icon: 'role',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Sys/Role'))
+    },{
+      path: '/users',
+      title: '用户管理',
+      name: 'sys_user',
+      icon: 'users-o',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Sys/User'))
+    },{
+      path: '/menus',
+      title: '菜单管理',
+      name: 'sys_menu',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Sys/Menu'))
+    },{
+      path: '/man4',
+      title: '地区管理',
+      name: 'man4',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Man'))
+    },{
+      path: '/man5',
+      title: '网格管理',
+      name: 'man5',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Man'))
+    },{
+      path: '/man6',
+      title: '包办单位',
+      name: 'man6',
+      icon: 'caven',
+      showInMenu: true,
+      component: LoadableComponent(() => import('../../pages/Man'))
+    }]  
   },
   {
     path: '/exception',

@@ -15,6 +15,7 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 import InputNumber from 'bee-input-number';
 import Alert from '../../components/Alert';
 import PopupModal from './Edit';
+import OrgPanel from '../../pages/Sys/Org/Panel';
 
 import './index.scss';
 
@@ -200,35 +201,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             <Panel>
                  <Breadcrumb>
 			    <Breadcrumb.Item href="#">
-			      Home
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item>
-			      Library
+			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      人员档案
+                    档案库
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
             <Row>
                 <Col md="2">
 
-                <Tree className="myCls" showLine checkable
-
-checkStrictly
-showIcon
-cancelUnSelect={true}
->
-<Tree.TreeNode title="parent 1" key="0-0"  icon={<Icon type="uf-treefolder"  />}>
-<Tree.TreeNode title="parent 1-0" key="0-0-0" disabled  icon={<Icon type="uf-treefolder" />}>
-<Tree.TreeNode title="leaf" key="0-0-0-0" disableCheckbox icon={<Icon type="uf-list-s-o" />}/>
-<Tree.TreeNode title="leaf" key="0-0-0-1" icon={<Icon type="uf-list-s-o" />}/>
-</Tree.TreeNode>
-<Tree.TreeNode title="parent 1-1" key="0-0-1" icon={<Icon type="uf-treefolder" />}>
-<Tree.TreeNode title={<span>sss</span>} key="0-0-1-0" icon={<Icon type="uf-list-s-o" />}/>
-</Tree.TreeNode>
-</Tree.TreeNode>
-</Tree>
+                <OrgPanel />
+               
                 </Col>
                 <Col md="10">
                 <SearchPanel

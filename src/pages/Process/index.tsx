@@ -6,6 +6,9 @@ import 'bee-complex-grid/build/Grid.css';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
+import OrgPanel from '../../pages/Sys/Org/Panel';
+
+import ProcessViewPop from './View';
 
 import DatePicker from "bee-datepicker";
 
@@ -25,7 +28,8 @@ interface IPageState {
     expanded:boolean,
     current:any,
     menus: any[],
-    selectedkey:any
+    selectedkey:any,
+    isViewerShow:boolean
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
@@ -41,7 +45,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             router: 'niaojian',
             title: "niaojian"
         }],
-        selectedkey:null
+        selectedkey:null,
+        isViewerShow:false
     }
     componentDidMount() {
 
@@ -116,14 +121,20 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
-    render() {
-        const Header = PageLayout.Header;
-        const SearchArea = PageLayout.SearchArea;
-        const Content = PageLayout.Content;
-        const TableContent = PageLayout.TableContent;
-        const LeftContent = PageLayout.LeftContent;
-        const RightContent = PageLayout.RightContent;
 
+    onStartInputBlur = (e,startValue,array) => {
+        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
+    }
+    /**
+     *@param e 事件对象
+     *@param endValue 结束时间
+     *@param array 包含开始时间和结束时间的数组
+     */
+    onEndInputBlur = (e,endValue,array) => {
+        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
+    }
+
+    render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const {Option} = Select;
@@ -150,7 +161,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             value:'新增',
             
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            onClick:()=>{this.setState({isViewerShow:true})}
         },{
             value:'导出',
             iconType:'uf-search',
@@ -188,38 +200,18 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             <Panel>
                  <Breadcrumb>
 			    <Breadcrumb.Item href="#">
-			      Home
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item>
-			      Library
+			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      人员档案
+			      社戒管理
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
             <Row>
-                <Col md="3">
-
-                <Tree className="myCls" showLine checkable
-
-checkStrictly
-showIcon
-cancelUnSelect={true}
-
->
-<Tree.TreeNode title="parent 1" key="0-0"  icon={<Icon type="uf-treefolder"  />}>
-<Tree.TreeNode title="parent 1-0" key="0-0-0" disabled  icon={<Icon type="uf-treefolder" />}>
-<Tree.TreeNode title="leaf" key="0-0-0-0" disableCheckbox icon={<Icon type="uf-list-s-o" />}/>
-<Tree.TreeNode title="leaf" key="0-0-0-1" icon={<Icon type="uf-list-s-o" />}/>
-</Tree.TreeNode>
-<Tree.TreeNode title="parent 1-1" key="0-0-1" icon={<Icon type="uf-treefolder" />}>
-<Tree.TreeNode title={<span>sss</span>} key="0-0-1-0" icon={<Icon type="uf-list-s-o" />}/>
-</Tree.TreeNode>
-</Tree.TreeNode>
-</Tree>
+                <Col md="2">
+                    <OrgPanel />
                 </Col>
-                <Col md="9">
+                <Col md="10">
                 <SearchPanel
                 reset={()=>{}}
                 onCallback={()=>{}}
@@ -229,37 +221,49 @@ cancelUnSelect={true}
 
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
+                    >
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="身份证号"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
-
                     <FormItem
-                        label="司龄"
+                        label="创建时间"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={this.onChange}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                            onStartInputBlur={this.onStartInputBlur}
+                            onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
 
                     <FormItem
-                        label="年份"
+                        label="报到时间"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
+                         <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={this.onChange}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                            onStartInputBlur={this.onStartInputBlur}
+                            onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
 
@@ -270,7 +274,25 @@ cancelUnSelect={true}
                     </FormItem>
 
                     <FormItem
-                        label="是否超标"
+                        label="性别"
+                    >
+                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">未超标</Option>
+                            <Option value="1">超标</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级"
+                    >
+                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">未超标</Option>
+                            <Option value="1">超标</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="地区"
                     >
                         <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
                             <Option value="">请选择</Option>
@@ -296,6 +318,7 @@ cancelUnSelect={true}
 
                 </Col>
             </Row>
+            <ProcessViewPop isShow={this.state.isViewerShow} onCloseEdit={()=>{this.setState({isViewerShow:false})}}/>
             </Panel>
         )
     }

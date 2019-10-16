@@ -13,11 +13,10 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
-import './index.scss';
-
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
+
 
 interface IPageProps {
     form:any
@@ -28,18 +27,10 @@ interface IPageState {
     selectedkey:any
 }
 
-class VisitorPage extends React.Component<IPageProps,IPageState> {
-    
-    state:IPageState={
-        expanded:false,
-        current:null,
-        selectedkey:null
-    }
-
+ class LocationPage extends React.Component<IPageProps,IPageState> {
     componentDidMount() {
 
     }
-
     handleSelect = (index) => {
         this.setState({selectedkey: index});
     }
@@ -74,9 +65,7 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
-
     render() {
-        
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
@@ -97,31 +86,13 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
           ];
 
           const toolBtns = [{
-            value:'新增',
-            
+            value:'生成计划',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -136,13 +107,13 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
 
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
-			      Home
+			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item>
-			      Library
+			      社戒管控
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      Data
+			      位置轨迹
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -150,6 +121,7 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
                 reset={()=>{}}
                 onCallback={()=>{}}
                 search={()=>{}}
+                searchOpen={true}
             >
 
                 <FormList size="sm">
@@ -207,7 +179,7 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
 
 
-                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
           data={data}
@@ -220,4 +192,4 @@ class VisitorPage extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default Form.createForm()(VisitorPage);
+export default Form.createForm()(LocationPage);
