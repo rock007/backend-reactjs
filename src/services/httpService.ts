@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AppConsts from './../lib/appconst';
-//import { L } from 'src/lib/abpUtility';
-import { Modal ,Icon, Button} from 'tinper-bee';
+import { Modal ,Message} from 'tinper-bee';
+import {JsonBody} from './Model/Models';
 
 const qs = require('qs');
 
@@ -17,12 +17,11 @@ const http = axios.create({
 
 http.interceptors.request.use(
   function(config) {
-    /** 
-    if (!!abp.auth.getToken()) {
-      config.headers.common['Authorization'] = 'Bearer ' + abp.auth.getToken();
+    
+    if (!!AppConsts.authorization.token) {
+      config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
     }
-    **/
-
+    
     return config;
   },
   function(error) {
@@ -32,9 +31,23 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   response => {
-    return response;
+
+    let resp=response.data as JsonBody<any>;
+
+    if(resp.result < 0){
+      Message.destroy();
+      Message.create({content: resp.msg, color: 'danger'});
+
+      return Promise.reject(resp);
+    }
+    return resp.data;
   },
   error => {
+
+    if(error.response!=null&&error.response.data!=null){
+      console.log('error happen:'+JSON.stringify(error.response.data));
+    }
+    
     if (!!error.response && !!error.response.data.error && !!error.response.data.error.message && error.response.data.error.details) {
       Modal.error({
         title: error.response.data.error.message,

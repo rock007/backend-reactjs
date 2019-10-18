@@ -5,6 +5,7 @@ import { RegisterOutput } from './dto/registerOutput';
 import http from '../httpService';
 
 class AccountService {
+  
   public async isTenantAvailable(isTenantAvaibleInput: IsTenantAvaibleInput): Promise<IsTenantAvaibleOutput> {
     let result = await http.post('api/services/app/Account/IsTenantAvailable', isTenantAvaibleInput);
     return result.data.result;

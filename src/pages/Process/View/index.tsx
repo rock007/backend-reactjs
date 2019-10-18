@@ -700,11 +700,11 @@ class ProcessViewPop extends React.Component<any,IPageState> {
                         </div>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab='走访记录' key="3">Content of Tab Pane 3</Tabs.TabPane>
-                    <Tabs.TabPane tab='签到' key="4">Content of Tab Pane 3
+                    <Tabs.TabPane tab='签到' key="4">
                     <Calendar
                    style={{ margin: 10 }}
                    fullscreen
-
+				   locale={zhCN}
                    onSelect={()=>{}}
                    type={this.state.type}
                    onTypeChange={this.onTypeChange.bind(this)}

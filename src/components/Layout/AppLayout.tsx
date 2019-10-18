@@ -39,7 +39,7 @@ class AppLayout extends React.Component<IPageProps,IPageState> {
     expanded:false,
     collapsed: false,
     current:null,
-    showDrawer:true,
+    showDrawer:false,
     menus:[{
         id: 0,
         router: 'visitor',

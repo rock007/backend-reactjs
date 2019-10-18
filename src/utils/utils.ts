@@ -61,7 +61,7 @@ class Utils {
 
   getPageTitle = (pathname: string) => {
     const route = routers.filter(route => route.path === pathname);
-    const localizedAppName = 'AppName';
+    const localizedAppName = '戒毒平台管理';
     if (!route || route.length === 0) {
       return localizedAppName;
     }

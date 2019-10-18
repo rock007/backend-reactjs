@@ -1,5 +1,5 @@
 import  React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect ,HashRouter} from 'react-router-dom';
 import AppConsts from  '../../lib/appconst';
 
 const ProtectedRoute = ({ path, component: Component, permission, render, ...rest }: any) => {

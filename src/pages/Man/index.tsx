@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Tree ,Tabs ,Panel,Breadcrumb, PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
+import {Panel,Breadcrumb,Select,FormControl,Row, Col,Form} from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
@@ -9,13 +9,12 @@ import SearchPanel from '../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
 
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
-import InputNumber from 'bee-input-number';
 import Alert from '../../components/Alert';
 import PopupModal from './Edit';
 import OrgPanel from '../../pages/Sys/Org/Panel';
+import ManCateSelect from '../../components/ManCateSelect';
+import ManService from '../../services/ManService';
+import {PageModel} from '../../services/Model/Models';
 
 import './index.scss';
 
@@ -29,11 +28,18 @@ interface IPageState {
     current:any,
     menus: any[],
     selectedkey:any,
-    editModelVisible:boolean
+    editModelVisible:boolean,
+    data:any[]
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
 
+    refs:{
+        [string: string]: any;
+        grid:any;
+    }
+
     state:IPageState={
+        data:[],
         expanded:false,
         current:null,
         menus:[{
@@ -48,8 +54,12 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         selectedkey:null,
         editModelVisible:false
     }
-    componentDidMount() {
 
+    async componentDidMount() {
+
+        let page = await ManService.search({pageIndex:1,pageSize:20}) as PageModel<any>;
+
+        this.setState({data:page.data});
     }
 
     search=()=>{
@@ -108,6 +118,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
       }
     export = ()=>{
         console.log('export=======');
+        this.refs.grid.exportExcel();
     }
     /**
      *批量修改操作
@@ -126,12 +137,32 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         this.setState({editModelVisible: true});
     }
 
+    onStartInputBlur = (e,startValue,array) => {
+        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
+    }
+    /**
+     *@param e 事件对象
+     *@param endValue 结束时间
+     *@param array 包含开始时间和结束时间的数组
+     */
+    onEndInputBlur = (e,endValue,array) => {
+        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
+    }
+
     /**
      * 关闭修改model
      */
     onCloseEdit = () => {
         this.setState({editModelVisible: false});
     }
+    /**
+   * 后端获取数据
+   */
+    sortFun = (sortParam)=>{
+        console.info(sortParam);
+        //将参数传递给后端排序
+    }
+
     render() {
 
         const { getFieldProps, getFieldError } = this.props.form;
@@ -140,22 +171,43 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         const format = "YYYY";
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <a href="#">{text}</a>;
+              }
             },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+              
+                console.log("data",data);
+            }},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+                
+                console.log("data",data);
+                }
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '民族', dataIndex: 'nation', key: 'nation',textAlign:'center', width: 100 },
+            { title: '婚姻状态', dataIndex: 'marriageStatus', key: 'marriageStatus',textAlign:'center', width: 150 },
+            { title: '户籍', dataIndex: 'birthplace', key: 'birthplace',textAlign:'center', width: 120 },
+            { title: '居住地 ', dataIndex: 'liveDistrict', key: 'liveDistrict',textAlign:'center', width: 200 },
+            { title: '查获时间', dataIndex: 'catchDate', key: 'catchDate',textAlign:'center', width: 120 },
+            { title: '查获单位', dataIndex: 'catchUnit', key: 'catchUnit',textAlign:'center', width: 200 },
+            { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
+            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            { title: '创建人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 100 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+            sorter: (pre, after) => {return pre.c - after.c},
+            sorterClick:(data,type)=>{
+              //type value is up or down
+              console.log("data",data);
+            }}
           ];
           
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
-
           const toolBtns = [{
             value:'新增',
             
@@ -165,26 +217,29 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 this.onClickShowModel(0);
             }
         },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
+            value:'编辑',
+            bordered:false,
+            colors:'default',
+            onClick:() => {
+
+            }
         },{
-            value:'上传',
-            iconType:'uf-cloud-up',
+            value:'执行社戒',
+            iconType:'uf-personin-o',
+            onClick:()=>{}
+        },{
+            value:'导出',
+            iconType:'uf-export',
+            onClick:this.export
         },{
             value:'批量操作',
             //onClick:this.dispatchOpt,
             children:[
                 {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
                     value:'删除',  
                     onClick:this.dispatchDel
                 }
             ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -195,7 +250,13 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             showJump:false,
             noBorder:true
           }
-          
+        
+        let sortObj = {
+            mode:'multiple',
+            // backSource:true,
+            sortFun:this.sortFun
+          }
+
         return (
 
             <Panel>
@@ -247,23 +308,34 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
-                   
-
                     <FormItem
-                        label="月份"
+                        label="创建时间"
                     >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={this.onChange}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                            onStartInputBlur={this.onStartInputBlur}
+                            onEndInputBlur={this.onEndInputBlur}
+                        />
                     </FormItem>
 
                     <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
                             <Option value="">请选择</Option>
                             <Option value="0">未超标</Option>
                             <Option value="1">超标</Option>
                         </Select>
                     </FormItem>
+
                     <FormItem
                         label="执行状态"
                     >
@@ -277,12 +349,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
                 <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
               
-            <Grid
-          columns={columns}
-          data={data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
+                <Grid
+                    ref="grid"
+                    className="table-color"
+                    columns={columns}
+                    data={this.state.data}
+                    exportData={this.state.data}
+                    sheetName="档案库"
+                    getSelectedDataFunc={this.getSelectedDataFunc}
+                    paginationObj={paginationObj}
+                    sort={sortObj}
+                    sortFun={this.sortFun}
+                />
                 </Col>
             </Row>
 

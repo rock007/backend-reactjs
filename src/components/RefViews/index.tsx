@@ -25,7 +25,7 @@ export function RefIuapDept(props){
             displayField='{refname}'
             valueField='refpk'
             refModelUrl= {{
-                treeUrl: AppConsts.Host+'/newref/rest/iref_ctr/blobRefTree', //树请求
+                treeUrl: AppConsts.remoteServiceBaseUrl+'/newref/rest/iref_ctr/blobRefTree', //树请求
             }}
             matchUrl= '/newref/rest/iref_ctr/matchPKRefJSON'
             filterUrl='/newref/rest/iref_ctr/filterRefJSON'
@@ -47,11 +47,11 @@ export function RefWalsinLevel(props){
                 refCode:'post_level',//test_common||test_grid||test_tree||test_treeTable
             }}
             refModelUrl = {{
-                tableBodyUrl:AppConsts.Host+`/common-ref/blobRefTreeGrid`,//表体请求
-                refInfo:AppConsts.Host+`/common-ref/refInfo`,//表头请求
+                tableBodyUrl:AppConsts.remoteServiceBaseUrl+`/common-ref/blobRefTreeGrid`,//表体请求
+                refInfo:AppConsts.remoteServiceBaseUrl+`/common-ref/refInfo`,//表头请求
             }}
-            matchUrl={AppConsts.Host+`/common-ref/matchPKRefJSON`}
-            filterUrl={AppConsts.Host+`/common-ref/filterRefJSON`}
+            matchUrl={AppConsts.remoteServiceBaseUrl+`/common-ref/matchPKRefJSON`}
+            filterUrl={AppConsts.remoteServiceBaseUrl+`/common-ref/filterRefJSON`}
             valueField="refpk"
             displayField="{refcode}"
             {...props}
