@@ -21,7 +21,7 @@ http.interceptors.request.use(
     if (!!AppConsts.authorization.token) {
       config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
     }
-    
+
     return config;
   },
   function(error) {

@@ -12,10 +12,8 @@ import ProcessViewPop from './View';
 
 import DatePicker from "bee-datepicker";
 
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
-import InputNumber from 'bee-input-number';
+import ManService from '../../services/ManService';
+import {PageModel} from '../../services/Model/Models';
 
 import './index.scss';
 
@@ -27,29 +25,23 @@ interface IPageProps {
 interface IPageState {
     expanded:boolean,
     current:any,
-    menus: any[],
     selectedkey:any,
-    isViewerShow:boolean
+    isViewerShow:boolean,
+    data:any[]
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
     state:IPageState={
         expanded:false,
         current:null,
-        menus:[{
-            id: 0,
-            router: 'visitor',
-            title: "visitor"
-        },{
-            id: 1,
-            router: 'niaojian',
-            title: "niaojian"
-        }],
         selectedkey:null,
-        isViewerShow:false
+        isViewerShow:false,
+        data:[]
     }
-    componentDidMount() {
+    async componentDidMount() {
+        let page = await ManService.search({pageIndex:1,pageSize:20}) as PageModel<any>;
 
+        this.setState({data:page.data});
     }
 
     search=()=>{
@@ -74,13 +66,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         this.setState({
             current: e.key,
         });
-    }
-
-    handleChange = (v) => {
-        console.log(v)
-        this.setState({
-            menus : v
-        })
     }
 
     onToggle = (value) => {
@@ -133,6 +118,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
     onEndInputBlur = (e,endValue,array) => {
         console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
     }
+    
+    sortFun = (sortParam)=>{
+        console.info(sortParam);
+        //将参数传递给后端排序
+    }
 
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -141,22 +131,43 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         const format = "YYYY";
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
-          ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
+                return <a href="#">{text}</a>;
+              }
+            },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+              
+                console.log("data",data);
+            }},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+                
+                console.log("data",data);
+                }
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '民族', dataIndex: 'nation', key: 'nation',textAlign:'center', width: 100 },
+            { title: '婚姻状态', dataIndex: 'marriageStatus', key: 'marriageStatus',textAlign:'center', width: 150 },
+            { title: '户籍', dataIndex: 'birthplace', key: 'birthplace',textAlign:'center', width: 120 },
+            { title: '居住地 ', dataIndex: 'liveDistrict', key: 'liveDistrict',textAlign:'center', width: 200 },
+            { title: '查获时间', dataIndex: 'catchDate', key: 'catchDate',textAlign:'center', width: 120 },
+            { title: '查获单位', dataIndex: 'catchUnit', key: 'catchUnit',textAlign:'center', width: 200 },
+            { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
+            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            { title: '创建人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 100 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+            sorter: (pre, after) => {return pre.c - after.c},
+            sorterClick:(data,type)=>{
+              //type value is up or down
+              console.log("data",data);
+            }}
+          ];
+        
           const toolBtns = [{
             value:'新增',
             
@@ -194,7 +205,12 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             showJump:false,
             noBorder:true
           }
-          
+
+          let sortObj = {
+            mode:'multiple',
+            // backSource:true,
+            sortFun:this.sortFun
+          }
         return (
 
             <Panel>
@@ -266,11 +282,19 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
-
                     <FormItem
-                        label="月份"
+                        label="创建时间"
                     >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={this.onChange}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                            onStartInputBlur={this.onStartInputBlur}
+                            onEndInputBlur={this.onEndInputBlur}
+                        />
                     </FormItem>
 
                     <FormItem
@@ -304,18 +328,25 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
                 <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
                 
-                <Tabs
-                defaultActiveKey="1"
-                onChange={this.onChange}
-                className="demo1-tabs"
-            >
-                <Tabs.TabPane tab='未执行' key="1">Content of Tab Pane 1</Tabs.TabPane>
-                <Tabs.TabPane tab='执行中' key="2">
-                   
-                </Tabs.TabPane>
-                <Tabs.TabPane tab='已完成' key="3">Content of Tab Pane 3</Tabs.TabPane>
-            </Tabs>
+                <Tabs.SearchTabs value="1" onChange={(v)=>{console.log('onchange',v)}}>
+                    
+                    <Tabs.SearchTabs.Item value="1">执行中(0)</Tabs.SearchTabs.Item >
+                    <Tabs.SearchTabs.Item value="2">已完成(10)</Tabs.SearchTabs.Item >
+                </Tabs.SearchTabs>
 
+                <Grid
+                    ref="grid"
+                    className="table-color"
+                    columns={columns}
+                    data={this.state.data}
+                    exportData={this.state.data}
+                    sheetName="档案库"
+                    getSelectedDataFunc={this.getSelectedDataFunc}
+                    paginationObj={paginationObj}
+                    sort={sortObj}
+                    sortFun={this.sortFun}
+                />
+               
                 </Col>
             </Row>
             <ProcessViewPop isShow={this.state.isViewerShow} onCloseEdit={()=>{this.setState({isViewerShow:false})}}/>

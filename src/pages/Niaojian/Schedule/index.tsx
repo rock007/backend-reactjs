@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, PageLayout,Navbar,Tabs,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -12,27 +12,47 @@ import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
+import ManService from '../../../services/ManService';
+import {PageModel} from '../../../services/Model/Models';
 
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
 
+const SearchTabs = Tabs.SearchTabs;
 
 interface IPageProps {
     form:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    data:any[],
+    tabList:any[],
+    selectValue:string
 }
 
  class NiaojianSchedulePage extends React.Component<IPageProps,IPageState> {
-    componentDidMount() {
 
+    state:IPageState={
+        data:[],
+        tabList:[{
+            name:"待尿检(0)",value:'1'
+        },
+        {
+            name:"已过期(70)",value:'2'
+        },
+        {
+            name:"已完成(3)",value:'3'
+        },
+        {
+            name:"已取消(67)",value:'4'
+        }],
+        selectValue:"1"
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
+
+    async componentDidMount() {
+        let page = await ManService.searchNiaojianPlan({pageIndex:1,pageSize:20}) as PageModel<any>;
+
+        this.setState({data:page.data});
     }
 
     getSelectedDataFunc = data => {
@@ -69,22 +89,39 @@ interface IPageState {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <a href="#">{text}</a>;
+              }
+            },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+              
+                console.log("data",data);
+            }},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+                
+                console.log("data",data);
+                }
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+            sorter: (pre, after) => {return pre.c - after.c},
+            sorterClick:(data,type)=>{
+              //type value is up or down
+              console.log("data",data);
+            }},
             {
               title: '操作', dataIndex: '', key: 'd', render() {
                 return <a href="#">一些操作</a>;
               },
             },
           ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
-
+        
           const toolBtns = [{
             value:'生成计划',
             bordered:false,
@@ -103,6 +140,8 @@ interface IPageState {
             showJump:false,
             noBorder:true
           }
+
+
         return ( <Panel>
 
             <Breadcrumb>
@@ -180,9 +219,15 @@ interface IPageState {
 
 
         <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+        <SearchTabs value={this.state.selectValue} onChange={(v)=>{console.log('onchange',v)}}>
+                    {
+                        this.state.tabList.map(item=>
+                            <SearchTabs.Item value={item.value}>{item.name}</SearchTabs.Item >)
+                    }
+        </SearchTabs>
         <Grid
           columns={columns}
-          data={data}
+          data={this.state.data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
         />

@@ -13,6 +13,9 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 
+import ManService from '../../services/ManService';
+import {PageModel} from '../../services/Model/Models';
+
 import './index.scss';
 
 const FormItem = FormListItem;
@@ -24,7 +27,7 @@ interface IPageProps {
 }
 interface IPageState {
     expanded:boolean,
-    current:any,
+    data:any[],
     selectedkey:any
 }
 
@@ -32,12 +35,13 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
         expanded:false,
-        current:null,
+        data:[],
         selectedkey:null
     }
 
-    componentDidMount() {
-
+    async componentDidMount() {
+        let page = await ManService.searchVisit({pageIndex:1,pageSize:20}) as PageModel<any>;
+        this.setState({data:page.data});
     }
 
     handleSelect = (index) => {
@@ -74,20 +78,49 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
-
+    sortFun = (sortParam)=>{
+        console.info(sortParam);
+        //将参数传递给后端排序
+    }
     render() {
         
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <a href="#">{text}</a>;
+              }
             },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+              
+                console.log("data",data);
+            }},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+                
+                console.log("data",data);
+                }
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+            sorter: (pre, after) => {return pre.c - after.c},
+            sorterClick:(data,type)=>{
+              //type value is up or down
+              console.log("data",data);
+            }},
+            { title: '被走访人', dataIndex: 'toVisitor', key: 'toVisitor',textAlign:'center', width: 160 },
+            { title: '关系', dataIndex: 'toVisitorRelationship', key: 'toVisitorRelationship',textAlign:'center', width: 100 },
+            { title: '走访地点', dataIndex: 'marriageStatus', key: 'marriageStatus',textAlign:'center', width: 150 },
+            { title: '结果', dataIndex: 'result', key: 'result',textAlign:'center', width: 120 },
+         
+            { title: '走访时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            { title: '走访人', dataIndex: 'visitorName', key: 'visitorName',textAlign:'center', width: 100 }
+            
           ];
           
           const data = [
@@ -126,7 +159,13 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
             showJump:false,
             noBorder:true
-          }
+          };
+
+          let sortObj = {
+            mode:'multiple',
+            // backSource:true,
+            sortFun:this.sortFun
+          };
         return ( <Panel>
 
             <Breadcrumb>
@@ -206,11 +245,12 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                             <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
-          data={data}
+          data={this.state.data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
+          sort={sortObj}
+          sortFun={this.sortFun}
         />
-
 
         </Panel >)
     }

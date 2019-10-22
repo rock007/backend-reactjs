@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Select, FormControl,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -8,10 +8,11 @@ import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
 
-import InputNumber from 'bee-input-number';
+import ManCateSelect from '../../components/ManCateSelect';
+
+import ManService from '../../services/ManService';
+import {PageModel} from '../../services/Model/Models';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -22,14 +23,19 @@ interface IPageProps {
     form:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
+    data:any[],
     selectedkey:any
 }
 
  class CheckinPage extends React.Component<IPageProps,IPageState> {
-    componentDidMount() {
 
+    state:IPageState={
+        data:[],
+        selectedkey:''
+    }
+    async componentDidMount() {
+        let page = await ManService.searchCheckin({pageIndex:1,pageSize:20}) as PageModel<any>;
+        this.setState({data:page.data});
     }
     handleSelect = (index) => {
         this.setState({selectedkey: index});
@@ -65,25 +71,57 @@ interface IPageState {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
+    
+    onStartInputBlur = (e,startValue,array) => {
+        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
+    }
+    /**
+     *@param e 事件对象
+     *@param endValue 结束时间
+     *@param array 包含开始时间和结束时间的数组
+     */
+    onEndInputBlur = (e,endValue,array) => {
+        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
+    }
+
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <a href="#">{text}</a>;
+              }
+            },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+              
+                console.log("data",data);
+            }},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+                sorterClick:(data,type)=>{
+                
+                console.log("data",data);
+                }
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+            sorter: (pre, after) => {return pre.c - after.c},
+            sorterClick:(data,type)=>{
+              //type value is up or down
+              console.log("data",data);
+            }},
             {
               title: '操作', dataIndex: '', key: 'd', render() {
                 return <a href="#">一些操作</a>;
               },
             },
           ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
+      
 
           const toolBtns = [{
             value:'生成计划',
@@ -125,49 +163,33 @@ interface IPageState {
             >
 
                 <FormList size="sm">
-                    <FormItem
-                        label="员工编号"
+                <FormItem
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
-
                     <FormItem
-                        label="司龄"
+                        label="身份证号"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
+                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
                     <FormItem
-                        label="年份"
+                        label="性别"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
+                    <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">男</Option>
+                            <Option value="1">女</Option>
+                        </Select>
                     </FormItem>
-
                     <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
+                        label="风险等级"
                     >
                         <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
                             <Option value="">请选择</Option>
@@ -175,14 +197,29 @@ interface IPageState {
                             <Option value="1">超标</Option>
                         </Select>
                     </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={()=>{}}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                            onStartInputBlur={this.onStartInputBlur}
+                            onEndInputBlur={this.onEndInputBlur}
+                        />
+                    </FormItem>
                 </FormList>
                 </SearchPanel>
-
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
           columns={columns}
-          data={data}
+          data={this.state.data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
         />
