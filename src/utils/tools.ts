@@ -1,3 +1,5 @@
+import cloneDeep from 'clone-deep';
+
 export function isMoment(obj){
     return typeof obj === 'object' && obj.date && obj.format;
 }
@@ -56,4 +58,25 @@ export function handleEntity(entity){
     }
 
     return entity;
+}
+
+function isString(str){ 
+    return (typeof str=='string')&&str.constructor==String; 
+} 
+
+export function getValidateFieldsTrim(values) {
+    for (const key in values) {
+        if (values.hasOwnProperty(key)) {
+            const element = values[key];
+            if(isString(element)){
+                values[key] = (values[key]).trim();
+            }
+        }
+    }
+    return values;
+}
+
+// 深度拷贝
+export function deepClone(data) {
+    return cloneDeep(data);
 }

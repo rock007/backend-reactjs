@@ -4,7 +4,7 @@ import {Panel, Tree,Message ,Icon,Select, FormControl,Row, Col,Label,Form,Radio,
 import SysService from '../../../../services/SysService';
 
 interface IPanelProps {
-    
+    onClick?:(rec:any)=>void
 }
 interface IPanelState {
     value?:string,
@@ -54,18 +54,20 @@ interface IPanelState {
 
       if (item.childs!=null&&item.childs.length>0) {
         return (
-          <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={item.isLeaf}>
+          <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={item.isLeaf} ext={item}>
             {loop(item.childs)}
           </Tree.TreeNode>
         );
       }
-      return <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={true}/>;
+      return <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={true} ext={item}/>;
     });
     return loop(data);
   }
-  onSelect(selectedKeys, info) {
-    console.log('onSelect', info);
-
+  onSelect=(selectedKeys, info) =>{
+    console.log('onSelect', selectedKeys);
+    if(this.props.onClick!=null){
+      this.props.onClick.call(this,selectedKeys)
+    }
   }
     render() {
        /** 

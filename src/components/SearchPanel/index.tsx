@@ -26,7 +26,7 @@ interface IdefaultState {
     searchOpen?: boolean,
 }
 interface IdefaultProps  {
-    searchOpen?: true,
+    searchOpen?: boolean,
     search: () => void,
     reset: () => void,
     title?: "默认筛选",

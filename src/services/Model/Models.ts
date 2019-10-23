@@ -9,13 +9,13 @@ export  class JsonBody<T> {
   
 export  class PageModel<T>{
 
-    pageIndex:number;// 索引
+  pageIndex:number=1;// 索引
 
-	pageSize:number;// 每页显示条数
+	pageSize:number=20;// 每页显示条数
 
-	totalPage:number;// 总页数
+	totalPage:number=1;// 总页数
 
-	dataCount:number;// 总记录数
+	dataCount:number=0;// 总记录数
 	
 	data:T;
 }  

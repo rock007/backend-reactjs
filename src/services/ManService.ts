@@ -5,7 +5,7 @@ const qs = require('qs');
 class ManService {
 
   public async search(args:any): Promise<any> {
-    let result = await http.post('/man-search',qs.stringify(args));
+    let result = await http.post('/man-search?pageIndex=1',args);
     return result;
   }
 
@@ -46,6 +46,19 @@ class ManService {
     return result;
 
   }
+  
+  //位置人员
+  public async searchLocationMan(args:any): Promise<any> {
+    let result = await http.post('/location-man-search',qs.stringify(args));
+    return result;
+  }
+  //位置
+  public async searchLocation(args:any): Promise<any> {
+    let result = await http.post('/location-search',qs.stringify(args));
+    return result;
+  }
+
+
 }
 
 export default new ManService();
