@@ -17,5 +17,5 @@ export  class PageModel<T>{
 
 	dataCount:number=0;// 总记录数
 	
-	data:T;
+	public data:T[]=[];
 }  

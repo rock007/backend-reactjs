@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Loading,Radio,Select, FormControl,Form,Tag, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -8,121 +8,196 @@ import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
-import InputNumber from 'bee-input-number';
+import SysService from '../../../services/SysService';
+import {PageModel} from '../../../services/Model/Models';
+import { getValidateFieldsTrim } from '../../../utils/tools';
+import UserEditPop from './Edit';
 
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
 
-
 interface IPageProps {
     form:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    page:PageModel<any>,
+    currentIndex?:number,
+    currentRecord?:any,
+    isLoading:boolean,
+    dataNumIndex:number,
+    isEditPop:boolean
 }
 
  class UserPage extends React.Component<IPageProps,IPageState> {
-    componentDidMount() {
+    
+    pageIndex:number=1
+    pageSize:number=10
 
+    refs:{
+        [string: string]: any;
+        grid:any;
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
+    state:IPageState={
+        page:new PageModel<any>(),
+        isLoading:false,
+        dataNumIndex:0,
+        isEditPop:false
+    }
+    componentDidMount() {
+        this.validFormSubmit();
+    }
+
+    validFormSubmit=()=>{
+
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+            // 年份特殊处理
+            if (values.year) {
+                values.year = values.year.format('YYYY');
+            }
+            // 参照特殊处理
+            let {dept} = values;
+            if (dept) {
+                let {refpk} = JSON.parse(dept);
+                values.dept = refpk;
+            }
+
+            console.log('Search:'+JSON.stringify(values));
+
+            //let queryParam = deepClone(this.props.queryParam);
+           // let {pageParams} = queryParam;
+           // pageParams.pageIndex = 0;
+           
+           this.freshata(1);
+        });
+      }
+      /**
+       * 请求页面数据
+       */
+       freshata= async (index)=>{
+      
+        this.pageIndex=index;
+
+        this.setState({isLoading:true});
+        let page = await SysService.searchAccount({uid:'001'},this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({page:page,isLoading:false});
+      }
+
+      resetSearch=()=>{
+        this.props.form.resetFields();
+
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+
+            //!!let queryParam = deepClone(this.props.queryParam);
+            //!!let {whereParams} = queryParam;
+
+            let arrayNew = [];
+            for (let field in values) {
+                arrayNew.push({key: field});
+            }
+
+            console.log('resetSearch:'+JSON.stringify(arrayNew));
+
+        });
+      }
+
+    export = ()=>{
+        console.log('export=======');
+        this.refs.grid.exportExcel();
     }
 
     getSelectedDataFunc = data => {
         console.log("data", data);
       };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
      
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
-    export = ()=>{
-        console.log('export=======');
+    onDataNumSelect=(index)=>{
+        
+        this.setState({dataNumIndex:index});
+        this.pageSize=[10,20,50,100][index];
+        this.validFormSubmit();
     }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
+   
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
-          ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
+            { title: '帐号', dataIndex: 'userName', key: 'userName',textAlign:'center', width: 100 },
+            { title: '姓名', dataIndex: 'trueName', key: 'trueName',textAlign:'center', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 ,render(m){
 
+                return m==null?'':m==1?'男':'女';
+            }},
+            { title: '手机', dataIndex: 'mobile', key: 'mobile',textAlign:'center', width: 120 },
+            { title: '角色', dataIndex: 'roles', key: 'roles', width: 100,textAlign:'center' ,render(m){
+
+                if(m!=null&&m.length>0){
+
+                   var html=  m.map(element => {
+                        
+                        return (
+                            <Tag colors={"success"}>{element.roleName}</Tag>
+                            )
+                    });
+
+                    return (<div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}}>{html}</div>)
+                }
+                return '';
+            }},
+            { title: '是否戒毒人员', dataIndex: 'manId', key: 'manId', width: 120,textAlign:'center',render(m){
+
+                return m!=null?(<Tag colors={"success"}>否</Tag>):(<Tag colors={"danger"}>是</Tag>)
+
+            } },
+            { title: '组织部门', dataIndex: 'dept', key: 'dept', width: 200,textAlign:'center',render(m){
+
+                return m!=null?(m.deptName!=null?m.deptName:''):'';
+            } },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            
+          ];
+      
           const toolBtns = [{
             value:'新增',
-            
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            onClick:()=>{this.setState({isEditPop:true})}
+        },{
+            value:'修改',
+            iconType:'uf-edit',
+            onClick:()=>{}
+        },{
+            value:'详细',
+            onClick:()=>{}
+        },{
+            value:'删除',
+            iconType:'uf-delete',
+            
         },{
             value:'导出',
-            iconType:'uf-search',
+            iconType:'uf-export',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
+            activePage:this.pageIndex,
+            items:5,
+            dataNumSelect:[10,20,50,100],
+            dataNum:this.state.dataNumIndex,
+            total:this.state.page.dataCount,
             freshData:this.freshata,//点击下一页刷新的数据
             onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
+            showJump:true,
             noBorder:true
           }
         return ( <Panel>
-
+            <Loading container={this} show={this.state.isLoading}/>
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
@@ -134,7 +209,7 @@ interface IPageState {
 			      用户管理
 			    </Breadcrumb.Item>
 			</Breadcrumb>
-
+            
             <SearchPanel
                 reset={()=>{}}
                 onCallback={()=>{}}
@@ -144,31 +219,53 @@ interface IPageState {
 
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="帐号"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="姓名"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
-
                     <FormItem
-                        label="司龄"
+                        label="性别"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
+                        <Select {...getFieldProps('exdeeds2', {initialValue: ''})}>
+                            <Option value="">请选择</Option>
+                            <Option value="0">男</Option>
+                            <Option value="1">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={()=>{}}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
                         />
                     </FormItem>
 
                     <FormItem
-                        label="年份"
+                        label="戒毒人员"
+                    >
+                        <Radio.RadioGroup
+                            name="isMan"
+                            defaultValue="2"
+                            onChange={(v)=>{}}
+                        >
+                            <Radio value="1" >是</Radio>
+                            <Radio value="2" >否</Radio>
+                        </Radio.RadioGroup>
+                    </FormItem>
+
+                    <FormItem
+                        label="组织部门"
                     >
                         <DatePicker.YearPicker
                             {...getFieldProps('year', {initialValue: null})}
@@ -179,13 +276,7 @@ interface IPageState {
                     </FormItem>
 
                     <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
+                        label="角色"
                     >
                         <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
                             <Option value="">请选择</Option>
@@ -199,13 +290,13 @@ interface IPageState {
 
         <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
+          ref="grid"
           columns={columns}
-          data={data}
+          data={this.state.page.data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
         />
-
-
+        <UserEditPop isShow={this.state.isEditPop} onCloseEdit={()=>{this.setState({isEditPop:false})}}/>
         </Panel >)
     }
 }

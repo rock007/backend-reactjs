@@ -2,7 +2,7 @@ import './AppLayout.scss';
 
 import * as React from 'react';
 
-import { Redirect, Switch } from 'react-router-dom';
+import { Redirect, Switch,HashRouter } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 
@@ -102,7 +102,7 @@ fCloseDrawer=()=>{
               title={<span> <Icon type={route.icon} /> <span>{route.title}</span> </span>}  >
          
               {route.childs
-                .filter((item: any) => !item.isLayout && item.showInMenu)
+                .filter((item: any) => !item.isLayout /**&& item.showInMenu**/)
                 .map((route: any, index: number) => {
                     return initMenuItem(route);
                 })}
@@ -120,6 +120,8 @@ fCloseDrawer=()=>{
       }
     
       routeList.push(route);
+
+      if(!route.showInMenu) return null;
       return (
         <Menu.Item key={route.name} onClick={() => history.push(route.path)}>
           <Icon type={'uf-'+route.icon} />
@@ -140,7 +142,7 @@ fCloseDrawer=()=>{
 
               <Menu  mode="inline" defaultOpenKeys={['process_mg']} >
         {appRouters
-          .filter((item: any) => !item.isLayout && item.showInMenu)
+          .filter((item: any) => !item.isLayout /***&& item.showInMenu**/)
           .map((route: any, index: number) => {
 
             if(route.childs!=null&&route.childs.length>0){
@@ -156,6 +158,7 @@ fCloseDrawer=()=>{
              
               </PageLayout.LeftContent>
               <PageLayout.RightContent md="10">
+              
               <Switch>
               {routeList
                 .filter((item: any) => !item.isLayout)
@@ -167,6 +170,7 @@ fCloseDrawer=()=>{
 
               <Redirect from="/" to="/dashboard" />
               </Switch>
+            
               </PageLayout.RightContent>
           </PageLayout.Content>
       </PageLayout>

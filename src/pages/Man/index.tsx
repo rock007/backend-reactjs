@@ -16,6 +16,9 @@ import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
 import {PageModel} from '../../services/Model/Models';
 
+import SelectDict from '../../components/SelectDict';
+import {RefWalsinLevel, RefIuapDept} from '../../components/RefViews'
+
 import './index.scss';
 
 const FormItem = FormListItem;
@@ -224,6 +227,20 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
             }
         },{
+            value:'详细',
+            bordered:false,
+            colors:'default',
+            onClick:() => {
+
+            }
+        },{
+            value:'删除',
+            bordered:false,
+            colors:'default',
+            onClick:() => {
+
+            }
+        },{
             value:'执行社戒',
             iconType:'uf-personin-o',
             onClick:()=>{}
@@ -232,14 +249,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             iconType:'uf-export',
             onClick:this.export
         },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
+            value:'打印',
+            iconType:'uf-print',
+            onClick:this.export
         }];
 
         let paginationObj = {
@@ -291,13 +303,13 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="姓名"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="电话号码"
+                        label="联系方式"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
@@ -307,7 +319,34 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
+                    </FormItem>
 
+                    <FormItem
+                        label="网格"
+                    >
+                        <RefWalsinLevel
+                            disabled={false}
+                            placeholder="请选择网格"
+                            {...getFieldProps('dept', {
+                                initialValue: JSON.stringify({
+                                    refname:   '',
+                                    refpk:  ''
+                                }),
+                                rules: [{
+                                    message: '请选择网格',
+                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
+                                }],
+                            })}
+                            backdrop={false}
+                        />
+                    </FormItem>
                     <FormItem
                         label="创建时间"
                     >
@@ -323,28 +362,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                         />
                     </FormItem>
 
-                    <FormItem
-                        label="人员分类">
-                            <ManCateSelect/>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级">
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-
-                    <FormItem
-                        label="执行状态"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
+                    
                 </FormList>
                 </SearchPanel>
                 <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />

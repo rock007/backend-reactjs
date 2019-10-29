@@ -44,6 +44,8 @@ http.interceptors.response.use(
   },
   error => {
 
+    Message.destroy();
+    
     if(error.response!=null&&error.response.data!=null){
       console.log('error happen:'+JSON.stringify(error.response.data));
     }
@@ -59,10 +61,9 @@ http.interceptors.response.use(
         content: error.response.data.error.message,
       });
     } else if (!error.response) {
-      Modal.error({ content: 'UnknownError' });
+      //Modal.error({ content: 'UnknownError' });
+      Message.create({content: '请求失败', color: 'danger'});
     }
-
-    setTimeout(() => {}, 1000);
 
     return Promise.reject(error);
   }

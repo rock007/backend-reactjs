@@ -59,6 +59,14 @@ export const appRouters: any = [
   },
   {
     permission: '',
+    title: '社戒详细',
+    path: '/process-view/:id',
+    name: 'man_process_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/View/ViewPage'))
+  },
+  {
+    permission: '',
     title: '社戒管控',
     name: 'process_mg',
     showInMenu: true,

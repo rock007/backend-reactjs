@@ -93,7 +93,7 @@ handleSelect = (index) => {
               onSelect={this.handleSelect}>
               <Navbar.NavItem eventKey={1}>全屏</Navbar.NavItem>
               <Navbar.NavItem href="#" eventKey={2}>
-                  代办
+                  待办
               </Navbar.NavItem>
               <Navbar.NavItem href="#" eventKey={3}>
                   消息(3)

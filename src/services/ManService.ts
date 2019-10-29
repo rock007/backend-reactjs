@@ -4,13 +4,13 @@ const qs = require('qs');
 
 class ManService {
 
-  public async search(args:any): Promise<any> {
-    let result = await http.post('/man-search?pageIndex=1',args);
+  public async search(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/man-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
 
-  public async searchProces(args:any): Promise<any> {
-    let result = await http.post('/process-search',qs.stringify(args));
+  public async searchProces(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/process-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
 

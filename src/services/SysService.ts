@@ -11,10 +11,30 @@ class SysService {
     return result;
   }
 
+  public async getManCateTree(): Promise<any> {
+   
+    let result = await http.get('/getCategroryTree');
+    return result;
+  }
+  public async getDict(type:number): Promise<any> {
+   
+    let result = await http.get('/getDict',{params:{type:type}});
+   
+    return result;
+  }
+
   public async searchOrg(name:string,parentId:string,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
     let result = await http.post('/org-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
                                 {"uid":"22222","deptName":name,"superId":parentId}
+                        );
+    return result;
+  }
+
+  public async searchAccount(arg:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+   
+    let result = await http.post('/account-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
+                                arg
                         );
     return result;
   }

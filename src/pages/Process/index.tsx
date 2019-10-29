@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Tree ,Tabs ,Panel,Breadcrumb, PageLayout,Navbar,Icon,Select,Option, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
+import {Loading ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
@@ -14,99 +14,157 @@ import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
 import {PageModel} from '../../services/Model/Models';
+import {RefWalsinLevel, RefIuapDept} from '../../components/RefViews'
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+
+import { getValidateFieldsTrim ,deepClone} from '../../utils/tools';
 
 import './index.scss';
+import { async } from 'q';
+import { Link } from 'react-router-dom';
 
 const FormItem = FormListItem;
 
 interface IPageProps {
-    form:any
+    form:any,
+    params:any;
+    history: any,
+    location:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any,
     isViewerShow:boolean,
-    data:any[]
+    page:PageModel<any>
+    isLoading:boolean,
+    dataNumIndex:number,
+    rowSelect:any[]
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
+    pageIndex:number=1
+    pageSize:number=10
+    rowSelect=[]
+
     state:IPageState={
-        expanded:false,
-        current:null,
-        selectedkey:null,
         isViewerShow:false,
-        data:[]
+        page:new PageModel<any>(),
+        isLoading:false,
+        dataNumIndex:0,
+        rowSelect:[]
     }
     async componentDidMount() {
-        let page = await ManService.search({pageIndex:1,pageSize:20}) as PageModel<any>;
-
-        this.setState({data:page.data});
+        
+        this.validFormSubmit();
     }
 
-    search=()=>{
-        this.props.form.validateFields((err, values) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('提交成功', values)
+    validFormSubmit=()=>{
+
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+            // 年份特殊处理
+            if (values.year) {
+                values.year = values.year.format('YYYY');
             }
+            // 参照特殊处理
+            let {dept} = values;
+            if (dept) {
+                let {refpk} = JSON.parse(dept);
+                values.dept = refpk;
+            }
+
+            console.log('Search:'+JSON.stringify(values));
+
+            //let queryParam = deepClone(this.props.queryParam);
+           // let {pageParams} = queryParam;
+           // pageParams.pageIndex = 0;
+           
+           this.freshata(1);
         });
-    }
-    clear=()=>{
-        this.props.form.resetFields()
-    }
-    onChange = () => {
-        this.setState({expanded: !this.state.expanded})
-    }
+      }
+      freshata= async (index)=>{
+      
+        this.pageIndex=index;
+
+        this.setState({isLoading:true});
+        let page = await ManService.searchProces({'uid':''},this.pageIndex,this.pageSize) as PageModel<any>;
+        
+        this.setState({page:page,isLoading:false});
+      }
+
+      resetSearch=()=>{
+        this.props.form.resetFields();
+
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+
+            //!!let queryParam = deepClone(this.props.queryParam);
+            //!!let {whereParams} = queryParam;
+
+            let arrayNew = [];
+            for (let field in values) {
+                arrayNew.push({key: field});
+            }
+
+            console.log('resetSearch:'+JSON.stringify(arrayNew));
+
+        });
+      }
 
     handleClick = (e) => {
         console.log(e);
 
         this.setState({
-            current: e.key,
+          //  current: e.key,
         });
     }
 
-    onToggle = (value) => {
-        this.setState({expanded: value});
-    }
+    getSelectedDataFunc = (selectData, record, index) => {
+        
+        this.rowSelect=selectData;
 
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
-    }
-
-    getSelectedDataFunc = data => {
-        console.log("data", data);
+        let  tableData  = this.state.page.data;
+		let _tableData = deepClone(tableData);
+		if (index != undefined) {
+			_tableData[index]['_checked'] = !_tableData[index]['_checked'];
+		} else {//点击了全选
+			if (selectData.length > 0) {//全选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = true
+					}
+				});
+			} else {//反选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = false
+					}
+				});
+			}
+        }
+        //this.handler(selectData);
       };
     
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
+      handler=async (data)=>{
+        this.setState({rowSelect:data});
       }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
+
+    onDataNumSelect=(index)=>{
+        
+        this.setState({dataNumIndex:index});
+        this.pageSize=[10,20,50,100][index];
+        this.validFormSubmit();
+    }
+
     export = ()=>{
         console.log('export=======');
     }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
+    
 
+    onDatePickChange=()=>{
+
+    }
     onStartInputBlur = (e,startValue,array) => {
         console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
     }
@@ -124,16 +182,26 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         //将参数传递给后端排序
     }
 
+    gotoDetail=(id)=>{
+        this.props.history.push('/process-view/'+id);
+    }
+
     render() {
+
+        let me=this;
         const { getFieldProps, getFieldError } = this.props.form;
 
         const {Option} = Select;
         const format = "YYYY";
 
+        let isMultSelect=this.rowSelect.length>1?true:false;
+
+        console.log(' isMultSelect:'+isMultSelect);
+
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <a href="#">{text}</a>;
+                return <Link to={'/process-view/'+record.manId}>{text}</Link>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
@@ -168,41 +236,70 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }}
           ];
         
-          const toolBtns = [{
+          const toolBtns = [/**{
             value:'新增',
-            
             bordered:false,
             colors:'primary',
             onClick:()=>{this.setState({isViewerShow:true})}
         },{
+            value:'修改',
+            colors:'default',
+            onClick:() => {
+                this.props.history.push('/process-view/'+'220');
+            }
+        },***/{
+            value:'社区报到',
+            onClick:() => {
+
+            }
+        },{
+            value:'发告诫书',
+            colors:'default',
+            onClick:() => {
+
+            }
+        },{
+            value:'发通知函',
+            colors:'default',
+            onClick:() => {
+
+            }
+        },{
+            value:'变更社区',
+            colors:'default',
+            disabled:isMultSelect,
+            onClick:() => {
+
+            }
+        },{
+            value:'解除戒毒',
+            colors:'default',
+            disabled:isMultSelect,
+            onClick:() => {
+
+            }
+        },{
+            value:'执行强戒',
+            colors:'default',
+            disabled:isMultSelect,
+            onClick:() => {
+
+            }
+        },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
+            activePage:this.pageIndex,
+            items:5,
+            dataNumSelect:[10,20,50,100],
+            dataNum:this.state.dataNumIndex,
+            total:this.state.page.dataCount,
+            freshData:this.freshata,
+            onDataNumSelect:this.onDataNumSelect, 
+            showJump:true,
             noBorder:true
           }
 
@@ -214,6 +311,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         return (
 
             <Panel>
+                <Loading container={this} show={this.state.isLoading}/>
                  <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
@@ -229,9 +327,9 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 </Col>
                 <Col md="10">
                 <SearchPanel
-                reset={()=>{}}
+                reset={this.resetSearch}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.validFormSubmit}
                 searchOpen={true}
             >
 
@@ -245,14 +343,50 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="身份证号"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="性别"
+                    >
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
                     </FormItem>
 
+                    <FormItem
+                        label="网格"
+                    >
+                        <RefWalsinLevel
+                            disabled={false}
+                            placeholder="请选择网格"
+                            {...getFieldProps('dept', {
+                                initialValue: JSON.stringify({
+                                    refname:   '',
+                                    refpk:  ''
+                                }),
+                                rules: [{
+                                    message: '请选择网格',
+                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
+                                }],
+                            })}
+                            backdrop={false}
+                        />
+                    </FormItem>
                     <FormItem
                         label="创建时间"
                     >
@@ -260,7 +394,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={this.onChange}
+                            onChange={this.onDatePickChange}
                             onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                             onStartInputBlur={this.onStartInputBlur}
@@ -275,7 +409,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={this.onChange}
+                            onChange={this.onDatePickChange}
                             onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                             onStartInputBlur={this.onStartInputBlur}
@@ -283,63 +417,21 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                         />
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
-                        <DatePicker.RangePicker
-                            placeholder={'开始 ~ 结束'}
-                            dateInputPlaceholder={['开始', '结束']}
-                            showClear={true}
-                            onChange={this.onChange}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
-                            showClose={true}
-                            onStartInputBlur={this.onStartInputBlur}
-                            onEndInputBlur={this.onEndInputBlur}
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="地区"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
+                        label="状态">
+                        <Radio.RadioGroup>
+                            <Radio value="1">执行中</Radio>
+                            <Radio value="100">已完成</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
                 <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-                
-                <Tabs.SearchTabs value="1" onChange={(v)=>{console.log('onchange',v)}}>
-                    
-                    <Tabs.SearchTabs.Item value="1">执行中(0)</Tabs.SearchTabs.Item >
-                    <Tabs.SearchTabs.Item value="2">已完成(10)</Tabs.SearchTabs.Item >
-                </Tabs.SearchTabs>
-
                 <Grid
                     ref="grid"
                     className="table-color"
                     columns={columns}
-                    data={this.state.data}
-                    exportData={this.state.data}
+                    data={this.state.page.data}
+                    exportData={this.state.page.data}
                     sheetName="档案库"
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     paginationObj={paginationObj}

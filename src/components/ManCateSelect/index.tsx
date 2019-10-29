@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {TreeSelect} from 'tinper-bee';
+import SysService from '../../services/SysService';
 
 import './index.scss';
 
@@ -7,39 +8,73 @@ interface IPanelProps {
   
 }
 interface IPanelState {
-
+  data:any[],
+  value?:any
 }
 export default class ManCateSelect extends React.Component<IPanelProps,IPanelState> {
 
   state:IPanelState={
-     
+    data:[]
   }
-  componentDidMount() {
+  async componentDidMount() {
 
+    let data = await SysService.getManCateTree();
+    this.setState({data:data.childs});
   }
-  onChange = () => {
-    //this.setState({expanded: !this.state.expanded})
+  onChange = (m, label, extra) => {
+    
+    this.setState({value: m})
+  }
+
+  renderTreeNodes = (data) => {
+    
+    if(data==null||data.length==0) return;
+
+    //let search=this.state.value||"";
+
+    const loop = data => data.map((item) => {
+
+      if (item.childs!=null&&item.childs.length>0) {
+        return (
+          <TreeSelect.TreeNode key={item.cateId} value={item.cateId} title={item.cateName} isLeaf={item.isLeaf} ext={item}>
+            {loop(item.childs)}
+          </TreeSelect.TreeNode>
+        );
+      }
+      return <TreeSelect.TreeNode key={item.cateId} value={item.cateId}  title={item.cateName} isLeaf={true} ext={item}/>;
+    });
+    return loop(data);
+  }
+  generateTreeData = (data) => {
+    
+    if(data==null||data.length==0) return;
+
+    const loop = data => data.map((item) => {
+
+      if (item.childs!=null&&item.childs.length>0) {
+        return (
+          <TreeSelect.TreeNode key={item.cateId} title={item.cateName} isLeaf={item.isLeaf} ext={item}>
+            {loop(item.childs)}
+          </TreeSelect.TreeNode>
+        );
+      }
+      return <TreeSelect.TreeNode key={item.cateId} title={item.cateName} isLeaf={true} ext={item}/>;
+    });
+    return loop(data);
   }
 
   render() {
 
       return (  <TreeSelect
-        showSearch
+        showSearch={false}
         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
         placeholder="请选择"
         allowClear
         treeDefaultExpandAll
+        value={this.state.value}
         onChange={this.onChange}
         >
-          <TreeSelect.TreeNode value="parent 1" title="parent 1" key="0-1">
-            <TreeSelect.TreeNode value="parent 1-0" title="parent 1-0" key="0-1-1">
-              <TreeSelect.TreeNode value="leaf1" title="my leaf" key="random" />
-              <TreeSelect.TreeNode value="leaf2" title="your leaf" key="random1" />
-            </TreeSelect.TreeNode>
-            <TreeSelect.TreeNode value="parent 1-1" title="parent 1-1" key="random2">
-              <TreeSelect.TreeNode value="sss" title="sss" key="random3" />
-            </TreeSelect.TreeNode>
-          </TreeSelect.TreeNode>
+          { this.renderTreeNodes(this.state.data)}
         </TreeSelect>)
   }
 }

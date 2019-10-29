@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import BeeGrid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import Icon from "bee-icon";
 import './index.scss'
 
 const defualtPaginationParam = {
@@ -51,6 +50,7 @@ class Grid extends Component<any> {
     };
 
     render() {
+
         const { paginationObj, data, exportData,  ...otherProps } = this.props;
         const _paginationObj = {...defualtPaginationParam, ...paginationObj};
         _paginationObj.disabled = paginationObj.disabled !== undefined

@@ -1,55 +1,135 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+import {Panel,Loading,ButtonGroup ,Button,Icon,Select, FormControl,Form, Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
+import Grid from '../../../components/Grid';
 
 import DatePicker from "bee-datepicker";
 import SelectMonth from '../../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
-import InputNumber from 'bee-input-number';
+import {deepClone,getValidateFieldsTrim} from '../../../utils/tools';
+import BussService from '../../../services/BussService';
+import {PageModel} from '../../../services/Model/Models';
 
 const FormItem = FormListItem;
 const {Option} = Select;
 const format = "YYYY";
 
-
 interface IPageProps {
     form:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    page:PageModel<any>,
+    isLoading:boolean,
+    dataNumIndex:number
 }
 
+/**
+ * 通知函审核
+ */
  class AuditNoticeWarnPage extends React.Component<IPageProps,IPageState> {
+
+    pageIndex:number=1
+    pageSize:number=10
+
+    state:IPageState={
+        page:new PageModel<any>(),
+        isLoading:false,
+        dataNumIndex:0,
+    }
     componentDidMount() {
 
+        this.validFormSubmit();
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
-    }
+    validFormSubmit=()=>{
 
-    getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+            // 年份特殊处理
+            if (values.year) {
+                values.year = values.year.format('YYYY');
+            }
+            // 参照特殊处理
+            let {dept} = values;
+            if (dept) {
+                let {refpk} = JSON.parse(dept);
+                values.dept = refpk;
+            }
+
+            console.log('Search:'+JSON.stringify(values));
+
+           this.freshata(1);
+        });
+      }
       /**
        * 请求页面数据
        */
-      freshata=()=>{
-    
+       freshata= async (index)=>{
+      
+        this.pageIndex=index;
+
+        this.setState({isLoading:true});
+        //let page = await BussService.searchWarn({orgId:'0001001',status:0},this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await BussService.searchWarn({status:0},this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({page:page,isLoading:false});
       }
+
+      resetSearch=()=>{
+        this.props.form.resetFields();
+
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+
+            //!!let queryParam = deepClone(this.props.queryParam);
+            //!!let {whereParams} = queryParam;
+
+            let arrayNew = [];
+            for (let field in values) {
+                arrayNew.push({key: field});
+            }
+
+            console.log('resetSearch:'+JSON.stringify(arrayNew));
+
+        });
+      }
+
+    getSelectedDataFunc = (selectData, record, index )=> {
+        console.log("data", selectData);
+        //this.setState({expanded:data});
+
+        let  tableData  = this.state.page.data;
+		let _tableData = deepClone(tableData);
+		if (index != undefined) {
+			_tableData[index]['_checked'] = !_tableData[index]['_checked'];
+		} else {//点击了全选
+			if (selectData.length > 0) {//全选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = true
+					}
+				});
+			} else {//反选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = false
+					}
+				});
+			}
+        }
+    }
      
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
+    onDataNumSelect=(index)=>{
+       
+        this.setState({dataNumIndex:index});
+        this.pageSize=[10,20,50,100][index];
+        this.validFormSubmit();
+    }
+
     export = ()=>{
         console.log('export=======');
     }
@@ -69,22 +149,17 @@ interface IPageState {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
+            { title: '姓名', dataIndex: 'manName', key: 'manName', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex', width: 100 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName', width: 200 },
+            { title: '类型', dataIndex: 'warnType', key: 'warnType', width: 100 },
+            { title: '内容', dataIndex: 'content', key: 'content', width: 200 },
+            { title: '社工', dataIndex: 'linkName', key: 'linkName', width: 150 },
+            { title: '民警', dataIndex: 'mjName', key: 'mjName', width: 150 },
+            { title: '处理结果', dataIndex: 'mjResp', key: 'mjResp', width: 200 }
+            
           ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
-
+        
           const toolBtns = [{
             value:'新增',
             
@@ -114,15 +189,15 @@ interface IPageState {
         }];
 
         let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
+            items:5,
+            total:this.state.page.dataCount,
+            freshData:this.freshata,
+            onDataNumSelect:this.onDataNumSelect, 
             showJump:false,
             noBorder:true
           }
         return ( <Panel>
-
+            <Loading container={this} show={this.state.isLoading}/>
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
@@ -155,18 +230,6 @@ interface IPageState {
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
 
-
-                    <FormItem
-                        label="司龄"
-                    >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
-                    </FormItem>
-
                     <FormItem
                         label="年份"
                     >
@@ -196,15 +259,19 @@ interface IPageState {
                 </FormList>
                 </SearchPanel>
 
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+        <ButtonGroup style={{ margin: 10 }}>
+                <Button shape='border'><Icon type='uf-navmenu' /></Button>
+                <Button shape='border'><Icon type='uf-file' /></Button>
+                <Button shape='border'><Icon type='uf-pencil' /></Button>
+                <Button shape='border'><Icon type='uf-del' /></Button>
+        </ButtonGroup>
         <Grid
           columns={columns}
-          data={data}
+          rowKey={(r, i) => r.c}
+          data={this.state.page.data}
           getSelectedDataFunc={this.getSelectedDataFunc}
           paginationObj={paginationObj}
         />
-
 
         </Panel >)
     }

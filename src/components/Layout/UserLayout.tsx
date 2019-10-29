@@ -2,9 +2,9 @@ import './UserLayout.scss';
 
 import * as React from 'react';
 
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch,HashRouter } from 'react-router-dom';
 
-import { Row,Col } from 'tinper-bee';
+import { Row } from 'tinper-bee';
 import DocumentTitle from 'react-document-title';
 import Footer from '../Footer';
 
@@ -21,7 +21,7 @@ class UserLayout extends React.Component<any> {
       <DocumentTitle title={utils.getPageTitle(pathname)}>
         
         <Row>
-          
+
           <Switch>
             {userRouter
               .filter((item: any) => !item.isLayout)
@@ -32,7 +32,7 @@ class UserLayout extends React.Component<any> {
 
             <Redirect from="/account" to="/account/login" />
           </Switch>
-          
+
         </Row>
 
       </DocumentTitle>

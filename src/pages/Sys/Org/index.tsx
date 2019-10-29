@@ -157,9 +157,12 @@ interface IPageState {
           
           const toolBtns = [{
             value:'新增',
-            
             bordered:false,
             colors:'primary'
+        },{
+            value:'修改'
+        },{
+            value:'删除'
         }];
 
         let paginationObj = {
@@ -208,7 +211,6 @@ interface IPageState {
 
         <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
-          multiSelect="no"
           columns={columns}
           data={this.state.page.data}
           paginationObj={paginationObj}
