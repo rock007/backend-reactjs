@@ -34,7 +34,7 @@ class SelectDict extends Component<IProps,IState> {
                     {
                         this.state.data.map((item: any, index: number) => (
                 
-                            <Select.Option value={item.key}>{item.text}</Select.Option>
+                            <Select.Option key={this.props.type+'_'+item.key} value={item.key}>{item.text}</Select.Option>
                            
                     ))
                     }

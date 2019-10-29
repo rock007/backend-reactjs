@@ -5,14 +5,16 @@ import 'bee-complex-grid/build/Grid.css';
 import './index.scss'
 
 const defualtPaginationParam = {
-    dataNumSelect: ["5", "10", "15", "20", "25", "50", "All"],
-    horizontalPosition: 'center',
+    dataNumSelect: [ "10", "20",  "50", "100"],
+    horizontalPosition: 'left',
     verticalPosition: "bottom",
-    dataNum: 4,
+    dataNum: 0,
+    items:5,
     btnType: {
         shape: 'border'
     },
     noBorder: true,
+    showJump:true,
     confirmBtn: () => null
 };
 const defaultProps = {
@@ -22,7 +24,19 @@ const defaultProps = {
     data: []
 };
 
-class Grid extends Component<any> {
+interface ICompentProps {
+    paginationObj :any,
+    columns:any[],
+    data:any[],
+    exportData?:any[],
+    toolBtns?:any[],
+    getSelectedDataFunc:(selectData, record, index )=>void
+}
+interface IComentState {
+    
+}
+
+class Grid extends Component<ICompentProps,IComentState> {
    
     grid:any
     
@@ -51,6 +65,15 @@ class Grid extends Component<any> {
 
     render() {
 
+        const toolBtns = [{
+            value:'生成计划',
+            bordered:false,
+            colors:'primary'
+        },{
+            value:'导出',
+            iconType:'uf-search',
+        }];
+
         const { paginationObj, data, exportData,  ...otherProps } = this.props;
         const _paginationObj = {...defualtPaginationParam, ...paginationObj};
         _paginationObj.disabled = paginationObj.disabled !== undefined
@@ -59,6 +82,9 @@ class Grid extends Component<any> {
         let _exportData = exportData || data;
         return (
             <div className='bs-grid-wrapper'>
+                
+                <BeeGrid.GridToolBar toolBtns={this.props.toolBtns} btnSize='sm' />
+
                 <BeeGrid
                     className="ucf-bs-grid"
                     data={data}

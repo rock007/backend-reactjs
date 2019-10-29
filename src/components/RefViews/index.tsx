@@ -4,9 +4,12 @@ import RefMultipleTableWithInput, { RefMultipleTable } from 'pap-refer/lib/pap-c
 
 import RefTreeWithInput, { RefTree } from 'pap-refer/lib/pap-common-tree/src/index';
 
+import 'ref-tree/lib/index.css';
+
 import AppConsts from '../../lib/appconst';
 
 import './index.less'
+
 
 export function RefIuapDept(props){
     return (
@@ -17,15 +20,15 @@ export function RefIuapDept(props){
             searchable= {true}
             strictMode={true}
             param= {
-                {"refCode":"newdept"}
+                {"uid":AppConsts.session.userId}
             }
             multiple={false}
             checkStrictly={true}
             disabled={false}
-            displayField='{refname}'
-            valueField='refpk'
+            displayField='{deptName}'
+            valueField='id'
             refModelUrl= {{
-                treeUrl: AppConsts.remoteServiceBaseUrl+'/newref/rest/iref_ctr/blobRefTree', //树请求
+                treeUrl: AppConsts.remoteServiceBaseUrl+'/getDeptTreeByUid', //树请求
             }}
             matchUrl= '/newref/rest/iref_ctr/matchPKRefJSON'
             filterUrl='/newref/rest/iref_ctr/filterRefJSON'

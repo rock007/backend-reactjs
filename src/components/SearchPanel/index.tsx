@@ -33,7 +33,7 @@ interface IdefaultProps  {
     resetName?: "清空",
     searchName?: "查询",
     bgColor?: "#F7F9FB",
-    onCallback:any//(act:string)=>void
+    onCallback:any,//(act:string)=>void
 };
 
 

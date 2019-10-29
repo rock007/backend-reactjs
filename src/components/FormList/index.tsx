@@ -84,6 +84,22 @@ export class FormList extends Component<any> {
         const { className, size, children = []} = this.props;
         const cls = `ucf-exam-form ${size} ${className || ""}`;
         const _childern = Array.isArray(children) ? children : [ children ];
+        
+        let _allChilds=[];
+
+        /** 
+        _childern.forEach(element => {
+            
+            if(typeof element ===  'object'){
+
+                _allChilds.concat(element.props.children);
+
+            }else{
+                _allChilds.push(element);
+            }
+
+        });  
+***/
         return (
             <Form
                 className={cls}

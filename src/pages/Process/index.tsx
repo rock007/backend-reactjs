@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { Link } from 'react-router-dom';
 import {Loading ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -14,15 +14,13 @@ import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
 import {PageModel} from '../../services/Model/Models';
-import {RefWalsinLevel, RefIuapDept} from '../../components/RefViews'
 import SelectDict from '../../components/SelectDict';
 import ManCateSelect from '../../components/ManCateSelect';
+import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
 
 import { getValidateFieldsTrim ,deepClone} from '../../utils/tools';
 
 import './index.scss';
-import { async } from 'q';
-import { Link } from 'react-router-dom';
 
 const FormItem = FormListItem;
 
@@ -371,21 +369,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="网格"
                     >
-                        <RefWalsinLevel
-                            disabled={false}
-                            placeholder="请选择网格"
-                            {...getFieldProps('dept', {
-                                initialValue: JSON.stringify({
-                                    refname:   '',
-                                    refpk:  ''
-                                }),
-                                rules: [{
-                                    message: '请选择网格',
-                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
-                                }],
-                            })}
-                            backdrop={false}
-                        />
+                        <RefGridTreeTableSelect/>
+                        
                     </FormItem>
                     <FormItem
                         label="创建时间"

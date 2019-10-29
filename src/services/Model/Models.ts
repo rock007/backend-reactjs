@@ -19,3 +19,11 @@ export  class PageModel<T>{
 	
 	public data:T[]=[];
 }  
+
+export interface ITreeNode{
+  key:string
+  title:string
+  disabled?:boolean
+  selectable?:boolean
+  children?:ITreeNode[]
+}

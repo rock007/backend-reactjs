@@ -1,4 +1,5 @@
 import cloneDeep from 'clone-deep';
+import {ITreeNode} from '../services/Model/Models';
 
 export function isMoment(obj){
     return typeof obj === 'object' && obj.date && obj.format;
@@ -79,4 +80,28 @@ export function getValidateFieldsTrim(values) {
 // 深度拷贝
 export function deepClone(data) {
     return cloneDeep(data);
+}
+
+export function convertOrgTreeNode(item:any):ITreeNode{
+
+    let obj={
+        key:item.id,
+        title:item.deptName,
+        disabled:false,
+        selectable:true
+    };
+    
+    if(item['childs']!=null&&item['childs'].length>0){
+
+        obj['children']=[];
+        for (const element of item['childs']) {
+            
+           let one=  convertOrgTreeNode(element);
+
+           obj['children'].push(one);
+        }
+    }
+
+    return obj;
+
 }

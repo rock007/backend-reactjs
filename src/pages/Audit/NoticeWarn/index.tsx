@@ -1,17 +1,18 @@
 import * as React from 'react';
-import {Panel,Loading,ButtonGroup ,Button,Icon,Select, FormControl,Form, Breadcrumb } from 'tinper-bee';
+import {Panel,Loading,Tabs ,Button,Icon,Select,Form,FormControl, Breadcrumb } from 'tinper-bee';
+import DatePicker from "bee-datepicker";
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 import Grid from '../../../components/Grid';
-
-import DatePicker from "bee-datepicker";
-import SelectMonth from '../../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
+import SelectDict from '../../../components/SelectDict';
+import ManCateSelect from '../../../components/ManCateSelect';
 
 import {deepClone,getValidateFieldsTrim} from '../../../utils/tools';
 import BussService from '../../../services/BussService';
 import {PageModel} from '../../../services/Model/Models';
+import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
+import {RefGridTreeTableSelect} from '../../../components/RefViews/RefGridTreeTableSelect';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -145,56 +146,38 @@ interface IPageState {
     dispatchDel = ()=>{
       console.log('--dispatch---del')
     }
+
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '姓名', dataIndex: 'manName', key: 'manName', width: 150 },
-            { title: '性别', dataIndex: 'sex', key: 'sex', width: 100 },
-            { title: '社区', dataIndex: 'orgName', key: 'orgName', width: 200 },
-            { title: '类型', dataIndex: 'warnType', key: 'warnType', width: 100 },
-            { title: '内容', dataIndex: 'content', key: 'content', width: 200 },
-            { title: '社工', dataIndex: 'linkName', key: 'linkName', width: 150 },
-            { title: '民警', dataIndex: 'mjName', key: 'mjName', width: 150 },
-            { title: '处理结果', dataIndex: 'mjResp', key: 'mjResp', width: 200 }
-            
+            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
+            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 },
+            { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
+            { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
+            { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
+            { title: '处理结果', dataIndex: 'mjResp', key: 'mjResp',textAlign:'center', width: 200 },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
           ];
         
           const toolBtns = [{
-            value:'新增',
-            
-            bordered:false,
-            colors:'primary'
-        },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
+                    value:'接收',
+                    bordered:false,
+                    colors:'primary'
                 },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
-        }];
+                    value:'回复',
+                    onClick:this.export
+            }];
 
         let paginationObj = {
-            items:5,
+            //items:5,
             total:this.state.page.dataCount,
             freshData:this.freshata,
             onDataNumSelect:this.onDataNumSelect, 
-            showJump:false,
-            noBorder:true
+            //showJump:false,
+            //noBorder:true
           }
         return ( <Panel>
             <Loading container={this} show={this.state.isLoading}/>
@@ -216,62 +199,107 @@ interface IPageState {
                 search={()=>{}}
                 searchOpen={true}
             >
-
                 <FormList size="sm">
-                    <FormItem
-                        label="员工编号"
+                <FormItem
+                        label="姓名"
                     >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入戒毒人员姓名' />
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' />
                     </FormItem>
-
                     <FormItem
-                        label="年份"
+                        label="身份证号"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
+                        <FormControl placeholder='请输入身份证号' />
                     </FormItem>
-
                     <FormItem
-                        label="月份"
+                        label="性别"
                     >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        <Select >
+                            <Select.Option value="">(请选择)</Select.Option>
+                            <Select.Option value="1">男</Select.Option>
+                            <Select.Option value="0">女</Select.Option>
                         </Select>
+                    </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
+                    </FormItem>
+                    <FormItem
+                        label="社区"
+                    >
+
+                        <RefOrgTreeSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="网格"
+                    >
+                        <RefGridTreeTableSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="类型"
+                    >
+                        <Select {...getFieldProps('warnType', {initialValue: ''})}>
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">未报到</Option>
+                            <Option value="2">尿检阳性</Option>
+                            <Option value="3">拒绝检查</Option>
+                            <Option value="4">失联</Option>
+                            <Option value="5">其它</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onChange={()=>{}}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                        />
                     </FormItem>
                 </FormList>
                 </SearchPanel>
 
-        <ButtonGroup style={{ margin: 10 }}>
-                <Button shape='border'><Icon type='uf-navmenu' /></Button>
-                <Button shape='border'><Icon type='uf-file' /></Button>
-                <Button shape='border'><Icon type='uf-pencil' /></Button>
-                <Button shape='border'><Icon type='uf-del' /></Button>
-        </ButtonGroup>
-        <Grid
-          columns={columns}
-          rowKey={(r, i) => r.c}
-          data={this.state.page.data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
+            <Tabs
+                defaultActiveKey="1"
+            >
+                <Tabs.TabPane tab='待接收' key="1">
+                    <Grid
+                        columns={columns}
+                        data={this.state.page.data}
+                        getSelectedDataFunc={this.getSelectedDataFunc}
+                        paginationObj={paginationObj}
+                    />
+                </Tabs.TabPane>
+                <Tabs.TabPane tab='处理中' key="2">
+                    <Grid
+                        columns={columns}
+                        data={this.state.page.data}
+                        getSelectedDataFunc={this.getSelectedDataFunc}
+                        paginationObj={paginationObj}
+                    />
+                </Tabs.TabPane>
+                <Tabs.TabPane tab='已完成' key="3">
+                    <Grid
+                        columns={columns}
+                        data={this.state.page.data}
+                        getSelectedDataFunc={this.getSelectedDataFunc}
+                        paginationObj={paginationObj}
+                    />
+
+                </Tabs.TabPane>
+            </Tabs>
 
         </Panel >)
     }

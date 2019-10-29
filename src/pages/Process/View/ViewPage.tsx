@@ -17,7 +17,7 @@ const FormItem = FormListItem;
 const {Option} = Select;
 
 interface IPageProps {
-	params:any;
+	match:any;
 	history: any,
 }
 interface IPageState {
@@ -64,8 +64,7 @@ class ViewPage extends React.Component<IPageProps,IPageState> {
 
     }
     componentDidMount() {
-
-		console.log('Process ViewPage params:'+JSON.stringify(this.props.params));
+		console.log('Process ViewPage params:'+JSON.stringify(this.props.match.params));
     }
 
     handleSelect(activeKey) {

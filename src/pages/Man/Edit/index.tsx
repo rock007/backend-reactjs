@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, PanelGroup, Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
@@ -31,6 +31,7 @@ interface IPageProps {
 interface IPageState {
     btnFlag:number,
     rowData:any,
+    activeKey:string
 }
 
 const {YearPicker} = DatePicker;
@@ -43,9 +44,15 @@ class ManEdit extends React.Component<any,IPageState> {
     
     state:IPageState={
         btnFlag:0,
-        rowData:{}
+        rowData:{},
+        activeKey:'1'
     }
     
+    constructor(args) {
+        super(args);
+        
+        this.handleSelect = this.handleSelect.bind(this);
+    }
     componentWillReceiveProps(nextProps) {
         let _this = this;
         let {btnFlag, currentIndex} = this.props;
@@ -149,6 +156,9 @@ class ManEdit extends React.Component<any,IPageState> {
         }
         return btns;
     }
+    handleSelect(activeKey) {
+        this.setState({activeKey:activeKey});
+    }
 
     render() {
         
@@ -178,7 +188,10 @@ class ManEdit extends React.Component<any,IPageState> {
             className="single-table-pop-model"
         >
 
-
+            <PanelGroup activeKey={this.state.activeKey}  onSelect={this.handleSelect}   accordion>
+                <Panel header="Panel 1" eventKey="1">Panel 1 content</Panel>
+                <Panel header="Panel 2" eventKey="2">Panel 2 content</Panel>
+            </PanelGroup>
             <FormList>
                 <FormItem
                     label="员工编号"
