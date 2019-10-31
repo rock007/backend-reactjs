@@ -1,20 +1,22 @@
 import axios from "axios";
+import AppConsts from "../lib/appconst";
 
 let x_xsrf_token = '',
     random_num = Math.random();
 
 export default (url, options) => {
-    let params = Object.assign({}, options.param, options.method.toLowerCase() == 'get' ? {
+    let params = Object.assign({}, options.param, options.method.toLowerCase() === 'get' ? {
         r: Math.random()
     } : {});
     return axios({
         method: options.method,
-        url: url,
+        url: AppConsts.remoteServiceBaseUrl+url,
         data: options.data,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'random-num' : random_num,
-            'x-xsrf-token' : x_xsrf_token
+            'x-xsrf-token' : x_xsrf_token,
+            'Authorization':'Bearer '+AppConsts.authorization.token
         },
         params,
 
@@ -28,6 +30,7 @@ export default (url, options) => {
         return Promise.resolve(res)
     }).catch(function (err) {
         console.log(err);
+      
         let res = err.response;
         if (res) {
             let { status, data: { msg } } = res;

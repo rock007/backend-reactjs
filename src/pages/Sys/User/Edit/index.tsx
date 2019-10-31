@@ -7,7 +7,8 @@ import { Checkbox,Select, FormControl,Label,Form,Button,Icon ,Radio } from 'tinp
 import PopDialog from '../../../../components/Pop';
 
 import FormError from '../../../../components/FormError';
-import {RefWalsinLevel, RefIuapDept} from '../../../../components/RefViews'
+import {RefOrgTreeSelect} from '../../../../components/RefViews/RefOrgTreeSelect';
+
 import './index.scss';
 
 const FormItem = Form.FormItem;
@@ -125,21 +126,8 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                     <FormItem>
                         <Label>组织部门</Label>
-                        <RefIuapDept
-                            disabled={false}
-                            placeholder="请选择部门"
-                            {...getFieldProps('dept', {
-                                initialValue: JSON.stringify({
-                                    refname:   '',
-                                    refpk:  ''
-                                }),
-                                rules: [{
-                                    message: '请选择部门',
-                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
-                                }],
-                            })}
-                            backdrop={false}
-                        />
+                        <RefOrgTreeSelect />
+                        
                         <FormError errorMsg={getFieldError('dept')}/>
                     </FormItem>
                     <FormItem>

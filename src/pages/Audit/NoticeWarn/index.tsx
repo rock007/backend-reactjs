@@ -24,7 +24,8 @@ interface IPageProps {
 interface IPageState {
     page:PageModel<any>,
     isLoading:boolean,
-    dataNumIndex:number
+    dataNumIndex:number,
+    checkedRows:any[]
 }
 
 /**
@@ -39,6 +40,7 @@ interface IPageState {
         page:new PageModel<any>(),
         isLoading:false,
         dataNumIndex:0,
+        checkedRows:[]
     }
     componentDidMount() {
 
@@ -101,7 +103,7 @@ interface IPageState {
 
     getSelectedDataFunc = (selectData, record, index )=> {
         console.log("data", selectData);
-        //this.setState({expanded:data});
+        
 
         let  tableData  = this.state.page.data;
 		let _tableData = deepClone(tableData);
@@ -122,6 +124,8 @@ interface IPageState {
 				});
 			}
         }
+
+       // this.setState({checkedRows:selectData});
     }
      
     onDataNumSelect=(index)=>{
@@ -277,25 +281,25 @@ interface IPageState {
                 <Tabs.TabPane tab='待接收' key="1">
                     <Grid
                         columns={columns}
-                        data={this.state.page.data}
+                        page={this.state.page}
                         getSelectedDataFunc={this.getSelectedDataFunc}
-                        paginationObj={paginationObj}
+                       // paginationObj={paginationObj}
                     />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab='处理中' key="2">
                     <Grid
                         columns={columns}
-                        data={this.state.page.data}
+                        page={this.state.page}
                         getSelectedDataFunc={this.getSelectedDataFunc}
-                        paginationObj={paginationObj}
+                      //  paginationObj={paginationObj}
                     />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab='已完成' key="3">
                     <Grid
                         columns={columns}
-                        data={this.state.page.data}
+                        page={this.state.page}
                         getSelectedDataFunc={this.getSelectedDataFunc}
-                        paginationObj={paginationObj}
+                        //paginationObj={paginationObj}
                     />
 
                 </Tabs.TabPane>

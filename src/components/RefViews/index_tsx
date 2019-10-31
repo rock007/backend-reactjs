@@ -7,9 +7,7 @@ import RefTreeWithInput, { RefTree } from 'pap-refer/lib/pap-common-tree/src/ind
 import 'ref-tree/lib/index.css';
 
 import AppConsts from '../../lib/appconst';
-
 import './index.less'
-
 
 export function RefIuapDept(props){
     return (

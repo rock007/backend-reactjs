@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Select, FormControl,Form,Radio } from 'tinper-bee';
 import {FormListItem}from '../../components/FormList';
-import {RefWalsinLevel, RefIuapDept} from '../../components/RefViews'
+import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
 import SelectDict from '../../components/SelectDict';
 import ManCateSelect from '../../components/ManCateSelect';
 
@@ -69,11 +69,7 @@ export  class SearchCondition extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="网格"
                     >
-                        <RefWalsinLevel
-                            disabled={false}
-                            placeholder="请选择网格"
-                            backdrop={false}
-                        />
+                        <RefGridTreeTableSelect />
                     </FormItem>
             </React.Fragment>)
     }

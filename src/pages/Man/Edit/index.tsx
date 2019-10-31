@@ -1,24 +1,20 @@
 import * as React from 'react';
-import {Panel, PanelGroup, Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+import {Panel, PanelGroup, Icon,Select, FormControl,Upload ,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
-import SearchPanel from '../../../components/SearchPanel';
 
 import {deepClone, mergeListObj, delListObj,getValidateFieldsTrim} from "../../../utils";
 
 import moment from "moment";
 import PopDialog from '../../../components/Pop';
 import FormError from '../../../components/FormError';
+import SelectDict from '../../../components/SelectDict';
+import {RefGridTreeTableSelect} from '../../../components/RefViews/RefGridTreeTableSelect';
+import ManCateSelect from '../../../components/ManCateSelect';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
 import InputNumber from 'bee-input-number';
-import {RefWalsinLevel, RefIuapDept} from '../../../components/RefViews'
+import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
 
 import './index.scss';
 
@@ -35,7 +31,7 @@ interface IPageState {
 }
 
 const {YearPicker} = DatePicker;
-const format = "YYYY-MM-DD HH:mm:ss";
+const format = "YYYY-MM-DD";
 const formatYYYY = "YYYY";
 let titleArr = ["新增", "修改", "详情"];
 
@@ -177,6 +173,18 @@ class ManEdit extends React.Component<any,IPageState> {
         // console.log('rowData', allowanceStandard);
         let btns = _this.onHandleBtns(btnFlag);
 
+        const demo4props = {
+            action: '/upload.do',
+            listType: 'picture-card',
+            defaultFileList: [ {
+              uid: -2,
+              name: 'zzz.png',
+              status: 'done',
+              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+            }],
+          };
+
         return (   <PopDialog
             show={editModelVisible}
             title={titleArr[btnFlag]}
@@ -187,14 +195,17 @@ class ManEdit extends React.Component<any,IPageState> {
             close={this.onCloseEdit}
             className="single-table-pop-model"
         >
-
             <PanelGroup activeKey={this.state.activeKey}  onSelect={this.handleSelect}   accordion>
-                <Panel header="Panel 1" eventKey="1">Panel 1 content</Panel>
-                <Panel header="Panel 2" eventKey="2">Panel 2 content</Panel>
-            </PanelGroup>
-            <FormList>
+                <Panel header="基本信息" eventKey="1">
+                <FormList>
+                <div style={{textAlign:'center'}}>
+                    <Upload {...demo4props}>
+                        <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
+                        <p>上传</p>
+                    </Upload>
+                </div>
                 <FormItem
-                    label="员工编号"
+                    label="编号"
                 >
                     <FormControl disabled={true}
                                  {...getFieldProps('code', {
@@ -204,10 +215,27 @@ class ManEdit extends React.Component<any,IPageState> {
                 </FormItem>
                 <FormItem
                     required
-                    label="员工姓名"
+                    label="姓名"
                 >
-                    <FormControl disabled={btnFlag === 2}
+                    <FormControl 
                                  {...getFieldProps('name', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="绰号/别名"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
                                      validateTrigger: 'onBlur',
                                      initialValue: name || '',
                                      rules: [{
@@ -223,10 +251,24 @@ class ManEdit extends React.Component<any,IPageState> {
 
                 <FormItem
                     required
-                    label="员工性别"
+                    label="性别"
                 >
-                    <Select disabled={btnFlag === 2}
-                            {...getFieldProps('sex', {
+                    <Radio.RadioGroup {...getFieldProps('sex', {
+                                initialValue: typeof sex !== 'undefined' ? sex : 0,
+                                rules: [{
+                                    required: true, message: '请选择员工性别',
+                                }],
+                            })}>
+                            <Radio value="男">男</Radio>
+                            <Radio value="女">女</Radio>
+                        </Radio.RadioGroup>
+                    <FormError errorMsg={getFieldError('sex')}/>
+                </FormItem>
+                <FormItem
+                    label="民族"
+                >
+                    <Select 
+                            {...getFieldProps('nation', {
                                 initialValue: typeof sex !== 'undefined' ? sex : 0,
                                 rules: [{
                                     required: true, message: '请选择员工性别',
@@ -239,203 +281,417 @@ class ManEdit extends React.Component<any,IPageState> {
                     <FormError errorMsg={getFieldError('sex')}/>
                 </FormItem>
                 <FormItem
-                        required
-                        label="部门"
-                    >
-                        <RefIuapDept
-                            disabled={btnFlag === 2}
-                            placeholder="请选择部门"
-                            {...getFieldProps('dept', {
-                                initialValue: JSON.stringify({
-                                    refname: deptName || '',
-                                    refpk: dept || ''
-                                }),
-                                rules: [{
-                                    message: '请选择部门',
-                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
-                                }],
-                            })}
-                            backdrop={false}
-                        />
-                        <FormError errorMsg={getFieldError('dept')}/>
-                </FormItem>
-                <FormItem
                     className="time"
                     required
-                    label="工龄"
+                    label="出生日期"
                 >
-                    <InputNumber iconStyle="one" min={0} step={1} disabled={btnFlag === 2} max={99}
-                                 {...getFieldProps('serviceYears', {
-                                     initialValue: (typeof serviceYears) === "number" ? serviceYears : 1,
-                                     rules: [{pattern: /^[0-9]+$/, required: true}],
-                                 })}
-                    />
-                </FormItem>
-
-                <FormItem
-                    className="time"
-                    required
-                    label="司龄"
-                >
-                    <InputNumber iconStyle="one" min={0} step={1} disabled={btnFlag === 2} max={99}
-                                 {...getFieldProps('serviceYearsCompany', {
-                                     initialValue: (typeof serviceYearsCompany) === "number" ? serviceYearsCompany : 1,
-                                     rules: [{pattern: /^[0-9]+$/, required: true}],
-                                 })}
-                    />
-                </FormItem>
-
-                <FormItem
-                    className="time"
-                    required
-                    label="年份"
-                >
-                    <YearPicker disabled={btnFlag == 2}
-                                {...getFieldProps('year', {
-                                    initialValue: year ? moment(year) : moment(),
-                                    validateTrigger: 'onBlur',
-                                    rules: [{required: true, message: '请选择申请时间'}],
-                                })}
-                                getCalendarContainer={() => {
-                                    return document.querySelector('.single-table-pop-model')
-                                }}
-                                format={formatYYYY}
-                                locale={zhCN}
-                                placeholder="选择年"
-                    />
-                </FormItem>
-
-                <FormItem
-                    required
-                    label="月份"
-                >
-                    <SelectMonth disabled={btnFlag === 2}
-                                 {...getFieldProps('month', {
-                                     initialValue: month ? month : 1,
-                                     rules: [{
-                                         required: true, message: '请选择月份',
-                                     }],
-                                 })} />
-                    <FormError errorMsg={getFieldError('month')}/>
-                </FormItem>
-
-                <FormItem
-                    required
-                    label="补贴类别"
-                >
-                    <Select disabled={btnFlag === 2}
-                            {...getFieldProps('allowanceType', {
-                                initialValue: allowanceType ? allowanceType.toString() : '1',
-                                rules: [{
-                                    required: true, message: '请选择补贴类别',
-                                }],
-                            })}
-                    >
-                        <Option value="1">电脑补助</Option>
-                        <Option value="2">住宿补助</Option>
-                        <Option value="3">交通补助</Option>
-                    </Select>
-                    <FormError errorMsg={getFieldError('allowanceType')}/>
-                </FormItem>
-
-                <FormItem
-                    className="time"
-                    required
-                    label="补贴标准"
-                >
-                    <InputNumber iconStyle="one" precision={2} min={0} max={999999} disabled={btnFlag === 2}
-                                 {...getFieldProps('allowanceStandard', {
-                                     initialValue: allowanceStandard ? Number(allowanceStandard) : 100,
-                                 })}
-                    />
-                </FormItem>
-
-                <FormItem
-                    className="time"
-                    required
-                    label="实际补贴"
-                >
-                    <InputNumber iconStyle="one" precision={2} min={0} max={999999} disabled={btnFlag === 2}
-                                 {...getFieldProps('allowanceActual', {
-                                     initialValue: allowanceActual ? Number(allowanceActual) : 100,
-                                 })}
-                    />
-                </FormItem>
-
-                <FormItem
-                    required
-                    label="是否超标"
-                >
-                    <Select disabled={btnFlag === 2}
-                            {...getFieldProps('exdeeds', {
-                                initialValue: exdeeds ? exdeeds.toString() : '0',
-                                rules: [{required: true, message: '请选择是否超标'}],
-                            })}
-                    >
-                        <Option value="0">未超标</Option>
-                        <Option value="1">超标</Option>
-                    </Select>
-                    <FormError errorMsg={getFieldError('exdeeds')}/>
-                </FormItem>
-
-                {btnFlag >= 2 ? (
-                    <FormItem
-                        className="time"
-                        required
-                        label="申请时间"
-                    >
-                        <DatePicker className='form-item' format={format} disabled={btnFlag === 2}
+                     <DatePicker className='form-item' format={format} 
                                     {...getFieldProps('applyTime', {
                                         initialValue: applyTime ? moment(applyTime) : moment(),
                                         validateTrigger: 'onBlur',
                                         rules: [{required: true, message: '请选择申请时间'}],
                                     })}
-                        />
-                    </FormItem>
-                ) : null}
-
-                <FormItem
-                    required
-                    label="领取方式"
-                >
-                    <Select disabled={btnFlag === 2}
-                            {...getFieldProps('pickType', {
-                                initialValue: pickType ? pickType.toString() : '1',
-                                rules: [{required: true, message: '请选择领取方式'}],
-                            })}
-                    >
-                        <Option value="1">转账</Option>
-                        <Option value="2">现金</Option>
-                    </Select>
-                    <FormError errorMsg={getFieldError('pickType')}/>
-                </FormItem>
-
-                {btnFlag >= 2 ? (
-                    <FormItem
-                        className="time"
-                        label="领取时间"
-                    >
-                        <DatePicker className='form-item' format={format} disabled={btnFlag === 2}
-                                    {...getFieldProps('pickTime', {
-                                        initialValue: pickTime && moment(pickTime) || '',
-                                        validateTrigger: 'onBlur',
-                                        rules: [{required: false, message: '请选择领取时间',}],
-                                    })}
-                        />
-                    </FormItem>
-                ) : null}
-
-                <FormItem
-                    label="备注"
-                >
-                    <FormControl disabled={btnFlag === 2}
-                                 {...getFieldProps('remark', {
-                                         initialValue: remark || ''
-                                     }
-                                 )}
                     />
                 </FormItem>
-            </FormList>
+                <FormItem
+                    required
+                    label="联系方式"
+                >
+                    <FormControl disabled={btnFlag === 2}
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="政治面貌"
+                >
+                    <Select 
+                            {...getFieldProps('politicalStatus', {
+                                initialValue:  0,
+                                rules: [{
+                                    required: true, message: '请选择政治面貌',
+                                }],
+                            })}
+                    >
+                        <Option value={0}>身份证</Option>
+                        <Option value={1}>护照</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('politicalStatus')}/>
+                </FormItem>
+                
+                <FormItem
+                    required
+                    label="证件类型"
+                >
+                    <Select 
+                            {...getFieldProps('idsType', {
+                                initialValue:  0,
+                                rules: [{
+                                    required: true, message: '请选择证件类型',
+                                }],
+                            })}
+                    >
+                        <Option value={0}>身份证</Option>
+                        <Option value={1}>护照</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('idsType')}/>
+                </FormItem>
+                <FormItem
+                    required
+                    label="证件号码"
+                >
+                    <FormControl disabled={btnFlag === 2}
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+             
+                <FormItem
+                    label="职业"
+                >
+                    <FormControl 
+                                 {...getFieldProps('job', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: false,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('job')}/>
+                </FormItem>
+                <FormItem
+                    label="婚姻状况"
+                >
+                    <Select 
+                            {...getFieldProps('marriageStatus', {
+                                initialValue:  '',
+                                rules: [{
+                                    required: true, message: '请选择政治面貌',
+                                }],
+                            })}
+                    >
+                        <Option value={"未婚"}>未婚</Option>
+                        <Option value={"已婚"}>已婚</Option>
+                        <Option value={"离婚"}>离婚</Option>
+                        <Option value={"再婚"}>再婚</Option>
+                        <Option value={"丧偶"}>丧偶</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('marriageStatus')}/>
+                </FormItem>
+                <FormItem
+                    label="文化程度"
+                >
+                     <Select 
+                            {...getFieldProps('educationLevel', {
+                                initialValue:  '',
+                                rules: [{
+                                    required: true, message: '请选择文化程度',
+                                }],
+                            })}
+                    >
+                        <Option value={"文盲"}>文盲</Option>
+                        <Option value={"小学"}>小学</Option>
+                        <Option value={"初中"}>初中</Option>
+                        <Option value={"高中"}>高中</Option>
+                        <Option value={"中专"}>中专</Option>
+                        <Option value={"大专"}>大专</Option>
+                        <Option value={"本科"}>本科</Option>
+                        <Option value={"硕士及以上"}>硕士及以上</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('educationLevel')}/>
+                </FormItem>
+                <FormItem
+                    label="身高"
+                >
+                    <InputNumber iconStyle="one" min={0} step={1} max={399}
+                                 {...getFieldProps('height', {
+                                     initialValue: '',
+                                     rules: [{pattern: /^[0-9]+$/, required: true}],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('height')}/>
+                </FormItem>
+                <FormItem
+                    label="体重"
+                >
+                    <InputNumber iconStyle="weight" min={0} step={1}  max={400}
+                                 {...getFieldProps('height', {
+                                     initialValue: '',
+                                     rules: [{pattern: /^[0-9]+$/, required: true}],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('weight')}/>
+                </FormItem>
+                <FormItem
+                    label="户籍地"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="户籍地派出所"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="户籍地详址"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    
+                    label="居住地"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    
+                    label="居住地派出所"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    
+                    label="居住地详址"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    
+                    label="籍贯"
+                >
+                    <FormControl 
+                                 {...getFieldProps('name2', {
+                                     validateTrigger: 'onBlur',
+                                     initialValue: name || '',
+                                     rules: [{
+                                         type: 'string',
+                                         required: true,
+                                         pattern: /\S+/ig,
+                                         message: '请输入员工姓名',
+                                     }],
+                                 })}
+                    />
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="宗教信仰"
+                >
+                    <Select multiple
+                            {...getFieldProps('beliefType', {
+                                initialValue:  0,
+                                rules: [{
+                                    required: true, message: '请选择宗教信仰',
+                                }],
+                            })}
+                    >
+                        <Option value={0}>身份证</Option>
+                        <Option value={1}>护照</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                    label="滥用毒品种类"
+                >
+                    <Select multiple
+                            {...getFieldProps('beliefType', {
+                                initialValue:  0,
+                                rules: [{
+                                    required: true, message: '请选择宗教信仰',
+                                }],
+                            })}
+                    >
+                        <Option value={0}>身份证</Option>
+                        <Option value={1}>护照</Option>
+                    </Select>
+                    <FormError errorMsg={getFieldError('name')}/>
+                </FormItem>
+                <FormItem
+                   label="查获日期"
+               >
+                    <DatePicker className='form-item' format={format} 
+                                   {...getFieldProps('applyTime', {
+                                       initialValue: applyTime ? moment(applyTime) : moment(),
+                                       validateTrigger: 'onBlur',
+                                       rules: [{required: true, message: '请选择申请时间'}],
+                                   })}
+                   />
+                   <FormError errorMsg={getFieldError('name')}/>
+               </FormItem>
+               <FormItem
+                   label="查获单位"
+               >
+                   <FormControl 
+                                {...getFieldProps('name2', {
+                                    validateTrigger: 'onBlur',
+                                    initialValue: name || '',
+                                    rules: [{
+                                        type: 'string',
+                                        required: true,
+                                        pattern: /\S+/ig,
+                                        message: '请输入员工姓名',
+                                    }],
+                                })}
+                   />
+                   <FormError errorMsg={getFieldError('name')}/>
+               </FormItem>
+
+                </FormList>
+
+                </Panel>
+                <Panel header="社戒情况" eventKey="2">
+                <FormList>
+               
+               <FormItem
+                       required
+                       label="组织社区"
+                   >
+                       <RefOrgTreeSelect />
+                       
+                       <FormError errorMsg={getFieldError('dept')}/>
+               </FormItem>
+               <FormItem
+                       required
+                       label="网格单元"
+                   >
+                       <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
+                       <FormError errorMsg={getFieldError('dept')}/>
+               </FormItem>
+               <FormItem
+                       required
+                       label="人员分类"
+                   >
+                       <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
+                       <FormError errorMsg={getFieldError('dept')}/>
+               </FormItem>
+               <FormItem
+                       required
+                       label="风险等级"
+                   >
+                       <SelectDict onChange={()=>{}} type={31} {...getFieldProps('level', {initialValue: ''})}/>
+                       <FormError errorMsg={getFieldError('dept')}/>
+               </FormItem>
+               <FormItem
+                    className="time"
+                    required
+                    label="社区报到时间"
+                >
+                     <DatePicker className='form-item' format={format} 
+                                    {...getFieldProps('registSetDate', {
+                                        initialValue: applyTime ? moment(applyTime) : moment(),
+                                        validateTrigger: 'onBlur',
+                                        rules: [{required: true, message: '请选择申请时间'}],
+                                    })}
+                    />
+                </FormItem>
+               <FormItem
+                   label="备注"
+               >
+                   <FormControl disabled={btnFlag === 2}
+                                {...getFieldProps('remark', {
+                                        initialValue: remark || ''
+                                    }
+                                )}
+                   />
+               </FormItem>
+           </FormList>
+                
+                </Panel>
+            </PanelGroup>
+           
 
         </PopDialog>)
     }

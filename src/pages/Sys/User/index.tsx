@@ -14,6 +14,7 @@ import SysService from '../../../services/SysService';
 import {PageModel} from '../../../services/Model/Models';
 import { getValidateFieldsTrim } from '../../../utils/tools';
 import UserEditPop from './Edit';
+import request from '../../../utils/request';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -48,6 +49,23 @@ interface IPageState {
     }
     componentDidMount() {
         this.validFormSubmit();
+        //this.loadData2();
+    }
+
+    loadData2 = async () => {
+       
+        let ajax={
+            // url: 'http://mock-platform-prod.online.app.yyuap.com/mock/1264/pap_basedoc/common-ref/blobRefTree',
+            url: '/account-search?pageIndex=1&pageSize=10',
+        };
+        let results = await request(ajax.url,{method:'Post',data:{uid:'001'}});
+        
+        debugger;
+        let treeData = [];
+        if (!results || !results.data.length){
+          
+          return false;
+        }
     }
 
     validFormSubmit=()=>{

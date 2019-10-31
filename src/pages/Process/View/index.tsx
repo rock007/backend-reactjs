@@ -12,7 +12,6 @@ import {deepClone, mergeListObj, delListObj,getValidateFieldsTrim} from "../../.
 import moment from "moment";
 import PopDialog from '../../../components/Pop';
 import FormError from '../../../components/FormError';
-import {RefWalsinLevel, RefIuapDept} from '../../../components/RefViews'
 
 import DatePicker from "bee-datepicker";
 import SelectMonth from '../../../components/SelectMonth';

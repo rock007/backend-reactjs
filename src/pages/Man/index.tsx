@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
 import {Panel,Breadcrumb,Select,FormControl,Row, Col,Form} from 'tinper-bee';
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+
+import Grid from '../../components/Grid';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -14,10 +14,10 @@ import PopupModal from './Edit';
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
+import {PageModel,SearchModel} from '../../services/Model/Models';
 
 import SelectDict from '../../components/SelectDict';
-import {RefWalsinLevel, RefIuapDept} from '../../components/RefViews'
+import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
 
 import './index.scss';
 
@@ -28,13 +28,17 @@ interface IPageProps {
 }
 interface IPageState {
     expanded:boolean,
-    current:any,
-    menus: any[],
-    selectedkey:any,
     editModelVisible:boolean,
-    data:any[]
+    page:PageModel<any>,
+    searchModel:SearchModel,
+    isLoading:boolean,
+    checkedRows:any[]
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
+
+    pageIndex=1
+    pageSize=10
+    orgId='';
 
     refs:{
         [string: string]: any;
@@ -42,114 +46,83 @@ export  class Man extends React.Component<IPageProps,IPageState> {
     }
 
     state:IPageState={
-        data:[],
+        page:new PageModel<any>(),
         expanded:false,
-        current:null,
-        menus:[{
-            id: 0,
-            router: 'visitor',
-            title: "visitor"
-        },{
-            id: 1,
-            router: 'niaojian',
-            title: "niaojian"
-        }],
-        selectedkey:null,
-        editModelVisible:false
+        editModelVisible:false,
+        searchModel:{orderBy:'manId'},
+        isLoading:false,
+        checkedRows:[]
     }
 
     async componentDidMount() {
 
-        let page = await ManService.search({pageIndex:1,pageSize:20}) as PageModel<any>;
-
-        this.setState({data:page.data});
+       this.search();
     }
 
-    search=()=>{
+    handler_org_selected=(rec)=>{
+
+        if(rec!=null&&rec.length>0){
+
+            this.orgId=rec[0];
+            //const search = loadsh.defaults(this.state.searchModel, {orgId:rec[0]});
+
+            //this.setState({searchModel:search});
+            this.search();
+        }
+    }
+
+    search= ()=>{
         this.props.form.validateFields((err, values) => {
+
+            /** 
             if (err) {
                 console.log(err);
+
             } else {
-                console.log('提交成功', values)
+                console.log('提交成功', values);
+
+                this.loadData();
             }
+            **/
+
+            values['orgId']=this.orgId;
+            //const search = loadsh.defaults(this.state.searchModel, values);
+
+            this.setState({isLoading:true});
+            this.loadData(values);
         });
     }
+
+    loadData=async (arg)=>{
+
+        let page = await ManService.search(arg,this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({page:page,isLoading:false});
+    }
+
     clear=()=>{
         this.props.form.resetFields()
     }
+    
     onChange = () => {
         this.setState({expanded: !this.state.expanded})
     }
 
-    handleClick = (e) => {
-        console.log(e);
+    getSelectedDataFunc = (data, record, index) => {
+        
+        //console.log("data", JSON.stringify(data));
+        //this.setState({checkedRows:data});
+    };
+  
+    onPageChange=(pageIndex:number,pageSize:number)=>{
 
-        this.setState({
-            current: e.key,
-        });
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+        this.search();
     }
-
-    handleChange = (v) => {
-        console.log(v)
-        this.setState({
-            menus : v
-        })
-    }
-
-    onToggle = (value) => {
-        this.setState({expanded: value});
-    }
-
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
-    }
-
-    getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
-    export = ()=>{
-        console.log('export=======');
-        this.refs.grid.exportExcel();
-    }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
-
+   
     onClickShowModel = (btnFlag) => {
         this.setState({editModelVisible: true});
-    }
-
-    onStartInputBlur = (e,startValue,array) => {
-        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
-    }
-    /**
-     *@param e 事件对象
-     *@param endValue 结束时间
-     *@param array 包含开始时间和结束时间的数组
-     */
-    onEndInputBlur = (e,endValue,array) => {
-        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
     }
 
     /**
@@ -158,14 +131,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
     onCloseEdit = () => {
         this.setState({editModelVisible: false});
     }
-    /**
-   * 后端获取数据
-   */
-    sortFun = (sortParam)=>{
-        console.info(sortParam);
-        //将参数传递给后端排序
-    }
-
+    
     render() {
 
         const { getFieldProps, getFieldError } = this.props.form;
@@ -207,7 +173,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             sorter: (pre, after) => {return pre.c - after.c},
             sorterClick:(data,type)=>{
               //type value is up or down
-              console.log("data",data);
+              console.log("data11111",data,type);
             }}
           ];
           
@@ -216,26 +182,19 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             
             bordered:false,
             colors:'primary',
+
             onClick:() => {
                 this.onClickShowModel(0);
             }
         },{
             value:'编辑',
-            bordered:false,
             colors:'default',
-            onClick:() => {
-
-            }
-        },{
-            value:'详细',
-            bordered:false,
-            colors:'default',
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
             }
         },{
             value:'删除',
-            bordered:false,
             colors:'default',
             onClick:() => {
 
@@ -243,31 +202,36 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'执行社戒',
             iconType:'uf-personin-o',
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{}
         },{
+            value:'六保一',
+            colors:'default',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:() => {
+
+            }
+        },{
+            value:'亲属关系',
+            colors:'default',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:() => {
+
+            }
+        },{
+            value:'工作经历',
+            colors:'default',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:() => {
+
+            }
+        },{
             value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
+            iconType:'uf-export'
         },{
             value:'打印',
-            iconType:'uf-print',
-            onClick:this.export
+            iconType:'uf-print'
         }];
-
-        let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
-            noBorder:true
-          }
-        
-        let sortObj = {
-            mode:'multiple',
-            // backSource:true,
-            sortFun:this.sortFun
-          }
 
         return (
 
@@ -284,14 +248,14 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             <Row>
                 <Col md="2">
 
-                <OrgPanel />
+                <OrgPanel onClick={this.handler_org_selected}/>
                
                 </Col>
                 <Col md="10">
                 <SearchPanel
-                reset={()=>{}}
+                reset={this.clear}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.search}
                 searchOpen={true}
             >
 
@@ -299,53 +263,44 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 <FormItem
                         label="身份证号"
                     >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
+                        <FormControl placeholder='精确查询' {...getFieldProps('idsNo', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="姓名"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='模糊查询' {...getFieldProps('manName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="性别"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
                     </FormItem>
                     <FormItem
                         label="人员分类">
-                            <ManCateSelect/>
+                            <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="风险等级">
-                        <SelectDict onChange={()=>{}} type={31}/>
+                        <SelectDict onChange={()=>{}} type={31} {...getFieldProps('level', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="网格"
                     >
-                        <RefWalsinLevel
-                            disabled={false}
-                            placeholder="请选择网格"
-                            {...getFieldProps('dept', {
-                                initialValue: JSON.stringify({
-                                    refname:   '',
-                                    refpk:  ''
-                                }),
-                                rules: [{
-                                    message: '请选择网格',
-                                    pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/
-                                }],
-                            })}
-                            backdrop={false}
-                        />
+                        <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
+                        
                     </FormItem>
                     <FormItem
                         label="创建时间"
@@ -357,27 +312,21 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                             onChange={this.onChange}
                             onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
-                            onStartInputBlur={this.onStartInputBlur}
-                            onEndInputBlur={this.onEndInputBlur}
+                            {...getFieldProps('createDate', {initialValue: ''})}
                         />
                     </FormItem>
 
                     
                 </FormList>
                 </SearchPanel>
-                <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
               
                 <Grid
-                    ref="grid"
-                    className="table-color"
+                    toolBtns={toolBtns}
                     columns={columns}
-                    data={this.state.data}
-                    exportData={this.state.data}
-                    sheetName="档案库"
+                    page={this.state.page}
+                    isLoading={this.state.isLoading}
                     getSelectedDataFunc={this.getSelectedDataFunc}
-                    paginationObj={paginationObj}
-                    sort={sortObj}
-                    sortFun={this.sortFun}
+                    pageChange={this.onPageChange}
                 />
                 </Col>
             </Row>

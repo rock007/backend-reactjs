@@ -2,7 +2,7 @@
 export  class JsonBody<T> {
 
     result: number = 0;
-    msg: number=0;
+    msg: string='网络错误';
   
     data:T;
   }
@@ -26,4 +26,32 @@ export interface ITreeNode{
   disabled?:boolean
   selectable?:boolean
   children?:ITreeNode[]
+}
+
+export interface SearchModel{
+
+  //社区部门
+  orgId?:string
+
+  orgIdSelected?:string
+  //身份证号
+  idsNo?:string
+  //姓名
+  manName?:string
+  //联系电话
+  linkPhone?:string
+  //性别
+  sex?:string
+  //人员类别
+  cateType?:string
+  //风险等级
+  level?:number
+  //网格
+  gridId?:string
+  //创建时间(区间)
+  beginDate?:string
+  endDate?:string
+
+  //排序
+  orderBy?:string
 }

@@ -22,9 +22,12 @@ http.interceptors.request.use(
       config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
     }
 
+    //config.headers.common['Content-Type'] ='application/x-www-form-urlencoded';
+    //config.headers.common['Accept']='application/json';
     return config;
   },
   function(error) {
+    
     return Promise.reject(error);
   }
 );
@@ -36,24 +39,42 @@ http.interceptors.response.use(
 
     if(resp.result < 0){
       Message.destroy();
-      Message.create({content: resp.msg, color: 'danger'});
+      Message.create({content: resp.msg, color: 'warn'});
 
+      if(resp.result==-401){
+        console.log('请重新登录')
+        
+      }
       return Promise.reject(resp);
     }
     return resp.data;
   },
   error => {
 
+    console.log('请求返回:'+JSON.stringify(error.response));
+
     Message.destroy();
     
     if(error.response!=null&&error.response.data!=null){
-      console.log('error happen:'+JSON.stringify(error.response.data));
+
+      let resp=error.response.data as JsonBody<any>;
+
+      Message.create({content: resp.msg, color: 'danger'});
+
+      if(resp.result==-401){
+        console.log('请重新登录')
+
+      }
+
+    }else{
+
+      Message.create({content: '请求失败', color: 'danger'});
     }
-    
-    if (!!error.response && !!error.response.data.error && !!error.response.data.error.message && error.response.data.error.details) {
+   /**  
+    if (!!error.response && !!error.response.data.msg && !!error.response.data.data ) {
       Modal.error({
-        title: error.response.data.error.message,
-        content: error.response.data.error.details,
+        title: '提示',
+        content: error.response.data.data,
       });
     } else if (!!error.response && !!error.response.data.error && !!error.response.data.error.message) {
       Modal.error({
@@ -64,7 +85,7 @@ http.interceptors.response.use(
       //Modal.error({ content: 'UnknownError' });
       Message.create({content: '请求失败', color: 'danger'});
     }
-
+**/
     return Promise.reject(error);
   }
 );

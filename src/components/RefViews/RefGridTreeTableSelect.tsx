@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {FormControl ,Radio} from 'tinper-bee';
+import { Radio} from 'tinper-bee';
 
 import { RefTreeTableWithInput } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
@@ -39,7 +39,7 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
 
         //let data = await SysService.getDetpTree();
         //this.setState({treeData:data.childs});
-        this.loadData()
+        //this.loadData()
     }
   
     canClickGoOn = async () =>{

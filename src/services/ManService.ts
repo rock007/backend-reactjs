@@ -4,7 +4,7 @@ const qs = require('qs');
 
 class ManService {
 
-  public async search(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+  public async search(args:any,pageIndex:number=1,pageSize:number=10): Promise<any> {
     let result = await http.post('/man-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
