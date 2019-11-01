@@ -1,20 +1,10 @@
 import * as React from 'react';
-import {Panel, Loading,Button,Icon,Select,Tile, PanelGroup,Tabs,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import {FormList ,FormListItem}from '../../../components/FormList';
-
-import {deepClone, mergeListObj, delListObj,getValidateFieldsTrim} from "../../../utils";
-
-import DatePicker from "bee-datepicker";
+import {Panel, Loading,Tabs,Row, Col,Form, Breadcrumb } from 'tinper-bee';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import Calendar from 'bee-calendar';
 
 import './index.scss';
-import { flow } from 'mobx';
-
-const FormItem = FormListItem;
-const {Option} = Select;
 
 interface IPageProps {
 	match:any;
@@ -28,10 +18,8 @@ interface IPageState {
 	isLoading:boolean
 }
 
-const {YearPicker} = DatePicker;
 const format = "YYYY-MM-DD HH:mm:ss";
 const formatYYYY = "YYYY";
-let titleArr = ["新增", "修改", "详情"];
 
 
 class ViewPage extends React.Component<IPageProps,IPageState> {
@@ -447,38 +435,7 @@ class ViewPage extends React.Component<IPageProps,IPageState> {
             <Col md={7} style={{paddingLeft:'20px'}}>
                 <Tabs defaultActiveKey="1">
                     <Tabs.TabPane tab='概览' key="1">
-                        <ul style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}}>
-                            <li>
-                                <Tile style={{width:80,height:80,margin:"5px",padding:"3px"}}>
-				                    <h4>尿检</h4>
-				                    <span>190/12</span>
-			                    </Tile>
-                            </li>
-                            <li>
-                                <Tile style={{width:80,height:80,margin:"5px",padding:"3px"}}>
-				                    <h4>走访</h4>
-				                    <span>120</span>
-			                    </Tile>
-                            </li>
-                            <li>
-                                <Tile style={{width:80,height:80,margin:"5px",padding:"3px"}}>
-				                    <h4>签到</h4>
-				                    <span>120</span>
-			                    </Tile>
-                            </li>
-                            <li>
-                                <Tile style={{width:80,height:80,margin:"5px",padding:"3px"}}>
-				                    <h4>请假</h4>
-				                    <span>120</span>
-			                    </Tile>
-                            </li>
-                            <li>
-                                <Tile style={{width:80,height:80,margin:"5px",padding:"3px"}}>
-				                    <h4>求助</h4>
-				                    <span>120</span>
-			                    </Tile>
-                            </li>
-                        </ul>
+                     
                         <table >
 		<tr>
 			<td style={{width:"20%"}}>类型</td>
@@ -647,11 +604,12 @@ class ViewPage extends React.Component<IPageProps,IPageState> {
                     <Tabs.TabPane tab='签到' key="4">
                     <Calendar
                    style={{ margin: 10 }}
-                   fullscreen
+                   fullscreen={true}
 				   locale={zhCN}
                    onSelect={()=>{}}
                    type={this.state.type}
-                   onTypeChange={this.onTypeChange.bind(this)}
+				   onTypeChange={this.onTypeChange.bind(this)}
+				   //dateCellContentRender={(v)=>{	return <span>{v.format('YYYY-MM-DD')}</span>}}
 
                />
                     </Tabs.TabPane>

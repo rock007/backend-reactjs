@@ -1,244 +1,204 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
-
-import {FormList ,FormListItem}from '../../../components/FormList';
-import SearchPanel from '../../../components/SearchPanel';
-
-import DatePicker from "bee-datepicker";
-import SelectMonth from '../../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
-import InputNumber from 'bee-input-number';
+import {Panel, Tabs,Button,Icon,Select,Row, Col,Breadcrumb } from 'tinper-bee';
 
 import './index.scss';
-
-const FormItem = FormListItem;
-const {Option} = Select;
-const format = "YYYY";
+import ManInfoBussPanel from '../../../components/Buss/ManInfoPanel';
+import ProcessInfoBussPanel from '../../../components/Buss/ProcessInfoPanel';
+import PopDialog from '../../../components/Pop';
+import TimelinePanel from '../../../components/Buss/TimelinePanel';
 
 interface IPageProps {
-    form:any
+    form:any,
+    match:any;
+	history: any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    isShowProcessPop:boolean,
+    
 }
 
 class ManView extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
-        expanded:false,
-        current:null,
-        selectedkey:null
+        isShowProcessPop:false,
     }
 
     componentDidMount() {
 
     }
 
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
-    }
-
-    getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
-    export = ()=>{
-        console.log('export=======');
-    }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
-
     render() {
         
-        const { getFieldProps, getFieldError } = this.props.form;
-
-        const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
-          ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
-
-          const toolBtns = [{
-            value:'新增',
-            
-            bordered:false,
-            colors:'primary'
-        },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
-        }];
-
-        let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
-            noBorder:true
-          }
         return ( <Panel>
-
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
-			      Home
+			      工作台
 			    </Breadcrumb.Item>
-			    <Breadcrumb.Item>
-			      Library
+                <Breadcrumb.Item href="#">
+                  档案库
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      Data
+                   详细
 			    </Breadcrumb.Item>
+                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.props.history.goBack()} >返回</a>
 			</Breadcrumb>
 
-            <SearchPanel
-                reset={()=>{}}
-                onCallback={()=>{}}
-                search={()=>{}}
-            >
+            <Row>
+            <Col md={5} style={{paddingLeft:'15px'}}>
+                <ManInfoBussPanel />
+            </Col>
+            <Col md={7} style={{paddingLeft:'20px'}}>
+                <Tabs defaultActiveKey="1">
+                    <Tabs.TabPane tab='概览' key="1">
+                    当前状态：进行中 
+                    <div className="form-view">
+                    <table>
+			<tbody><tr>
+				<th colSpan={4} style={{textAlign:"left"}}>
+                    <a  className='btn-link' onClick={()=>{this.setState({isShowProcessPop:true})}}>第一次</a>
+				</th>
+			</tr>	
+			<tr>
+				<th>
+					报到社区:
+				</th>
+				<td>
+					清泉镇中心戒毒社区
+				</td>
+				<th>
+					报到时间
+				</th>
+				<td>
+					2018-07-11
+				</td>
+			</tr>
+			<tr>
+				<th>
+					网格单元
+				</th>
+				<td>
+					清泉镇
+				</td>
+				<th>
+					网格员
+				</th>
+				<td>
+					
+				</td>
+			</tr>
+			<tr>
+					
+				<th>人员分类</th>
+				<td>
+					社区戒毒
+				</td>
+				<th>风险级别</th>
+				<td>中风险</td>	
+			</tr>
+		</tbody></table>
 
-                <FormList size="sm">
-                    <FormItem
-                        label="身份证号"
-                    >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
-                    </FormItem>
+        <table>
+			<tbody><tr>
+				<th colSpan={4} style={{textAlign:"left"}}>
+                <a   className='btn-link' onClick={()=>{this.setState({isShowProcessPop:true})}}>第二次</a>
+				</th>
+			</tr>	
+			<tr>
+				<th>
+					报到社区:
+				</th>
+				<td>
+					清泉镇中心戒毒社区
+				</td>
+				<th>
+					报到时间
+				</th>
+				<td>
+					2018-07-11
+				</td>
+			</tr>
+			<tr>
+				<th>
+					网格单元
+				</th>
+				<td>
+					清泉镇
+				</td>
+				<th>
+					网格员
+				</th>
+				<td>
+					
+				</td>
+			</tr>
+			<tr>
+					
+				<th>人员分类</th>
+				<td>
+					社区戒毒
+				</td>
+				<th>风险级别</th>
+				<td>中风险</td>	
+			</tr>
+		</tbody></table>
 
-                    <FormItem
-                        label="员工姓名"
-                    >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
-                    </FormItem>
-
-                    <FormItem
-                        label="电话号码"
-                    >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
-                    </FormItem>
-
-                    <FormItem
-                        label="性别"
-                    >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
-                    </FormItem>
-
-                    <FormItem
-                        label="司龄"
-                    >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="年份"
-                    >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="执行状态"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-
-                </FormList>
-                </SearchPanel>
-
-
-                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
-          columns={columns}
-          data={data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
-
-
+        <table>
+			<tbody><tr>
+				<th colSpan={4} style={{textAlign:"left"}}>
+                    <a  className='btn-link' onClick={()=>{this.setState({isShowProcessPop:true})}}>第三次</a>
+				</th>
+			</tr>	
+			<tr>
+				<th>
+					报到社区:
+				</th>
+				<td>
+					清泉镇中心戒毒社区
+				</td>
+				<th>
+					报到时间
+				</th>
+				<td>
+					2018-07-11
+				</td>
+			</tr>
+			<tr>
+				<th>
+					网格单元
+				</th>
+				<td>
+					清泉镇
+				</td>
+				<th>
+					网格员
+				</th>
+				<td>
+					
+				</td>
+			</tr>
+			<tr>
+					
+				<th>人员分类</th>
+				<td>
+					社区戒毒
+				</td>
+				<th>风险级别</th>
+				<td>中风险</td>	
+			</tr>
+		</tbody></table>
+        </div>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab='操作日志' key="2">
+                        <TimelinePanel></TimelinePanel>
+                    </Tabs.TabPane>
+                </Tabs>
+            </Col>
+            </Row>
+            <PopDialog title="社戒详情" size='xlg' show={this.state.isShowProcessPop} close={()=>this.setState({isShowProcessPop:false})}>
+                <ProcessInfoBussPanel/>
+            </PopDialog>
         </Panel >)
     }
 }
 
-export default Form.createForm()(ManView);
+export default ManView;

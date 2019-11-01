@@ -14,6 +14,7 @@ interface IComponentProps {
     toolBtns?:any[],
     pageChange?:(pageIndex:number,pageSize:number)=>void
     getSelectedDataFunc:(selectData, record, index)=>void
+   
     
 }
 interface IComponentState {
@@ -123,6 +124,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid.GridToolBar toolBtns={this.props.toolBtns} btnSize='sm' />
                 <BeeGrid
                     className="ucf-bs-grid"
+                    multiSelect={{type:"checkbox"}}
                     data={page.data}
                     loading={this.props.isLoading}
                     columns={columns}

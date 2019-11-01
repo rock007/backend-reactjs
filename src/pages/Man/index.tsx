@@ -1,9 +1,11 @@
 import React from 'react';
 
 import {Panel,Breadcrumb,Select,FormControl,Row, Col,Form} from 'tinper-bee';
+import { Link } from 'react-router-dom';
+import loadsh from  'lodash';
 
 import Grid from '../../components/Grid';
-
+import PopDialog from '../../components/Pop';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
@@ -18,8 +20,12 @@ import {PageModel,SearchModel} from '../../services/Model/Models';
 
 import SelectDict from '../../components/SelectDict';
 import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
+import RelationShipPanel from '../../components/Buss/RelationShipPanel';
+import WorkJobPanel from '../../components/Buss/WorkJobPanel';
+import ManContactPanel from '../../components/Buss/ManContactPanel';
 
 import './index.scss';
+import {Info} from '../../utils/index';
 
 const FormItem = FormListItem;
 
@@ -32,10 +38,14 @@ interface IPageState {
     page:PageModel<any>,
     searchModel:SearchModel,
     isLoading:boolean,
-    checkedRows:any[]
+    isDeleteAlterShow:boolean,
+    isPopRelation:boolean,
+    isPopWorkjob:boolean,
+    isPopContact:boolean
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
 
+    checkedRows=[]
     pageIndex=1
     pageSize=10
     orgId='';
@@ -51,9 +61,11 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         editModelVisible:false,
         searchModel:{orderBy:'manId'},
         isLoading:false,
-        checkedRows:[]
+        isDeleteAlterShow:false,
+        isPopRelation:false,
+        isPopWorkjob:false,
+        isPopContact:false
     }
-
     async componentDidMount() {
 
        this.search();
@@ -108,10 +120,31 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         this.setState({expanded: !this.state.expanded})
     }
 
-    getSelectedDataFunc = (data, record, index) => {
+    getSelectedDataFunc = (selectData, record, index) => {
         
         //console.log("data", JSON.stringify(data));
         //this.setState({checkedRows:data});
+
+        let  tableData  = this.state.page.data;
+		let _tableData = loadsh.cloneDeep(tableData);
+		if (index != undefined) {
+			_tableData[index]['_checked'] = !_tableData[index]['_checked'];
+		} else {//点击了全选
+			if (selectData.length > 0) {//全选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = true
+					}
+				});
+			} else {//反选
+				_tableData.map(item => {
+					if (!item['_disabled']) {
+						item['_checked'] = false
+					}
+				});
+			}
+        }
+        this.checkedRows=selectData;
     };
   
     onPageChange=(pageIndex:number,pageSize:number)=>{
@@ -142,7 +175,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <a href="#">{text}</a>;
+                return <Link to={'/man-view/'+record.manId}>{text}</Link>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
@@ -189,7 +222,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'编辑',
             colors:'default',
-            disabled:this.state.checkedRows.length>1?true:false,
+            disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
 
             }
@@ -197,33 +230,37 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             value:'删除',
             colors:'default',
             onClick:() => {
-
-            }
+                if(this.checkedRows.length>0){
+                    this.setState({isDeleteAlterShow:true});
+                }else{
+                    Info('请选择要删除的记录');
+                }
+                }
         },{
             value:'执行社戒',
             iconType:'uf-personin-o',
-            disabled:this.state.checkedRows.length>1?true:false,
+            disabled:this.checkedRows.length>1?true:false,
             onClick:()=>{}
         },{
             value:'六保一',
             colors:'default',
-            disabled:this.state.checkedRows.length>1?true:false,
+            disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
-
+                this.setState({isPopContact:true})
             }
         },{
             value:'亲属关系',
             colors:'default',
-            disabled:this.state.checkedRows.length>1?true:false,
+            disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
-
+                this.setState({isPopRelation:true})
             }
         },{
             value:'工作经历',
             colors:'default',
-            disabled:this.state.checkedRows.length>1?true:false,
+            disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
-
+                this.setState({isPopWorkjob:true});
             }
         },{
             value:'导出',
@@ -236,14 +273,14 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         return (
 
             <Panel>
-                 <Breadcrumb>
+                <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
                     档案库
 			    </Breadcrumb.Item>
-			</Breadcrumb>
+			    </Breadcrumb>
 
             <Row>
                 <Col md="2">
@@ -321,6 +358,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
               
                 <Grid
+                   
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}
@@ -336,13 +374,23 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     onCloseEdit={this.onCloseEdit}
                     currentIndex={1}
                     btnFlag={1}
-                />
-            <Alert show={false} context="是否要删除 ?"
+            />
+            <PopDialog title="亲属关系" size='xlg' show={this.state.isPopRelation} close={()=>this.setState({isPopRelation:false})}>
+                <RelationShipPanel/>
+            </PopDialog>
+            <PopDialog title="工作经历" size='xlg' show={this.state.isPopWorkjob} close={()=>this.setState({isPopWorkjob:false})}>
+                <WorkJobPanel/>
+            </PopDialog>    
+            <PopDialog title="六保一" size='xlg' show={this.state.isPopContact} close={()=>this.setState({isPopContact:false})}>
+                <ManContactPanel/>
+            </PopDialog>    
+            <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
                              //  this.confirmGoBack(1);
                            }}
                            cancelFn={() => {
                               // this.confirmGoBack(2);
+                              this.setState({isDeleteAlterShow:false})
                            }}
                     />
             </Panel>

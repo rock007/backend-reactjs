@@ -10,6 +10,7 @@ import { convertOrgTreeNode } from '../../utils/tools';
 
 interface IComponentProps {
    // form:any
+   
 }
 interface IComponentState {
     loading:boolean,
@@ -19,7 +20,7 @@ interface IComponentState {
     matchData?:any,
     value?:string
 }
-export  class RefOrgTreeSelect extends React.Component<IComponentProps,IComponentState> {
+export  class RefOrgTreeSelect extends React.Component<any,IComponentState> {
 
     state:IComponentState={
         loading:false,

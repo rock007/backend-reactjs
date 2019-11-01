@@ -50,6 +50,14 @@ export const appRouters: any = [
   },
   {
     permission: '',
+    title: '档案详细',
+    path: '/man-view/:id',
+    name: 'man_man_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/View'))
+  },
+  {
+    permission: '',
     title: '社戒管理',
     path: '/process',
     name: 'man_process',

@@ -248,7 +248,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         },***/{
             value:'社区报到',
             onClick:() => {
-
+                this.setState({isViewerShow:true})
             }
         },{
             value:'发告诫书',

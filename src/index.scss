@@ -1,1 +1,26 @@
+.form-view{
+    table
+    {
+        width:100%;
+        border-collapse:collapse !important;
+        border-spacing:0px !important;
+    }
+  table, td, th
+    {
+        border:1px solid lightgray;
+    }
+}
 
+.btn-link {
+    color:#004898 ;
+    cursor: pointer;
+}
+
+/*尿检grid*/
+.block-view{
+    width:65px;
+    height:65px;
+    margin: 5px;
+    padding: 3px;
+    border:1px solid lightgray;
+}
