@@ -8,7 +8,7 @@ const AppConsts = {
   },
   authorization: {
     encrptedAuthTokenName: 'enc_auth_token',
-    token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzI2MTM5NjcsInVzZXJfbmFtZSI6IjQwMjg4MWY3M2UxYzRiYTQwMTNlMWM0YzA4NDcwMDAxIiwiYXV0aG9yaXRpZXMiOlsi57O757uf566h55CG5ZGYIl0sImp0aSI6ImNmMDdiYTVhLThlMGYtNGVjZi04MDRlLWI4MzlkMGU5MjNhYyIsImNsaWVudF9pZCI6InRlc3QxIiwic2NvcGUiOlsiYWxsIl19.gUu524oGeu_6_eLzYUWuHwBE-vWJxl3gkILOpH8BiyY'
+    token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzI4Njk2NjcsInVzZXJfbmFtZSI6IjQwMjg4MWY3M2UxYzRiYTQwMTNlMWM0YzA4NDcwMDAxIiwiYXV0aG9yaXRpZXMiOlsi57O757uf566h55CG5ZGYIl0sImp0aSI6IjM3NDE4NTAzLWNlMmQtNDUzZS1iNjlkLWRhN2FkOTYwNmZmOSIsImNsaWVudF9pZCI6InRlc3QxIiwic2NvcGUiOlsiYWxsIl19.snyC_jm21TjF6hn0MJoB6WIrTI0IyatYTUJGoQEmNzo'
   },
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
   remoteServiceBaseUrl: 'http://localhost:10000/rest',

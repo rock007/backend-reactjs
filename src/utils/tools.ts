@@ -85,6 +85,7 @@ export function deepClone(data) {
 export function convertOrgTreeNode(item:any):ITreeNode{
 
     let obj={
+        id:item.id,
         key:item.id,
         title:item.deptName,
         disabled:false,
@@ -103,5 +104,29 @@ export function convertOrgTreeNode(item:any):ITreeNode{
     }
 
     return obj;
+}
 
+export function convertAreaTreeNode(item:any):ITreeNode{
+
+    let obj={
+        id:item.id,
+        key:item.id,
+        title:item.disName,
+        disabled:false,
+        selectable:true,
+        //ext:item,
+    };
+    
+    if(item['childs']!=null&&item['childs'].length>0){
+
+        obj['children']=[];
+        for (const element of item['childs']) {
+            
+           let one=  convertAreaTreeNode(element);
+
+           obj['children'].push(one);
+        }
+    }
+
+    return obj;
 }

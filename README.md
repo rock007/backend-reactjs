@@ -13,3 +13,17 @@ You will also see any lint errors in the console.
 
 serve -s build
 
+
+  {
+            title: " 选择",
+            dataIndex: "manId",
+            key: "manId",
+            width: 45,
+            render(text, record, index) {
+
+              return (
+                  <input type="radio" name="selected" value={record.manId}/>
+              )
+            }
+        },
+

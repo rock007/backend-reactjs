@@ -2,8 +2,7 @@ import * as React from 'react';
 import {Panel, PanelGroup, Icon,Select, FormControl,Upload ,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
-
-import {deepClone, mergeListObj, delListObj,getValidateFieldsTrim} from "../../../utils";
+import {getValidateFieldsTrim} from "../../../utils";
 
 import moment from "moment";
 import PopDialog from '../../../components/Pop';

@@ -14,6 +14,8 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 import InputNumber from 'bee-input-number';
 import ManService from '../../services/ManService';
 import {PageModel} from '../../services/Model/Models';
+import NiaojianEdit from './Edit';
+
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -27,12 +29,14 @@ interface IPageState {
    
     data:any[],
     selectedkey?:any
+    isEditPop:boolean
 }
 
  class NiaojianPage extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
-        data:[]
+        data:[],
+        isEditPop:false
     }
     async componentDidMount() {
 
@@ -119,7 +123,7 @@ interface IPageState {
         
           const toolBtns = [{
             value:'新增',
-            
+            onClick:()=>this.setState({isEditPop:true}),
             bordered:false,
             colors:'primary'
         },{
@@ -244,7 +248,7 @@ interface IPageState {
           sort={sortObj}
           sortFun={this.sortFun}
         />
-
+        <NiaojianEdit   isShow={this.state.isEditPop}  onCloseEdit={()=>this.setState({isEditPop:false})}/>
         </Panel >)
     }
 }

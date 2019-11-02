@@ -23,6 +23,7 @@ import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTable
 import RelationShipPanel from '../../components/Buss/RelationShipPanel';
 import WorkJobPanel from '../../components/Buss/WorkJobPanel';
 import ManContactPanel from '../../components/Buss/ManContactPanel';
+import ManStatusModifyPanel from '../../components/Buss/ManStatusModifyPanel';
 
 import './index.scss';
 import {Info} from '../../utils/index';
@@ -41,7 +42,8 @@ interface IPageState {
     isDeleteAlterShow:boolean,
     isPopRelation:boolean,
     isPopWorkjob:boolean,
-    isPopContact:boolean
+    isPopContact:boolean,
+    isPopStatusModify:boolean
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
 
@@ -64,7 +66,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         isDeleteAlterShow:false,
         isPopRelation:false,
         isPopWorkjob:false,
-        isPopContact:false
+        isPopContact:false,
+        isPopStatusModify:false
     }
     async componentDidMount() {
 
@@ -237,10 +240,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 }
                 }
         },{
-            value:'执行社戒',
+            value:'社戒变更',
             iconType:'uf-personin-o',
             disabled:this.checkedRows.length>1?true:false,
-            onClick:()=>{}
+            onClick:()=>{ this.setState({isPopStatusModify:true})}
         },{
             value:'六保一',
             colors:'default',
@@ -384,6 +387,11 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             <PopDialog title="六保一" size='xlg' show={this.state.isPopContact} close={()=>this.setState({isPopContact:false})}>
                 <ManContactPanel/>
             </PopDialog>    
+
+            <PopDialog title="社戒变更" size='lg' show={this.state.isPopStatusModify} close={()=>this.setState({isPopStatusModify:false})}>
+                <ManStatusModifyPanel/>
+            </PopDialog>    
+            
             <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
                              //  this.confirmGoBack(1);

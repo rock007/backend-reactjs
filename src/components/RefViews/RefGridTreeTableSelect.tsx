@@ -6,18 +6,20 @@ import { RefTreeTableWithInput } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
 
 import request from '../../utils/request';
-import SysService from '../../services/SysService';
-import { convertOrgTreeNode } from '../../utils/tools';
+import { convertAreaTreeNode } from '../../utils/tools';
+import { PageModel } from '../../services/Model/Models';
+import { Warning } from '../../utils';
 
 interface IComponentProps {
    // form:any
 }
 interface IComponentState {
     loading:boolean,
-    pageCount:number,
-    totalElements:number,
+    //pageCount:number,
+    //totalElements:number,
     treeData:any,
-    matchData?:any,
+    tablePage:PageModel<any>,
+    matchData?:any,//selected
     value?:string
     showModal:boolean
 }
@@ -25,68 +27,76 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
 
     state:IComponentState={
         loading:false,
-        pageCount:-1,
-        totalElements:0,
+        //pageCount:-1,
+        //totalElements:0,
         treeData:[],
-        matchData:[{name:'用友集团',refname:'用友集团',code:'001'}],
-        value:JSON.stringify({
-                refname: "用友集团",
-                refpk: "001",  //value中指定的refpk要等于valueField对应的字段
-        }),
+        tablePage:new PageModel,
+        matchData:[],
+        //value:JSON.stringify({
+        //        refname: "用友集团",
+        //        refpk: "001",  //value中指定的refpk要等于valueField对应的字段
+        //}),
         showModal:false
     }
     componentDidMount() {
 
-        //let data = await SysService.getDetpTree();
-        //this.setState({treeData:data.childs});
-        //this.loadData()
     }
   
     canClickGoOn = async () =>{
        
-      let data = await SysService.getDetpTree();
-      let treeData=convertOrgTreeNode(data);
-      
-      this.setState({treeData: treeData.children});
+      this.setState({loading:true})
+      this.loadData();
       return true;//必须要有
   }
 
   loadData = async () => {
     let refModelUrl = {
-      tableBodyUrl: 'https://mock.yonyoucloud.com/mock/1264/pap_basedoc/common-ref/blobRefTreeGrid',//表体请求
-      refInfo: 'https://mock.yonyoucloud.com/mock/1264/pap_basedoc/common-ref/refInfo',//表头请求
+      tableBodyUrl: '/grid-search',//表体请求
+      areaTree: '/getAreaTreeById',
     }
     let requestList = [
-      request(refModelUrl.refInfo, { method: 'get' }),//表头数据
-      request(refModelUrl.tableBodyUrl, { method: 'get' }), //表体数据
+      request(refModelUrl.areaTree, { method: 'get' }),
+      request(refModelUrl.tableBodyUrl, { method: 'Post' ,data:{uid:'001'}}), 
     ];
-    Promise.all(requestList).then(([columnsData, bodyData]) => {
+    Promise.all(requestList).then(([treeData, bodyData]) => {
 
-      /** 
-      this.launchTableHeader(columnsData);
-      this.launchTableData(bodyData);
-      this.setState({
-        showLoading: false
-      });
-      ***/
+      if(bodyData.data.result>0&&treeData.data.result>0){
+
+        let tablePage=bodyData.data.data ;
+
+        let tree=treeData.data.data ;
+
+        let data=convertAreaTreeNode(tree);
+
+        this.setState({tablePage:tablePage,treeData:data.children,loading:false});
+      }else{
+
+        Warning("请求出现异常，请稍后重试");
+        this.setState({loading:false});
+      }
+
     }).catch((e) => {
-      ;
-
+      
       console.log(e)
-    });;
+    });
   }
 
     onSave = (result) =>{
-        this.setState({
+      
+      this.setState({
             matchData:result,
-        })
+      })
+    
+
     }
     clearFunc = () =>{
-        this.setState({
+        
+      this.setState({
             matchData:[],
         },()=>{
          //   this.props.form.setFieldsValue({table3:''});
         })
+        
       }
       searchFilterInfo = (value) => {
         alert('搜索' + JSON.stringify(value))
@@ -100,17 +110,14 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
         //this.page.currPageIndex = index;
         //this.setState({ number: Math.random() })
       }
-        /**
-         * 选择每页数据个数
-         */
-      dataNumSelect = (index, pageSize) => {
-        console.log(index, pageSize)
-      }
+      
       onCancel = () => {
         this.setState({ showModal: false })
       }
      
       onTreeChange = (record) => {
+
+        debugger;
        // this.tableData = this.originTableData.slice(Math.floor(Math.random() * 8), -1);
        // this.setState({
        //   mustRender: Math.random()
@@ -131,9 +138,11 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
       */
       onTableSearch = (value) => {
         console.log('onTableSearch', value)
+        debugger;
       }
       loadTableData = (param) => {
-        console.log('loadTableData', param)
+        console.log('loadTableData', param);
+        debugger;
       }
 
     render() {
@@ -143,85 +152,68 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
         const fliterFormInputs=[];
 
         const columns = [
-            {
-                title: " ",
-                dataIndex: "a1",
-                key: "a1",
-                width: 45,
-                render(text, record, index) {
-
-                  return (
-                    <Radio.RadioGroup
-                      name={record.key}
-                      selectedValue={record._checked ? record.key : null}
-                    >
-                      <Radio value={record.title}></Radio>
-                    </Radio.RadioGroup>
-                  )
-                }
-            },
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
+            { title: '网格名', dataIndex: 'cellName', key: 'cellName', width: 200 },
+            { title: '简称', dataIndex: 'shortName', key: 'shortName', width: 100 },
+            { title: '所在地区', dataIndex: 'areaName', key: 'areaName', width: 200 },
+            { title: '联系人', dataIndex: 'contactMan', key: 'contactMan', width: 100 },
+            { title: '联系电话', dataIndex: 'contactPhone', key: 'contactPhone', width: 120 },
+            { title: '关联帐号', dataIndex: 'linkName', key: 'linkName', width: 150 },
+            { title: '备注', dataIndex: 'remarks', key: 'remarks', width: 200 }
           ];
           
+          /** 
           const data = [
             { a: '令狐冲', b: '男', c: 41, key: '1' },
             { a: '杨过', b: '男', c: 67, key: '2' },
             { a: '郭靖', b: '男', c: 25, key: '3' },
           ];
-
-          let options = {
-            displayField: '{refname}',
-            valueField: 'refpk',
-            lang: 'zh_CN',
-            miniSearch: true,
-            multiple: true,
-          }
+          ***/
 
           let page = {
-            pageCount:  1,
-            currPageIndex:  1,
-            totalElements:  3,
+            pageCount:  this.state.tablePage.totalPage,
+            currPageIndex:  this.state.tablePage.pageIndex,
+            totalElements:  this.state.tablePage.dataCount,
           };
 
         return (  <RefTreeTableWithInput
           
+          //base
           title="地区网格选择"
+          //menuTitle="地区"
+          //tableTitle="网格列表"
           lang= "zh_CN"
-          miniSearch= {true}
-          multiple= {true}
-
-          nodeDisplay={ (record) => {
-            return record.title
-        }}
-        displayField={ (record) => {
-            return record.title
-        }}  //显示内容的键
-        valueField={ 'key'} 
-          showLine={true}
-          treeData={this.state.treeData}
-          columnsData={columns}
-          tableData={data}
-          page={page}
-          matchData={matchData}
           value={value}
-          
+          showLoading={this.state.loading}
+          valueField={ 'id'}
+          //WithInput
           canClickGoOn={this.canClickGoOn}
-
-          searchable={false}
-          onTreeChange={this.onTreeChange}
-          onTreeSearch={this.onTreeSearch}
-          onTableSearch={this.onTableSearch}
+          placeholder='请选择地区网格'
+         
+          displayField={ (record) => {
+            return record.cellName;
+          }} 
           onSave={this.onSave}
           onCancel={this.onCancel}
-          //loadTableData={this.loadTableData}
 
+          //table
+          miniSearch= {true}
+          multiple= {true}
+          columnsData={columns}
+          tableData={this.state.tablePage.data}
+          page={page}
+          loadTableData={this.loadTableData}
+          onTableSearch={this.onTableSearch}
+          matchData={matchData}
+
+          //树
+          searchable={false}
+          showLine={true}
+          nodeDisplay={ (record) => {
+            return record.title
+          }}
+          treeData={this.state.treeData}
+          onTreeChange={this.onTreeChange}
+          onTreeSearch={this.onTreeSearch}
         />)
     }
 }

@@ -137,10 +137,11 @@ const columns04 = [
       key: "8"
     },
   ];
+  //{this.props.others}
         return (<React.Fragment>
 
             {this.props.children} 
-            ...{this.props.others}
+            
             <ButtonGroup style={{ margin: 10 }}>
                 <Button >新增</Button>
                 <Button >修改</Button>

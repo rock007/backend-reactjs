@@ -24,3 +24,13 @@
     padding: 3px;
     border:1px solid lightgray;
 }
+
+/**编辑popForm**/
+.edit_form_pop{
+    .u-form-item{
+        .u-form-control, .datepicker-container,.u-select{
+            min-width: 300px;
+        }
+
+    }
+}
