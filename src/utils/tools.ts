@@ -130,3 +130,33 @@ export function convertAreaTreeNode(item:any):ITreeNode{
 
     return obj;
 }
+
+
+
+export function convertMenuTreeNode(item:any):ITreeNode{
+
+    let obj={
+        id:item.id,
+        key:item.id,
+        title:item.name,
+        disabled:false,
+        selectable:true,
+        isLeaf:true,
+        //ext:item,
+    };
+    
+    if(item['childs']!=null&&item['childs'].length>0){
+
+        obj['children']=[];
+        obj.isLeaf=false;
+        for (const element of item['childs']) {
+            
+           let one=  convertMenuTreeNode(element);
+
+           obj['children'].push(one);
+        }
+    }
+
+    return obj;
+}
+

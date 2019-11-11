@@ -4,13 +4,13 @@ import AppConsts from "../lib/appconst";
 let x_xsrf_token = '',
     random_num = Math.random();
 
-export default (url, options) => {
+export default (url:string, options) => {
     let params = Object.assign({}, options.param, options.method.toLowerCase() === 'get' ? {
         r: Math.random()
     } : {});
     return axios({
         method: options.method,
-        url: AppConsts.remoteServiceBaseUrl+url,
+        url: url.startsWith("http://")?url: AppConsts.remoteServiceBaseUrl+url,
         data: options.data,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',

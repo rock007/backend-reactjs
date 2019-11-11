@@ -52,7 +52,6 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
       }
 
       onSave = (result) =>{
-        debugger;
         this.setState({
             matchData:result,
         })

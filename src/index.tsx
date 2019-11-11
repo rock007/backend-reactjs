@@ -9,7 +9,7 @@ import { Provider } from 'mobx-react';
 
 import * as serviceWorker from './serviceWorker';
 
-import initializeStores from './stores/storeInitializer';
+import initializeStores from './stores/StoreInitializer';
 
 import "tinper-bee/assets/theme/tinper-bee-indigo.css";
 

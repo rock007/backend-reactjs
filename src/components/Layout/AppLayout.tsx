@@ -6,8 +6,6 @@ import { Redirect, Switch,HashRouter } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 
-import 'ac-multi-tabs/dist/index.css';
-
 import { PageLayout,Icon,Menu ,Drawer } from 'tinper-bee';
 
 import ProtectedRoute from '../../components/Router/ProtectedRoute';
@@ -25,61 +23,20 @@ interface IPageProps {
   location:any
 }
 interface IPageState {
-  expanded:boolean,
   collapsed:boolean,
-  current:any,
-  menus: any[],
-  selectedkey:any,
-  showDrawer:boolean
+  showRightDrawer:boolean
 }
 
 class AppLayout extends React.Component<IPageProps,IPageState> {
  
   state:IPageState={
-    expanded:false,
     collapsed: false,
-    current:null,
-    showDrawer:false,
-    menus:[{
-        id: 0,
-        router: 'visitor',
-        title: "visitor"
-    },{
-        id: 1,
-        router: 'niaojian',
-        title: "niaojian"
-    }],
-    selectedkey:null
+    showRightDrawer:false
 }
 
-
-
-  onCollapse = (collapsed: any) => {
-    this.setState({ collapsed });
-  };
-
-  handleClick = (e) => {
-    console.log(e);
-
-    this.setState({
-        current: e.key,
-    });
-}
-
-handleChange = (v) => {
-    console.log(v)
-    this.setState({
-        menus : v
-    })
-}
-fPopDrawer=()=>{
+closeRightDrawer=()=>{
   this.setState({
-      showDrawer: true
-  })
-}
-fCloseDrawer=()=>{
-  this.setState({
-      showDrawer: false
+    showRightDrawer: false
   })
 }
 
@@ -89,9 +46,6 @@ fCloseDrawer=()=>{
       history,
       location: { pathname },
     } = this.props;
-
-    const { path } = this.props.match;
-    const { collapsed } = this.state;
 
     var routeList=[];
 
@@ -133,9 +87,7 @@ fCloseDrawer=()=>{
     
     const layout = (
       <div  className="main">
-
-      <Header/>
-     
+      <Header handler_msg={()=>this.setState({showRightDrawer:true})}/>
       <PageLayout>
           <PageLayout.Content>
               <PageLayout.LeftContent md="2">
@@ -175,8 +127,8 @@ fCloseDrawer=()=>{
           </PageLayout.Content>
       </PageLayout>
       <Footer/>
-      <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true}  title={"消息"} show={this.state.showDrawer} placement='right' onClose={this.fCloseDrawer}>
-                    <div style={{padding: "10px 20px;"}}>
+      <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
+                    <div style={{paddingLeft: "20px"}}>
                         <p>这是第一行文字</p>
                         <p>这是第二行文字</p>
                         <p>这是第三行文字，啦啦啦~</p>                                                 

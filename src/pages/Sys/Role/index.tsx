@@ -8,6 +8,7 @@ import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 import SysService from '../../../services/SysService';
 import { deepClone,getValidateFieldsTrim } from '../../../utils/tools';
+import RolePermissionPage from './Permission';
 
 const FormItem = FormListItem;
 
@@ -18,14 +19,16 @@ interface IPageState {
     data:any[],
     currentIndex?:number,
     currentRecord?:any,
-    isLoading:boolean
+    isLoading:boolean,
+    isPopPermission:boolean
 }
 
  class RolePage extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
         data:[],
-        isLoading:false
+        isLoading:false,
+        isPopPermission:false
     }
     componentDidMount() {
 
@@ -130,10 +133,16 @@ interface IPageState {
           ];
         
           const toolBtns = [{
-            value:'新增',
-            bordered:false,
-            colors:'primary'
-        }];
+                value:'新增',
+                bordered:false,
+                colors:'primary'
+            },{value:'修改'},
+            {value:'删除'},
+            {
+                value:'权限',
+                onClick:()=>{this.setState({isPopPermission:true})}
+            }
+        ];
 
         let paginationObj = {
             total:this.state.data.length,
@@ -172,17 +181,15 @@ interface IPageState {
                 </FormList>
                 </SearchPanel>
 
-
         <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
-          multiSelect="no"
+          multiSelect={true}
           columns={columns}
           data={this.state.data}
           paginationObj={paginationObj}
-          hoverContent={this.getHoverContent}
-          onRowHover={this.onRowHover}
         />
 
+           <RolePermissionPage isShow={this.state.isPopPermission} onCloseEdit={()=>{this.setState({isPopPermission:false})}}/> 
         </Panel >)
     }
 }

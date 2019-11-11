@@ -5,7 +5,6 @@ import {FormControl ,Radio} from 'tinper-bee';
 import { RefTreeTableWithInput } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
 
-import request from '../../utils/request';
 import SysService from '../../services/SysService';
 import { convertOrgTreeNode } from '../../utils/tools';
 
@@ -49,38 +48,6 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
       this.setState({treeData: treeData.children});
       return true;//必须要有
   }
-
-    /**
-     * @msg: 请求mock数据
-     */
-    loadData2 = async () => {
-        this.setState({
-          loading:true,
-        })
-        let ajax={
-            // url: 'http://mock-platform-prod.online.app.yyuap.com/mock/1264/pap_basedoc/common-ref/blobRefTree',
-            url: 'https://mock.yonyoucloud.com/mock/1264/pap_basedoc/common-ref/blobRefTree',
-        };
-        let results = await request(ajax,{method:'get',data:{uid:'001'}});
-        let treeData = [];
-        if (!results || !results.data.length){
-          this.setState({ 
-            loading:false,
-            pageCount:-1,//不展示分页
-            totalElements:0,
-            treeData,
-          });
-          return false;
-        }
-        treeData = results.data;
-        let page = results.page;
-        this.setState({ 
-          treeData,
-           ...page,
-           loading:false 
-        });
-        
-    }
 
     onSave = (result) =>{
         this.setState({

@@ -27,3 +27,25 @@ serve -s build
             }
         },
 
+
+declare const FormLayouts: ["horizontal", "inline", "vertical"];
+export declare type FormLayout = (typeof FormLayouts)[number];
+export interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+    layout?: FormLayout;
+    form?: WrappedFormUtils;
+    onSubmit?: React.FormEventHandler<any>;
+    style?: React.CSSProperties;
+    className?: string;
+    prefixCls?: string;
+    hideRequiredMark?: boolean;
+    /**
+     * @since 3.14.0
+     */
+    wrapperCol?: ColProps;
+    labelCol?: ColProps;
+    /**
+     * @since 3.15.0
+     */
+    colon?: boolean;
+    labelAlign?: FormLabelAlign;
+}

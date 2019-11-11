@@ -12,7 +12,7 @@ const http = axios.create({
     return qs.stringify(params, {
       encode: false,
     });
-  },
+  }
 });
 
 http.interceptors.request.use(
@@ -20,6 +20,7 @@ http.interceptors.request.use(
     
     if (!!AppConsts.authorization.token) {
       config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
+      //config.headers.common['Authorization'] = 'Basic dGVzdDE6dGVzdDExMTE=';
     }
 
     //config.headers.common['Content-Type'] ='application/x-www-form-urlencoded';

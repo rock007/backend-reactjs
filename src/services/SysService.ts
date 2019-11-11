@@ -49,7 +49,27 @@ class SysService {
     let result = await http.post('/role-search',{parameters:{"uid":"22222","sex":12}});
     return result;
   }
-  
+
+  public async getAllMenu(): Promise<any> {
+   
+    let result = await http.get('/getPermissionTreeAll');
+    return result;
+  }
+  public async getPermissionByParentId(parentId:string): Promise<any> {
+   
+    let result = await http.get('/getPermissionByParentId',{params:{"parentId":parentId}});
+    return result;
+  }
+  public async getPermissionById(id:string): Promise<any> {
+   
+    let result = await http.get('/getPermissionById',{params:{"id":id}});
+    return result;
+  }
+  public async submitPermission(body:any): Promise<any> {
+   
+    let result = await http.post('/submitPermission',body);
+    return result;
+  }
 
 }
 

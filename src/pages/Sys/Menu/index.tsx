@@ -1,129 +1,215 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import { inject, observer } from 'mobx-react';
+
+import multiSelect from "tinper-bee/lib/multiSelect.js";
+import loadsh from  'lodash';
+
+import {Panel, Table,Row, Col,Checkbox,Form,Tag, Breadcrumb } from 'tinper-bee';
+
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
-import {FormList ,FormListItem}from '../../../components/FormList';
-import SearchPanel from '../../../components/SearchPanel';
+import SysService from '../../../services/SysService';
+import PermissionEditPage from './Edit';
+import MenuPanel from './Panel';
+import { Info } from '../../../utils';
+import PermissionEditStore from '../../../stores/PermissionEditStore';
+import Store from '../../../stores/StoreIdentifier';
 
-import DatePicker from "bee-datepicker";
-import SelectMonth from '../../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
-import InputNumber from 'bee-input-number';
-
-const FormItem = FormListItem;
-const {Option} = Select;
-const format = "YYYY";
-
+const MultiSelectTable = multiSelect(Table, Checkbox);
 
 interface IPageProps {
-    form:any
+    form:any,
+    history:any,
+    permissionEditStore?:PermissionEditStore
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    isEditPop:boolean,
+    data:Array<any>,
+    isLoading:boolean,
+    //btnFlag:number,
+    //selectedIndex:number
+    //selectRows:any[]
 }
 
+@inject(Store.PermissionEditStore)
+@observer
  class MenuPage extends React.Component<IPageProps,IPageState> {
+
+    selected:Array<any>=[]
+
+    state:IPageState={
+        isEditPop:false,
+        data:[],
+        isLoading:false,
+        //selectedIndex:0,
+        //btnFlag:0
+        //selectRows:[]
+    }
+
     componentDidMount() {
 
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
+    queryModules=async (id)=>{
+
+       const data= await SysService.getPermissionByParentId(id);
+
+       this.setState({data:data});
     }
 
-    getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
-    export = ()=>{
-        console.log('export=======');
-    }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
-    render() {
-        const { getFieldProps, getFieldError } = this.props.form;
+    expandedRowRender = (record, index, indent) => {
+        let height = 200;
+        let innderData = [ ...new Array(100) ].map((e, i) => {
+          return { a: index+"-"+ i + 'a', b: i + 'b', c: i + 'c', d: i + 'd', key:  index+"-"+ i };
+         });
 
-        const columns = [
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
+         const innerColumns = [
+            { title: '名称', dataIndex: 'b', key: 'b', width: 100 },
+            { title: '图标', dataIndex: 'a', key: 'a', width: 100 },
+            { title: '图标', dataIndex: 'a', key: 'a', width: 100 },
+            { title: 'URL', dataIndex: 'c', key: 'c', width: 200 },
+            { title: '权限值', dataIndex: 'c', key: 'c', width: 200 },
+            { title: '说明', dataIndex: 'c', key: 'c', width: 200 },
             {
               title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
+                return (<div><a href="#">修改</a>
+                <a href="#">删除</a></div>);
               },
             },
           ];
+
+        return (
+          <MultiSelectTable
+            columns={innerColumns}
+            scroll={{y:height}}
+            data={innderData} 
+    
+          />
+        );
+      };
+      getData=(expanded, record)=>{
+        //当点击展开的时候才去请求数据
+       
+      }
+      haveExpandIcon=(record, index)=>{
+        //控制是否显示行展开icon，该参数只有在和expandedRowRender同时使用才生效
+        if(index == 0){
+          return true;
+        }
+        return false;
+      }
+      onTreeSelectedChange=(m,e)=>{
+
+        if(m!=null&&m.length>0){
+
+          this.queryModules(m[0])
+        }
+    }
+    gotoEdit=(id)=>{
+      this.props.history.push('/permission-edit/'+id);
+     
+    }
+    getSelectedDataFunc = (selectData, record, index) => {
+
+      //this.setState({selectRows:selectData });
+
+      /** 
+      let  tableData  = this.state.data;
+      let _tableData =loadsh.cloneDeep(tableData);
+
+      if (index != undefined) {
+        _tableData[index]['_checked'] = !_tableData[index]['_checked'];
+      } else {//点击了全选
+        if (selectData.length > 0) {//全选
+          _tableData.map(item => {
+            if (!item['_disabled']) {
+              item['_checked'] = true
+            }
+          });
+        } else {//反选
+          _tableData.map(item => {
+            if (!item['_disabled']) {
+              item['_checked'] = false
+            }
+          });
+        }
+      }
+      ***/
+      // 获取选中数据
+      let _selectData =loadsh.cloneDeep(selectData);
+
+      console.log("selvalue",_selectData);
+
+      this.selected=_selectData;
+      this.props.permissionEditStore.selectedRows=_selectData;//.updateSelectRows(_selectData);
+      
+      //this.setState({selectedIndex:index});
+    }
+    
+    render() {
+        const {permissionEditStore}=this.props;
+
+        //const selectRowsLenth=permissionEditStore.selectedRows.length;
+
+        //let showObj = this.onHandleDisabled();
+
+        const columns = [
+            { title: '名称', dataIndex: 'name', key: 'name', width: 100 },
+            { title: '类型', dataIndex: 'type', key: 'type', width: 100 ,render(text,record,index) {
+
+              return text==1?'菜单':(text==2?'模块':(text==3?'操作':'未知'));
+            }},
+            { title: '图标', dataIndex: 'icon', key: 'icon', width: 60 },
+            { title: 'URL', dataIndex: 'url', key: 'url', width: 150 },
+            { title: 'method', dataIndex: 'method', key: 'method', width: 100 },
+            { title: '权限值', dataIndex: 'attr', key: 'attr', width: 100 },
+            { title: '状态', dataIndex: 'status', key: 'status', width: 100 ,render(text,record,index) {
+
+              if(text==0){
+                return ( <Tag colors="warning">停用</Tag>);
+              }else if(text==1){
+                return ( <Tag colors="success">正常</Tag>);
+              }else if(text==-1){
+                return ( <Tag colors="danger">删除</Tag>);
+              }
+              return text;
+            }},
+            { title: '说明', dataIndex: 'remarks', key: 'remarks', width: 120 }
+          ];
           
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
+          const toolBtns = [{
+              value:'新增',
+              onClick:()=>this.gotoEdit(0),
+              bordered:false,
+              colors:'primary'
+            },{
+              value:'编辑',
+              disabled:this.selected.length>1?true:false ,//permissionEditStore.selectedRows!=null?permissionEditStore.selectedRows!.length==1?false:true:true,
+              onClick:()=>{
+               
+                if(permissionEditStore.selectedRows.length==0){
+
+                  Info('请选择要编辑的记录');
+                  return;
+                }
+                if(permissionEditStore.selectedRows.length>1){
+
+                  Info('编辑记录只能选择一条');
+                  return;
+                }
+                this.gotoEdit(permissionEditStore.selectedRows[0].id);
+                //this.setState({isEditPop:true});
+              },
+            },
+            {
+              value:'删除'
+            }
           ];
 
-          const toolBtns = [{
-            value:'新增',
-            
-            bordered:false,
-            colors:'primary'
-        },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
-        }];
 
-        let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
-            noBorder:true
-          }
         return ( <Panel>
-
-            <Breadcrumb>
+        <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
 			    </Breadcrumb.Item>
@@ -131,83 +217,31 @@ interface IPageState {
 			      系统管理
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      菜单管理
+			      权限菜单
 			    </Breadcrumb.Item>
-			</Breadcrumb>
+			  </Breadcrumb>
 
-            <SearchPanel
-                reset={()=>{}}
-                onCallback={()=>{}}
-                search={()=>{}}
-                searchOpen={true}
-            >
+            <Row>
+                <Col md="3">
+                    <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} allowType={[1,2]}/>
+                </Col>
+                <Col md="9">
+                  <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
 
-                <FormList size="sm">
-                    <FormItem
-                        label="员工编号"
-                    >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
-                    </FormItem>
+                  <MultiSelectTable
+                    columns={columns}
+                    data={this.state.data}
+                    getSelectedDataFunc={this.getSelectedDataFunc}
+                    loading={this.state.isLoading}
+                    
+                  />
 
-                    <FormItem
-                        label="员工姓名"
-                    >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
-                    </FormItem>
-
-
-                    <FormItem
-                        label="司龄"
-                    >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="年份"
-                    >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
-                        </Select>
-                    </FormItem>
-                </FormList>
-                </SearchPanel>
-
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
-          columns={columns}
-          data={data}
-          getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-        />
-
-
+              </Col>
+            </Row>
+          
         </Panel >)
+        //record={this.props.permissionEditStore.selectedRows.length>0?this.props.permissionEditStore.selectedRows[0]:null}
     }
 }
 
-export default Form.createForm()(MenuPage);
+export default MenuPage;

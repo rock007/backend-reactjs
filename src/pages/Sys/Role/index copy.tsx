@@ -1,62 +1,42 @@
 import * as React from 'react';
-import {Panel, Button,ButtonGroup,Icon,Select, FormControl,Row, Col,Loading ,Form,Tag, Breadcrumb } from 'tinper-bee';
+import {Panel, Button,ButtonGroup,Icon, FormControl,Form,Loading, Breadcrumb } from 'tinper-bee';
 
 import Grid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
-import OrgPanel from '../../../pages/Sys/Org/Panel';
-import { deepClone,getValidateFieldsTrim } from '../../../utils/tools';
 import SysService from '../../../services/SysService';
-import {PageModel} from '../../../services/Model/Models';
+import { deepClone,getValidateFieldsTrim } from '../../../utils/tools';
 
 const FormItem = FormListItem;
-const {Option} = Select;
-const format = "YYYY";
 
 interface IPageProps {
     form:any
 }
 interface IPageState {
-    page:PageModel<any>,
+    data:any[],
     currentIndex?:number,
-    currentRecord?:any
-    pageIndex:number,
-    pageSize:number,
+    currentRecord?:any,
     isLoading:boolean
 }
 
- class OrgPage extends React.Component<IPageProps,IPageState> {
-
-    orgId:string="0";
-
+ class RolePage extends React.Component<IPageProps,IPageState> {
+    
     state:IPageState={
-        page:new PageModel<any>(),
-        pageIndex:1,
-        pageSize:20,
+        data:[],
         isLoading:false
     }
     componentDidMount() {
 
         this.freshata();
     }
-
+   
     getSelectedDataFunc = data => {
         console.log("data", data);
-    };
-    
-    onOrgTreeClick=(records:any)=>{
+      };
 
-        if(records!=null&&records.length>0){
-
-            this.orgId=records[0];
-            this.validFormSubmit();
-        }
-
-    }
-
-    validFormSubmit=()=>{
+      validFormSubmit=()=>{
 
         this.props.form.validateFields((err, _values) => {
 
@@ -74,18 +54,24 @@ interface IPageState {
 
             console.log('Search:'+JSON.stringify(values));
 
-            this.freshata();
-        });
+            //let queryParam = deepClone(this.props.queryParam);
+           // let {pageParams} = queryParam;
+           // pageParams.pageIndex = 0;
 
-    }
-     /**
+           this.freshata();
+        });
+      }
+      /**
        * 请求页面数据
        */
-      freshata= async ()=>{
+    freshata= async ()=>{
     
+      
+        
         this.setState({isLoading:true});
-        let page = await SysService.searchOrg("",this.orgId,1,20) as PageModel<any>;
-        this.setState({page:page,isLoading:false});
+        let data = await SysService.searchRole() as any[];
+
+        this.setState({data:data,isLoading:false});
       }
 
       resetSearch=()=>{
@@ -138,37 +124,22 @@ interface IPageState {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '编号', dataIndex: 'id', key: 'id',textAlign:'center', width: 100 },
-            { title: '部门', dataIndex: 'deptName', key: 'deptName',textAlign:'center', width: 250 },
-            { title: '联系电话', dataIndex: 'deptPhone', key: 'deptPhone',textAlign:'center', width: 100 },
-            { title: '负责人', dataIndex: 'leadUser',isShow:false, key: 'leadUser', textAlign:'center',width: 120 },
-            { title: '地址', dataIndex: 'deptAddress',isShow:false, key: 'deptAddress',textAlign:'center',width: 250 },
-            { title: '地区', dataIndex: 'areaName', key: 'areaName',textAlign:'center', width: 200 },
-            { title: '排序', dataIndex: 'deptSort',isShow:false, key: 'deptSort',textAlign:'center', width: 80 },
-            { title: '状态', dataIndex: 'isDisable', key: 'isDisable',textAlign:'center', width: 100,
-            render: (text, record, index) => {
-                return text==null||text==1?(<Tag colors={"dange"}>受限</Tag>):(
-                  <Tag colors={"success"}>正常</Tag>
-                );
-            } }
+            { title: '角色', dataIndex: 'roleName', key: 'roleName',textAlign:'center', width: 200 },
+            { title: '说明', dataIndex: 'roleDesc', key: 'roleDesc',textAlign:'center', width: 300 },
             
           ];
-          
+        
           const toolBtns = [{
             value:'新增',
             bordered:false,
             colors:'primary'
-        },{
-            value:'修改'
-        },{
-            value:'删除'
         }];
 
         let paginationObj = {
-            total:this.state.page.dataCount,
+            total:this.state.data.length,
             freshData:this.freshata,
             onDataNumSelect:this.onDataNumSelect, 
-            showJump:false,
+            showJump:true,
             noBorder:true
           }
         return ( <Panel>
@@ -181,25 +152,19 @@ interface IPageState {
 			      系统管理
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      组织管理
+			      角色管理
 			    </Breadcrumb.Item>
 			</Breadcrumb>
-            <Row>
-                <Col md="3">
 
-                <OrgPanel onClick={this.onOrgTreeClick}/>
-               
-                </Col>
-                <Col md="9">
             <SearchPanel
-                reset={()=>{}}
+                reset={this.resetSearch}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.validFormSubmit}
                 searchOpen={true}
             >
                 <FormList size="sm">
                     <FormItem
-                        label="部门 "
+                        label="角色"
                     >
                         <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
@@ -210,17 +175,16 @@ interface IPageState {
 
         <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
+          multiSelect="no"
           columns={columns}
-          data={this.state.page.data}
+          data={this.state.data}
           paginationObj={paginationObj}
           hoverContent={this.getHoverContent}
           onRowHover={this.onRowHover}
         />
 
-    </Col>
-    </Row>
         </Panel >)
     }
 }
 
-export default Form.createForm()(OrgPage);
+export default Form.createForm()(RolePage);

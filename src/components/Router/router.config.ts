@@ -224,11 +224,19 @@ export const appRouters: any = [
       component: LoadableComponent(() => import('../../pages/Sys/User'))
     },{
       path: '/menus',
-      title: '菜单管理',
+      title: '菜单权限',
       name: 'sys_menu',
       icon: 'caven',
       showInMenu: true,
       component: LoadableComponent(() => import('../../pages/Sys/Menu'))
+    },{
+      permission: '',
+      path: '/permission-edit/:id',
+      title: '菜单权限编辑',
+      name: 'sys_permisson_edit',
+      icon: 'caven',
+      showInMenu: false,
+      component: LoadableComponent(() => import('../../pages/Sys/Menu/Edit'))
     },{
       path: '/man4',
       title: '地区管理',

@@ -2,11 +2,11 @@ import './index.scss';
 
 import * as React from 'react';
 
-import { Avatar, Badge,  Col, Dropdown, Icon,Button, Menu, Navbar } from 'tinper-bee';
+import { Dropdown, Icon, Menu, Navbar } from 'tinper-bee';
 
 import { Link } from 'react-router-dom';
 
-import profilePicture from '../../images/user.png';
+//import profilePicture from '../../images/user.png';
 
 interface IHeaderState {
   expanded:boolean,
@@ -18,6 +18,7 @@ interface IHeaderState {
 export interface IHeaderProps {
   expanded?: any;
   toggle?: any;
+  handler_msg:()=>void
 }
 
 const userDropdownMenu = (
@@ -52,6 +53,11 @@ onToggle = (value) => {
 
 handleSelect = (index) => {
   this.setState({selectedkey: index});
+ 
+  if(index==3){
+    this.props.handler_msg();
+  }
+
 }
 
  onSelect({ key }) {
@@ -67,14 +73,13 @@ handleSelect = (index) => {
             <Menu.Item key="1"><Icon type='uf-userset' />个人信息</Menu.Item>
             <Menu.Item key="2"><Icon type='uf-close-c-o' />退出登录</Menu.Item>
             <Menu.Item key="3"><Icon type='uf-uf-bulb-2' />在线帮助</Menu.Item>
-
       </Menu>
   );
 
 
     return (
      
-      <Navbar
+    <Navbar
       expanded={this.state.expanded}
       onToggle={this.onToggle}>
       <Navbar.Header>
@@ -95,7 +100,7 @@ handleSelect = (index) => {
               <Navbar.NavItem href="#" eventKey={2}>
                   待办
               </Navbar.NavItem>
-              <Navbar.NavItem href="#" eventKey={3}>
+              <Navbar.NavItem href="#" eventKey={3} >
                   消息(3)
               </Navbar.NavItem>
               <Navbar.NavItem href="#" eventKey={4}>

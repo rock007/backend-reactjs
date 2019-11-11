@@ -57,7 +57,7 @@ export  class RefOrgTreeSelect extends React.Component<any,IComponentState> {
             // url: 'http://mock-platform-prod.online.app.yyuap.com/mock/1264/pap_basedoc/common-ref/blobRefTree',
             url: 'https://mock.yonyoucloud.com/mock/1264/pap_basedoc/common-ref/blobRefTree',
         };
-        let results = await request(ajax,{method:'get',data:{uid:'001'}});
+        let results = await request(ajax.url,{method:'get',data:{uid:'001'}});
         let treeData = [];
         if (!results || !results.data.length){
           this.setState({ 
