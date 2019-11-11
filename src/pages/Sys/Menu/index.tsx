@@ -4,20 +4,23 @@ import { inject, observer } from 'mobx-react';
 import multiSelect from "tinper-bee/lib/multiSelect.js";
 import loadsh from  'lodash';
 
-import {Panel, Table,Row, Col,Checkbox,Form,Tag, Breadcrumb } from 'tinper-bee';
+import {Panel, Table,Row, Col,Checkbox,FormControl,Tag,Form,Breadcrumb,Select } from 'tinper-bee';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
 
-
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
-
+//import Grid from "bee-complex-grid";
+//import 'bee-complex-grid/build/Grid.css';
+import Grid from '../../../components/Grid';
 import SysService from '../../../services/SysService';
 import PermissionEditPage from './Edit';
 import MenuPanel from './Panel';
 import { Info } from '../../../utils';
 import PermissionEditStore from '../../../stores/PermissionEditStore';
 import Store from '../../../stores/StoreIdentifier';
+import { PageModel } from '../../../services/Model/Models';
 
 const MultiSelectTable = multiSelect(Table, Checkbox);
+const FormItem = FormListItem;
 
 interface IPageProps {
     form:any,
@@ -26,7 +29,7 @@ interface IPageProps {
 }
 interface IPageState {
     isEditPop:boolean,
-    data:Array<any>,
+    page:PageModel<any>,
     isLoading:boolean,
     //btnFlag:number,
     //selectedIndex:number
@@ -39,13 +42,14 @@ interface IPageState {
 
     selected:Array<any>=[]
 
+    pageIndex=1
+    pageSize=10
+    parentId='';
+
     state:IPageState={
         isEditPop:false,
-        data:[],
+        page:new PageModel(),
         isLoading:false,
-        //selectedIndex:0,
-        //btnFlag:0
-        //selectRows:[]
     }
 
     componentDidMount() {
@@ -53,9 +57,9 @@ interface IPageState {
     }
     queryModules=async (id)=>{
 
-       const data= await SysService.getPermissionByParentId(id);
+       const page= await SysService.searchPermissionBy({time:new Date().getTime()});
 
-       this.setState({data:data});
+       this.setState({page:page});
     }
 
     expandedRowRender = (record, index, indent) => {
@@ -103,9 +107,12 @@ interface IPageState {
 
         if(m!=null&&m.length>0){
 
+          this.parentId=m[0];
           this.queryModules(m[0])
         }
     }
+
+
     gotoEdit=(id)=>{
       this.props.history.push('/permission-edit/'+id);
      
@@ -149,6 +156,8 @@ interface IPageState {
     
     render() {
         const {permissionEditStore}=this.props;
+
+        const { getFieldProps, getFieldError } = this.props.form;
 
         //const selectRowsLenth=permissionEditStore.selectedRows.length;
 
@@ -222,17 +231,47 @@ interface IPageState {
 			  </Breadcrumb>
 
             <Row>
-                <Col md="3">
+                <Col md="2">
                     <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} allowType={[1,2]}/>
                 </Col>
-                <Col md="9">
-                  <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                <Col md="10">
+                <SearchPanel
+                  reset={()=>{}}
+                  onCallback={()=>{}}
+                  search={()=>{}}
+                  searchOpen={true}
+                >
 
-                  <MultiSelectTable
+                <FormList size="sm">
+                    <FormItem
+                        label="名称"
+                    >
+                        <FormControl placeholder='请输入名称' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+
+                    <FormItem
+                        label="权限值"
+                    >
+                        <FormControl placeholder='请输入权限值' {...getFieldProps('attr', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="类型"
+                    >
+                        <Select {...getFieldProps('type', {initialValue: ''})}>
+                            <Select.Option value="">请选择</Select.Option>
+                            <Select.Option value="1">菜单</Select.Option>
+                            <Select.Option value="2">模块</Select.Option>
+                            <Select.Option value="3">操作</Select.Option>
+                        </Select>
+                    </FormItem>
+                </FormList>
+                </SearchPanel>
+                  <Grid
+                    toolBtns={toolBtns}
                     columns={columns}
-                    data={this.state.data}
+                    page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}
-                    loading={this.state.isLoading}
+                    isLoading={this.state.isLoading}
                     
                   />
 
@@ -244,4 +283,4 @@ interface IPageState {
     }
 }
 
-export default MenuPage;
+export default Form.createForm()(MenuPage);

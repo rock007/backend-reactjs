@@ -15,6 +15,10 @@ import utils from '../../utils/utils';
 import AppConsts from '../../lib/appconst';
 import Footer from '../Footer';
 import Header from '../Header';
+import { getCookie} from '../../utils/index';
+import { async } from 'q';
+import AccountService from '../../services/account/AccountService'
+
 const SubMenu = Menu.SubMenu;
 
 interface IPageProps {
@@ -24,20 +28,43 @@ interface IPageProps {
 }
 interface IPageState {
   collapsed:boolean,
-  showRightDrawer:boolean
+  showRightDrawer:boolean,
+  data:any
 }
 
 class AppLayout extends React.Component<IPageProps,IPageState> {
  
   state:IPageState={
     collapsed: false,
-    showRightDrawer:false
+    showRightDrawer:false,
+    data:{}
 }
 
 closeRightDrawer=()=>{
   this.setState({
     showRightDrawer: false
   })
+}
+
+componentDidMount() {
+  const token= getCookie('login_token');
+
+  if(token==null){
+    
+    window.location.href='/#/account/login';
+
+  }else{
+    AppConsts.authorization.token=token;
+
+    this.loadData();
+  }
+}
+
+loadData=async ()=>{
+
+  const data= await AccountService.myProfile();
+
+  this.setState({data:data});
 }
 
   render() {

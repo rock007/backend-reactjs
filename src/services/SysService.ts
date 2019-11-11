@@ -6,26 +6,26 @@ class SysService {
 
   public async getDetpTree(): Promise<any> {
    
-    let result = await http.get('/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
+    let result = await http.get('/rest/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
     //let result = await http.get('rest/sys/getDeptTree');
     return result;
   }
 
   public async getManCateTree(): Promise<any> {
    
-    let result = await http.get('/getCategroryTree');
+    let result = await http.get('/rest/getCategroryTree');
     return result;
   }
   public async getDict(type:number): Promise<any> {
    
-    let result = await http.get('/getDict',{params:{type:type}});
+    let result = await http.get('/rest/getDict',{params:{type:type}});
    
     return result;
   }
 
   public async searchOrg(name:string,parentId:string,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
-    let result = await http.post('/org-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
+    let result = await http.post('/rest/org-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
                                 {"uid":"22222","deptName":name,"superId":parentId}
                         );
     return result;
@@ -33,7 +33,7 @@ class SysService {
 
   public async searchAccount(arg:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
-    let result = await http.post('/account-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
+    let result = await http.post('/rest/account-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
                                 arg
                         );
     return result;
@@ -46,28 +46,28 @@ class SysService {
       [ "banana", 20 ],
       [ "carraot", 30 ]
   ]);
-    let result = await http.post('/role-search',{parameters:{"uid":"22222","sex":12}});
+    let result = await http.post('/rest/role-search',{parameters:{"uid":"22222","sex":12}});
     return result;
   }
 
   public async getAllMenu(): Promise<any> {
    
-    let result = await http.get('/getPermissionTreeAll');
+    let result = await http.get('/rest/getPermissionTreeAll');
     return result;
   }
-  public async getPermissionByParentId(parentId:string): Promise<any> {
+  public async searchPermissionBy(args:any): Promise<any> {
    
-    let result = await http.get('/getPermissionByParentId',{params:{"parentId":parentId}});
+    let result = await http.post('/rest/permission-search',args);
     return result;
   }
   public async getPermissionById(id:string): Promise<any> {
    
-    let result = await http.get('/getPermissionById',{params:{"id":id}});
+    let result = await http.get('/rest/getPermissionById',{params:{"id":id}});
     return result;
   }
   public async submitPermission(body:any): Promise<any> {
    
-    let result = await http.post('/submitPermission',body);
+    let result = await http.post('/rest/submitPermission',body);
     return result;
   }
 

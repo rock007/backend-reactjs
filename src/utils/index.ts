@@ -112,7 +112,7 @@ export const convert = (text) => {
     return output;
 }
 
-export const setCookie = (name, value, options) => {
+export const setCookie = (name:string, value, options:any=null) => {
 
     options = options || {};
     if (value === null) {

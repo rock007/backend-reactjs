@@ -20,11 +20,8 @@ http.interceptors.request.use(
     
     if (!!AppConsts.authorization.token) {
       config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
-      //config.headers.common['Authorization'] = 'Basic dGVzdDE6dGVzdDExMTE=';
     }
 
-    //config.headers.common['Content-Type'] ='application/x-www-form-urlencoded';
-    //config.headers.common['Accept']='application/json';
     return config;
   },
   function(error) {
@@ -43,8 +40,9 @@ http.interceptors.response.use(
       Message.create({content: resp.msg, color: 'warn'});
 
       if(resp.result==-401){
-        console.log('请重新登录')
-        
+        console.log('请重新登录');
+        AppConsts.authorization.token='';
+        window.location.href='/#/account/login';
       }
       return Promise.reject(resp);
     }
@@ -63,8 +61,9 @@ http.interceptors.response.use(
       Message.create({content: resp.msg, color: 'danger'});
 
       if(resp.result==-401){
-        console.log('请重新登录')
-
+        console.log('请重新登录');
+        AppConsts.authorization.token='';
+        window.location.href='/#/account/login';
       }
 
     }else{
