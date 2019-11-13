@@ -20,7 +20,7 @@ interface IPageProps {
 }
 interface IPageState {
     record:any,
-    selectedValue:any,
+    selectedValue?:string,
     isEdit:boolean,
     isLoading:boolean
 }
@@ -30,7 +30,6 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
     id:Number=0
 
     state:IPageState={
-        selectedValue:{},
         record:{},
         isEdit:false,
         isLoading:false
@@ -62,7 +61,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                 }
 
                 values['parentId']=this.state.selectedValue;
-                values['id']=this.id;
+                values['id']=this.id>0?this.id:null;
             }
 
             if (err) {
@@ -80,7 +79,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
     async doSave(values){
 
         this.setState({isLoading:true});
-        let resp= await SysService.submitPermission(values)
+        await SysService.submitPermission(values)
             .then((resp)=>{
 
                 Info(resp);
@@ -98,7 +97,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
     }
     onMenuTreeClick=(value,label)=>{
 
-        if(value!=null&&value.length>0){
+        if(value!=null){
             this.setState({selectedValue:value});
         }
     }
@@ -128,7 +127,8 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                 <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
 			</Breadcrumb>
             <Row>
-                <Col md="10">
+                <Col md="3"></Col>
+                <Col md="6">
                     <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>上一级</Label>

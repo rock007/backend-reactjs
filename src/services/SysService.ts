@@ -70,6 +70,11 @@ class SysService {
     let result = await http.post('/rest/submitPermission',body);
     return result;
   }
+  public async delPermission(body:any): Promise<any> {
+   
+    let result = await http.post('/rest/deletePermissionById',body);
+    return result;
+  }
 
 }
 

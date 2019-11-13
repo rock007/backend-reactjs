@@ -1,62 +1,69 @@
 import React, { Component } from 'react';
 import { Modal } from 'tinper-bee';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import BtnIcon from '../../components/Button';
 import './index.scss';
 
-const propTypes = {
-    modalTitle: PropTypes.string,//删除modal标题
-    modalContent: PropTypes.node,//modal内容，可传字符串和dom
-    confirmFn: PropTypes.func,//点击确认按钮的回调
-    cancelFn: PropTypes.func,//点击取消的回调
-    confirmName: PropTypes.string,
-    cancelFnName: PropTypes.string,
-    showFooter: PropTypes.bool,//是否显示确认取消按钮
-    showTitle: PropTypes.bool,//是否显示modal标题
-    onShow: PropTypes.func,//显示的钩子函数
-    onHide: PropTypes.func,//隐藏的钩子函数
-    size: PropTypes.oneOf(["sm", "lg", "xlg", ""]),//模态框尺寸
-    dialogClassName: PropTypes.string,//传递给模态框的样式
-    hide: PropTypes.bool,//主动调用隐藏modal
-};
+interface IProps  {
+    modalTitle?: string,//删除modal标题
+    modalContent?: any,//modal内容，可传字符串和dom
+    confirmFn: ()=>void,//点击确认按钮的回调
+    cancelFn: ()=>void,//点击取消的回调
+    confirmName?: string,
+    cancelFnName?: string,
+    showFooter?: boolean,//是否显示确认取消按钮
+    showTitle?: boolean,//是否显示modal标题
+    onShow?: ()=>void,//显示的钩子函数
+    onHide?: ()=>void,//隐藏的钩子函数
+    size?: "sm"|"lg"| "xlg"| "",//模态框尺寸
+    dialogClassName?: string,//传递给模态框的样式
+    hide: boolean,//主动调用隐藏modal
 
-const defaultProps = {
-    modalTitle: '警告',
-    modalContent: '确认要删除么？',
-    confirmFn: () => {
-
-    },
-    cancelFn: () => {
-
-    },
-    confirmName: '确定',
-    cancelFnName: '取消',
-    showFooter: true,
-    showTitle: true,
-    onShow: () => {
-
-    },
-    onHide: () => {
-
-    },
-    hide: false,
+    className?:string
 };
 
 interface IState  {
     showModal:boolean
 }
 
-class DelModal extends Component<any,IState> {
+class DelModal extends Component<IProps,IState> {
+
+    static defaultProps = {
+        modalTitle: '警告',
+        modalContent: '确认要删除么？',
+        confirmFn: () => {
+    
+        },
+        cancelFn: () => {
+    
+        },
+        confirmName: '确定',
+        cancelFnName: '取消',
+        showFooter: true,
+        showTitle: true,
+        onShow: () => {
+    
+        },
+        onHide: () => {
+    
+        }//,
+        //hide: false,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
-            showModal: false
+            showModal: !this.props.hide
         };
     }
     componentWillReceiveProps(nextProps) {
-        if ((nextProps.hide)) {//当前hide是true,关闭模态框
+        
+        console.log('nextProps.hide:'+nextProps.hide);
+
+        if (nextProps.hide!=null) {//当前hide是true,关闭模态框
+            //console.log('nextProps.hide:'+nextProps.hide);
             this.setState({
-                showModal: false
+                showModal: !nextProps.hide
             })
         }
     }

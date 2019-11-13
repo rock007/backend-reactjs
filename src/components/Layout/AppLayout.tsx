@@ -61,63 +61,61 @@ componentDidMount() {
 
   }else{
     AppConsts.authorization.token=token;
-
-    //this.loadData();
     this.props.systemStore.loadData();
   }
 }
 
-loadData=async ()=>{
+go2Page=async (item)=>{
+ 
+  //this.props.history.push('/forhelp');
+ 
+  const route=appRouters.find((v,i)=>v.title==item.name);
+  if(route!=null){
+    console.log('go2Page:'+route.path);
+    this.props.history.push(route.path);
+  }else{
+    this.props.history.push('/exception?code=404');
+  }
+ 
+}
 
-  const data= await AccountService.myProfile();
+initMenuChilds=(route:MenuModel)=>{
 
-  this.setState({data:data});
+  return (
+      <SubMenu key={route.name} 
+          title={<span> {route.icon==null?'': <Icon type={route.icon} />} <span>{route.name}</span> </span>}  >
+     
+          {route.children
+            .map((route: any, index: number) => {
+                return this.initMenuItem(route);
+            })}
+      </SubMenu>)
+}
 
-  debugger;
+
+initMenuItem=(route:MenuModel)=>{
+  
+  if(route.children!=null&&route.children.length>0){
+
+    return this.initMenuChilds(route);
+
+  }
+
+  return (
+    <Menu.Item key={route.name} onClick={this.go2Page.bind(this,route)}>
+     {route.icon==null?'':<Icon type={'uf-'+route.icon} />} 
+      <span>{route.name}</span>
+    </Menu.Item>
+  );
 
 }
 
-render11() {
-  
+render() {
+ 
   const {
     history,
     location: { pathname },
   } = this.props;
-
-  let initMenuChilds=(route:MenuModel)=>{
-
-    return (
-        <SubMenu key={route.name} 
-            title={<span> <Icon type={route.icon} /> <span>{route.name}</span> </span>}  >
-       
-            {route.children
-              //.filter((item: any) => !item.isLayout /**&& item.showInMenu**/)
-              .map((route: any, index: number) => {
-                  return initMenuItem(route);
-              })}
-        </SubMenu>)
-  }
-  
-  let initMenuItem=(route:MenuModel)=>{
-  
-    //if (route.permission && !AppConsts.isGranted(route.permission)) return null;
-  
-    if(route.children!=null&&route.children.length>0){
-  
-      return initMenuChilds(route);
-  
-    }
-    //routeList.push(route);
-
-    //if(!route.showInMenu) return null;
-    return (
-      <Menu.Item key={route.name} onClick={() => history.push(route.url)}>
-        <Icon type={'uf-'+route.icon} />
-        <span>{route.name}</span>
-      </Menu.Item>
-    );
-  
-  }
 
   const layout = (
     <div  className="main">
@@ -132,21 +130,18 @@ render11() {
             <PageLayout.LeftContent md="2">
 
             <Menu  mode="inline" defaultOpenKeys={['process_mg']} >
-      {this.props.systemStore.menus
-        //.filter((item: any) => !item.isLayout /***&& item.showInMenu**/)
-        .map((route: MenuModel, index: number) => {
+              {this.props.systemStore.menus
+                  .map((route: MenuModel, index: number) => {
 
-          if(route.children!=null&&route.children.length>0){
+                      if(route.children!=null&&route.children.length>0){
 
-            return initMenuChilds(route);
-          }else{
+                        return this.initMenuChilds(route);
+                      }else{
 
-            return initMenuItem(route);
-          }
-
-        })}
-    </Menu>
-           
+                        return this.initMenuItem(route);
+                      }
+                   })}
+            </Menu>
             </PageLayout.LeftContent>
             <PageLayout.RightContent md="10">
             
@@ -178,7 +173,7 @@ render11() {
   return <DocumentTitle title={utils.getPageTitle(pathname)}>{layout}</DocumentTitle>;
 }
 
-render() {
+render22() {
 
     const {
       history,

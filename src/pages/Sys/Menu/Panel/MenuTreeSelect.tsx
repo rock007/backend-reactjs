@@ -60,13 +60,14 @@ interface IPanelState {
       this.props.onSelected.call(this,m,label)
     }
   }
-    render() {
+  
+  render() {
         return ( 
                 <TreeSelect className="menuTree" 
                     showLine 
-                    showIcon
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     placeholder="请选择"
-                    treeDefaultExpandAll
+                   // treeDefaultExpandAll
                     value={this.state.value}
                     onChange={this.onSelect}
                 >

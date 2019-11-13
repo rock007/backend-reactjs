@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+//import { inject, observer } from 'mobx-react';
 import loadsh from  'lodash';
 
-import {Panel, Table,Row, Col,Checkbox,FormControl,Tag,Form,Breadcrumb,Select } from 'tinper-bee';
+import {Panel, Row, Col,FormControl,Tag,Form,Breadcrumb,Select } from 'tinper-bee';
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 
@@ -10,41 +10,42 @@ import Grid from '../../../components/Grid';
 import SysService from '../../../services/SysService';
 import MenuPanel from './Panel';
 import { Info ,getValidateFieldsTrim} from '../../../utils';
-import PermissionEditStore from '../../../stores/PermissionEditStore';
-import Store from '../../../stores/StoreIdentifier';
+//import PermissionEditStore from '../../../stores/PermissionEditStore';
+//import Store from '../../../stores/StoreIdentifier';
 import { PageModel } from '../../../services/Model/Models';
+import DelModal from '../../../components/DelModal';
+import { async } from 'q';
 
 const FormItem = FormListItem;
 
 interface IPageProps {
     form:any,
     history:any,
-    permissionEditStore?:PermissionEditStore
+   // permissionEditStore?:PermissionEditStore
 }
 interface IPageState {
     isEditPop:boolean,
     page:PageModel<any>,
     isLoading:boolean,
-    //searchArgs:any
+    isShowDeleModal:boolean,
 }
 
-@inject(Store.PermissionEditStore)
-@observer
+//@inject(Store.PermissionEditStore)
+//@observer
  class MenuPage extends React.Component<IPageProps,IPageState> {
 
     selected:Array<any>=[]
 
     pageIndex=1
     pageSize=10
-    //parentId='';
 
     searchArgs:any
 
     state:IPageState={
         isEditPop:false,
-        page:new PageModel(),
+        page:new PageModel<any>(),
         isLoading:false,
-        //searchArgs:{}
+        isShowDeleModal:false,
     }
 
     componentDidMount() {
@@ -66,6 +67,7 @@ interface IPageState {
           //values['parentId']=this.parentId;
 
           //this.setState({searchArgs:values});
+          this.pageIndex=1;
           this.searchArgs=loadsh.defaults(values,this.searchArgs) ;
           this.freshata(1);
       });
@@ -80,7 +82,12 @@ interface IPageState {
 
       this.setState({page:page,isLoading:false});
     }
+    onPageChange=(pageIndex:number,pageSize:number)=>{
 
+      this.pageIndex=pageIndex;
+      this.pageSize=pageSize;
+      this.freshata(this.pageIndex);
+   }
     resetSearch=()=>{
       this.props.form.resetFields();
 
@@ -99,7 +106,7 @@ interface IPageState {
     }
 
   
-      onTreeSelectedChange=(m,e)=>{
+    onTreeSelectedChange=(m,e)=>{
 
         if(m!=null&&m.length>0){
 
@@ -141,19 +148,47 @@ interface IPageState {
       // 获取选中数据
       let _selectData =loadsh.cloneDeep(selectData);
 
-      console.log("selvalue",_selectData);
+      //console.log("selvalue",_selectData);
 
       this.selected=_selectData;
-      this.props.permissionEditStore.selectedRows=_selectData;//.updateSelectRows(_selectData);
+      //this.props.permissionEditStore.selectedRows=_selectData;//.updateSelectRows(_selectData);
       
       //this.setState({selectedIndex:index});
     }
     
+    alertDel=()=>{
+      
+      if(this.selected.length==0){
+
+        Info('请选择要编辑的记录');
+        return;
+      }
+      this.setState({isShowDeleModal:true});
+
+    }
+    handler_del=async()=>{
+
+      this.setState({isLoading:true,isShowDeleModal:false});
+      let arr=[];
+      this.selected.map((v,i)=>arr.push(v.id));
+      await SysService.delPermission({ids:arr})
+        .then((resp)=>{
+
+          Info(resp);
+          this.validFormSubmit();
+
+        }).catch((err)=>{
+
+          Error(err.msg||'删除操作失败！');
+         
+        }).finally(()=>{this.setState({isLoading:false})});
+      
+    }
+
     render() {
-        const {permissionEditStore}=this.props;
+        //const {permissionEditStore}=this.props;
 
         const { getFieldProps, getFieldError } = this.props.form;
-
 
         const columns = [
             { title: '名称', dataIndex: 'name', key: 'name',textAlign:'center', width: 100 },
@@ -188,22 +223,23 @@ interface IPageState {
               disabled:this.selected.length>1?true:false ,//permissionEditStore.selectedRows!=null?permissionEditStore.selectedRows!.length==1?false:true:true,
               onClick:()=>{
                
-                if(permissionEditStore.selectedRows.length==0){
+                if(this.selected.length==0){
 
                   Info('请选择要编辑的记录');
                   return;
                 }
-                if(permissionEditStore.selectedRows.length>1){
+                if(this.selected.length>1){
 
                   Info('编辑记录只能选择一条');
                   return;
                 }
-                this.gotoEdit(permissionEditStore.selectedRows[0].id);
+                this.gotoEdit(this.selected[0].id);
                 //this.setState({isEditPop:true});
               },
             },
             {
-              value:'删除'
+              value:'删除',
+              onClick:this.alertDel 
             }
           ];
 
@@ -222,7 +258,7 @@ interface IPageState {
 
             <Row>
                 <Col md="2">
-                    <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} allowType={[1,2]}/>
+                    <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} showRoot={true}  allowType={[1,2]}/>
                 </Col>
                 <Col md="10">
                 <SearchPanel
@@ -262,12 +298,12 @@ interface IPageState {
                     page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     isLoading={this.state.isLoading}
+                    pageChange={this.onPageChange}
                   />
-
+                  <DelModal hide={!this.state.isShowDeleModal} confirmFn={this.handler_del} size="sm" modalContent={"确定要删除这个["+this.selected.length+"]条记录吗?"}></DelModal>
               </Col>
             </Row>
         </Panel >)
-  
     }
 }
 

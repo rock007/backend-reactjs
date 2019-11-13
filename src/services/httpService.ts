@@ -66,6 +66,9 @@ http.interceptors.response.use(
         console.log('请重新登录');
         AppConsts.authorization.token='';
         window.location.href='/#/account/login';
+      }else{
+
+        return Promise.reject(resp);
       }
 
     }else{

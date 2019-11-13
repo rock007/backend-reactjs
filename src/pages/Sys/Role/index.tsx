@@ -57,10 +57,6 @@ interface IPageState {
 
             console.log('Search:'+JSON.stringify(values));
 
-            //let queryParam = deepClone(this.props.queryParam);
-           // let {pageParams} = queryParam;
-           // pageParams.pageIndex = 0;
-
            this.freshata();
         });
       }

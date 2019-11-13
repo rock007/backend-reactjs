@@ -99,13 +99,13 @@ handleSelect = (index) => {
               selectedkey={this.state.selectedkey}
               onSelect={this.handleSelect}>
               <Navbar.NavItem eventKey={1}>全屏</Navbar.NavItem>
-              <Navbar.NavItem href="#" eventKey={2}>
+              <Navbar.NavItem  eventKey={2}>
                   待办
               </Navbar.NavItem>
-              <Navbar.NavItem href="#" eventKey={3} >
+              <Navbar.NavItem eventKey={3} >
                   消息({this.props.unReadNum})
               </Navbar.NavItem>
-              <Navbar.NavItem href="#" eventKey={4}>
+              <Navbar.NavItem  eventKey={4}>
                   
               <Dropdown 
                     trigger={['hover']}
