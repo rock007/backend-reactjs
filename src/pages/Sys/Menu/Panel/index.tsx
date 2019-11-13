@@ -6,29 +6,45 @@ import SysService from '../../../../services/SysService';
 interface IPanelProps {
     onSelected?:(rec:any,e:any)=>void,
     isCheckbox:boolean,
-    allowType:number[]
+    allowType:number[],
+    showRoot:boolean,
 }
 interface IPanelState {
     value?:string,
-    data:any[]
+    data:any[],
 }
 
  class MenuPanel extends React.Component<IPanelProps,IPanelState> {
-
-  /** 
-    static defaultProps: Partial<IPanelProps> = {
+   
+    static defaultProps: IPanelProps = {
       isCheckbox:false,
-      allowType:[1]
+      allowType:[1],
+      showRoot:false,
     }
-**/
+
     state:IPanelState={
         value:'',
-        data:[]
+        data:[],
     }
     async componentDidMount() {
         let data = await SysService.getAllMenu();
-        this.setState({data:data.childs});
+
+        this.setState({data:this.props.showRoot?[data]: data.childs});
     }
+
+/** 
+    componentWillReceiveProps(nextProps) {
+      let _this = this;
+      let { selectKey} = this.props;
+      let {selectKey: nextSelectKey} = nextProps;
+
+      if (selectKey !== nextSelectKey) {
+
+          this.setState({selectKey: nextSelectKey}); 
+          
+      }
+  }
+  ***/
 
     renderTreeNodes = (data) => {
     
@@ -37,8 +53,6 @@ interface IPanelState {
         const loop = data => data.map((item) => {
 
         const icon=item.type==2?(<Icon type="uf-4square-3"  />):(item.type==3?(<Icon type="uf-pencil"  />):null);
-        
-       // if(this.props.allowType.includes(item.typ)){
         
           if (item.childs!=null&&item.childs.length>0) {
             return (
@@ -49,10 +63,6 @@ interface IPanelState {
           }
 
           return <Tree.TreeNode key={item.id} title={item.name} isLeaf={true} ext={item}  icon={icon||<Icon type="uf-list-s-o" />} />;
-        //}else{
-
-         // return ;
-        //}
         
       });
       return loop(data);

@@ -24,10 +24,9 @@ class AccountService {
   public async myProfile(): Promise<any> {
     
     let result = await http.post('/rest/manager/myProfile',{time:new Date().getTime});
-   
-    return result.data.result;
+
+    return result;
   }
 }
-
 
 export default new AccountService();

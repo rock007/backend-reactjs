@@ -55,9 +55,9 @@ class SysService {
     let result = await http.get('/rest/getPermissionTreeAll');
     return result;
   }
-  public async searchPermissionBy(args:any): Promise<any> {
+  public async searchPermissionBy(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
-    let result = await http.post('/rest/permission-search',args);
+    let result = await http.post('/rest/permission-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
   public async getPermissionById(id:string): Promise<any> {

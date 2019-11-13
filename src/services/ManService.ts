@@ -49,12 +49,12 @@ class ManService {
   
   //位置人员
   public async searchLocationMan(args:any): Promise<any> {
-    let result = await http.post('//restlocation-man-search',qs.stringify(args));
+    let result = await http.post('/rest/location-man-search',qs.stringify(args));
     return result;
   }
   //位置
   public async searchLocation(args:any): Promise<any> {
-    let result = await http.post('//restlocation-search',qs.stringify(args));
+    let result = await http.post('/rest/location-search',qs.stringify(args));
     return result;
   }
 

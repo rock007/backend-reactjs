@@ -1,25 +1,19 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-
-import multiSelect from "tinper-bee/lib/multiSelect.js";
 import loadsh from  'lodash';
 
 import {Panel, Table,Row, Col,Checkbox,FormControl,Tag,Form,Breadcrumb,Select } from 'tinper-bee';
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 
-//import Grid from "bee-complex-grid";
-//import 'bee-complex-grid/build/Grid.css';
 import Grid from '../../../components/Grid';
 import SysService from '../../../services/SysService';
-import PermissionEditPage from './Edit';
 import MenuPanel from './Panel';
-import { Info } from '../../../utils';
+import { Info ,getValidateFieldsTrim} from '../../../utils';
 import PermissionEditStore from '../../../stores/PermissionEditStore';
 import Store from '../../../stores/StoreIdentifier';
 import { PageModel } from '../../../services/Model/Models';
 
-const MultiSelectTable = multiSelect(Table, Checkbox);
 const FormItem = FormListItem;
 
 interface IPageProps {
@@ -31,9 +25,7 @@ interface IPageState {
     isEditPop:boolean,
     page:PageModel<any>,
     isLoading:boolean,
-    //btnFlag:number,
-    //selectedIndex:number
-    //selectRows:any[]
+    //searchArgs:any
 }
 
 @inject(Store.PermissionEditStore)
@@ -44,74 +36,77 @@ interface IPageState {
 
     pageIndex=1
     pageSize=10
-    parentId='';
+    //parentId='';
+
+    searchArgs:any
 
     state:IPageState={
         isEditPop:false,
         page:new PageModel(),
         isLoading:false,
+        //searchArgs:{}
     }
 
     componentDidMount() {
-
-    }
-    queryModules=async (id)=>{
-
-       const page= await SysService.searchPermissionBy({time:new Date().getTime()});
-
-       this.setState({page:page});
+      this.validFormSubmit();
     }
 
-    expandedRowRender = (record, index, indent) => {
-        let height = 200;
-        let innderData = [ ...new Array(100) ].map((e, i) => {
-          return { a: index+"-"+ i + 'a', b: i + 'b', c: i + 'c', d: i + 'd', key:  index+"-"+ i };
-         });
+    validFormSubmit=()=>{
 
-         const innerColumns = [
-            { title: '名称', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '图标', dataIndex: 'a', key: 'a', width: 100 },
-            { title: '图标', dataIndex: 'a', key: 'a', width: 100 },
-            { title: 'URL', dataIndex: 'c', key: 'c', width: 200 },
-            { title: '权限值', dataIndex: 'c', key: 'c', width: 200 },
-            { title: '说明', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return (<div><a href="#">修改</a>
-                <a href="#">删除</a></div>);
-              },
-            },
-          ];
+      this.props.form.validateFields((err, _values) => {
 
-        return (
-          <MultiSelectTable
-            columns={innerColumns}
-            scroll={{y:height}}
-            data={innderData} 
+          let values = getValidateFieldsTrim(_values);
+          // 年份特殊处理
+          if (values.year) {
+              values.year = values.year.format('YYYY');
+          }
+
+          console.log('Search:'+JSON.stringify(values));
+         
+          //values['parentId']=this.parentId;
+
+          //this.setState({searchArgs:values});
+          this.searchArgs=loadsh.defaults(values,this.searchArgs) ;
+          this.freshata(1);
+      });
+    }
+
+    freshata= async (index)=>{
     
-          />
-        );
-      };
-      getData=(expanded, record)=>{
-        //当点击展开的时候才去请求数据
-       
-      }
-      haveExpandIcon=(record, index)=>{
-        //控制是否显示行展开icon，该参数只有在和expandedRowRender同时使用才生效
-        if(index == 0){
-          return true;
-        }
-        return false;
-      }
+      this.setState({isLoading:true});
+
+      this.pageIndex=index;
+      const page= await SysService.searchPermissionBy(this.searchArgs,this.pageIndex,this.pageSize);
+
+      this.setState({page:page,isLoading:false});
+    }
+
+    resetSearch=()=>{
+      this.props.form.resetFields();
+
+      this.props.form.validateFields((err, _values) => {
+
+          let values = getValidateFieldsTrim(_values);
+
+          let arrayNew = [];
+          for (let field in values) {
+              arrayNew.push({key: field});
+          }
+
+          console.log('resetSearch:'+JSON.stringify(arrayNew));
+
+      });
+    }
+
+  
       onTreeSelectedChange=(m,e)=>{
 
         if(m!=null&&m.length>0){
 
-          this.parentId=m[0];
-          this.queryModules(m[0])
+          this.searchArgs.parentId=m[0];
+          this.validFormSubmit();
         }
     }
-
 
     gotoEdit=(id)=>{
       this.props.history.push('/permission-edit/'+id);
@@ -159,21 +154,18 @@ interface IPageState {
 
         const { getFieldProps, getFieldError } = this.props.form;
 
-        //const selectRowsLenth=permissionEditStore.selectedRows.length;
-
-        //let showObj = this.onHandleDisabled();
 
         const columns = [
-            { title: '名称', dataIndex: 'name', key: 'name', width: 100 },
-            { title: '类型', dataIndex: 'type', key: 'type', width: 100 ,render(text,record,index) {
+            { title: '名称', dataIndex: 'name', key: 'name',textAlign:'center', width: 100 },
+            { title: '类型', dataIndex: 'type', key: 'type',textAlign:'center', width: 100 ,render(text,record,index) {
 
               return text==1?'菜单':(text==2?'模块':(text==3?'操作':'未知'));
             }},
-            { title: '图标', dataIndex: 'icon', key: 'icon', width: 60 },
-            { title: 'URL', dataIndex: 'url', key: 'url', width: 150 },
-            { title: 'method', dataIndex: 'method', key: 'method', width: 100 },
-            { title: '权限值', dataIndex: 'attr', key: 'attr', width: 100 },
-            { title: '状态', dataIndex: 'status', key: 'status', width: 100 ,render(text,record,index) {
+            { title: '图标', dataIndex: 'icon', key: 'icon',textAlign:'center', width: 80 },
+            { title: 'URL', dataIndex: 'url', key: 'url',textAlign:'center', width: 150 },
+            { title: 'method', dataIndex: 'method', key: 'method',textAlign:'center', width: 100 },
+            { title: '权限值', dataIndex: 'attr', key: 'attr',textAlign:'center', width: 100 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 100 ,render(text,record,index) {
 
               if(text==0){
                 return ( <Tag colors="warning">停用</Tag>);
@@ -183,8 +175,7 @@ interface IPageState {
                 return ( <Tag colors="danger">删除</Tag>);
               }
               return text;
-            }},
-            { title: '说明', dataIndex: 'remarks', key: 'remarks', width: 120 }
+            }}
           ];
           
           const toolBtns = [{
@@ -216,7 +207,6 @@ interface IPageState {
             }
           ];
 
-
         return ( <Panel>
         <Breadcrumb>
 			    <Breadcrumb.Item href="#">
@@ -236,9 +226,9 @@ interface IPageState {
                 </Col>
                 <Col md="10">
                 <SearchPanel
-                  reset={()=>{}}
+                  reset={this.resetSearch}
                   onCallback={()=>{}}
-                  search={()=>{}}
+                  search={this.validFormSubmit}
                   searchOpen={true}
                 >
 
@@ -272,14 +262,12 @@ interface IPageState {
                     page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     isLoading={this.state.isLoading}
-                    
                   />
 
               </Col>
             </Row>
-          
         </Panel >)
-        //record={this.props.permissionEditStore.selectedRows.length>0?this.props.permissionEditStore.selectedRows[0]:null}
+  
     }
 }
 

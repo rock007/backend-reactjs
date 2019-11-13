@@ -68,9 +68,6 @@ interface IPageState {
        * 请求页面数据
        */
     freshata= async ()=>{
-    
-      
-        
         this.setState({isLoading:true});
         let data = await SysService.searchRole() as any[];
 

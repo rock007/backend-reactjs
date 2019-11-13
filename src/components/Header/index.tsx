@@ -16,8 +16,10 @@ interface IHeaderState {
 }
 
 export interface IHeaderProps {
-  expanded?: any;
-  toggle?: any;
+  title?:string,
+  orgName?:string,
+  realName?:string,
+  unReadNum:number,
   handler_msg:()=>void
 }
 
@@ -84,9 +86,9 @@ handleSelect = (index) => {
       onToggle={this.onToggle}>
       <Navbar.Header>
           <Navbar.Brand>
-              <a href="#">标题在这里</a>
+              <a href="#">{this.props.title}</a>
           </Navbar.Brand>
-          <Navbar.Brand style={{fontSize:"9px"}}>中心戒毒社区</Navbar.Brand>
+              <Navbar.Brand style={{fontSize:"9px"}}>{this.props.orgName}</Navbar.Brand>
           <Navbar.Toggle />
       </Navbar.Header>
 
@@ -101,7 +103,7 @@ handleSelect = (index) => {
                   待办
               </Navbar.NavItem>
               <Navbar.NavItem href="#" eventKey={3} >
-                  消息(3)
+                  消息({this.props.unReadNum})
               </Navbar.NavItem>
               <Navbar.NavItem href="#" eventKey={4}>
                   
@@ -109,7 +111,7 @@ handleSelect = (index) => {
                     trigger={['hover']}
                     overlay={menu2}
                     animation="slide-up">
-                    <span>社区管理员:张三</span> 
+                      <span>欢迎:{this.props.realName}</span> 
                 </Dropdown> 
               </Navbar.NavItem>
                         

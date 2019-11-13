@@ -1,11 +1,10 @@
 import { observable, action } from 'mobx';
-import LoginResultOutput from '../services/account/dto/LoginResultOutput';
 import SysService from '../services/SysService';
-import { PermissionModelInput } from '../services/dto/PermissionModel';
+import { PermissionModel } from '../services/dto/SystemModel';
 
 class PermissionEditStore {
   
-  @observable record: PermissionModelInput ;
+  @observable record: PermissionModel ;
 
   @observable result: any ;
 
@@ -13,14 +12,13 @@ class PermissionEditStore {
   //@observable selectedLength: number =0;
 
   @action
-  public submit = async (input :PermissionModelInput) => {
+  public submit = async (input :PermissionModel) => {
     this.result = await SysService.submitPermission(input);
   };
 
   @action
   public loadRecord = async (id: string) => {
     
-    debugger;
     const result = await SysService.getPermissionById(id);
 
     this.record =result;

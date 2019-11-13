@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { Panel,Loading,Row,Breadcrumb,Col, FormControl,Select,Label,Form,Button,Icon } from 'tinper-bee';
+import { Panel,Loading,Row,Breadcrumb,Col,FormControl,Select,Label,Form,Button,Icon } from 'tinper-bee';
 import { Warning, Info } from '../../../../utils';
 import SysService from '../../..//../services/SysService';
-import MenuPanel from '../Panel';
+import MenuTreeSelect from '../Panel/MenuTreeSelect';
 
 import './index.scss';
 
@@ -44,9 +44,9 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
 
     async loadRecord(id){
 
-        const  result=await SysService.getPermissionById(id);
+        const  data=await SysService.getPermissionById(id);
       
-        this.setState({record:result,isLoading:false});
+        this.setState({record:data,isLoading:false});
     }
 
     submit=(e)=>{
@@ -61,7 +61,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                     return;
                 }
 
-                values['parentId']=this.state.selectedValue.id;
+                values['parentId']=this.state.selectedValue;
                 values['id']=this.id;
             }
 
@@ -80,35 +80,34 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
     async doSave(values){
 
         this.setState({isLoading:true});
-        let result= await SysService.submitPermission(values);
-        Info(result);
-        this.setState({isLoading:false});
-        
-        this.goBack();
+        let resp= await SysService.submitPermission(values)
+            .then((resp)=>{
+
+                Info(resp);
+                this.goBack();
+            })
+            .catch((resp)=>{
+
+                this.setState({isLoading:false});
+                Warning(resp.data);
+            });
     }
 
     goBack=()=>{
        this.props.history.goBack();
     }
-    onMenuTreeClick=(selects,e)=>{
+    onMenuTreeClick=(value,label)=>{
 
-        if(selects!=null&&selects.length>0){
-            this.setState({selectedValue:e.selectedNodes[0].props.ext});
+        if(value!=null&&value.length>0){
+            this.setState({selectedValue:value});
         }
-
-    }
-
-    onInputChange=(where:string,value:any)=>{
-
-        //let newRecord
-        //this.setState({record.a:value});
     }
 
     render() {
         
         const { getFieldProps, getFieldError } = this.props.form;
 
-        const parentType=this.state.selectedValue!=null?this.state.selectedValue.type:100;
+        //const parentType=this.state.selectedValue!=null?this.state.selectedValue.type:100;
 
         let me=this;
         return ( <Panel>
@@ -121,22 +120,20 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                   系统管理
 			    </Breadcrumb.Item>
                 <Breadcrumb.Item href="#">
-                    菜单角色
+                    菜单权限
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                   编辑/删除
+                  {this.id==0?"添加":"编辑"}
 			    </Breadcrumb.Item>
                 <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
 			</Breadcrumb>
             <Row>
-                <Col md="3">
-                    <MenuPanel  onSelected={this.onMenuTreeClick}  isCheckbox={false} allowType={[1,2]}></MenuPanel>
-                </Col>
-                <Col md="9">
+                <Col md="10">
                     <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>上一级</Label>
-                        <Label>{this.state.selectedValue.name}</Label>
+                        <MenuTreeSelect onSelected={this.onMenuTreeClick}  defaultValue={this.state.record.parentId}  allowType={[1,2]} showRoot={true}>
+                        </MenuTreeSelect>
                         <span className='error'>
                             {getFieldError('parentId')}
                         </span>
@@ -185,6 +182,23 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                             }/>
                     </FormItem>
                     <FormItem>
+                        <Label>Method</Label>
+                        <Select 
+                                {...getFieldProps('method', {
+                                    initialValue: this.state.record.method,
+                                    rules: [{
+                                        required: true, message: '请选择请求方法',
+                                    }],
+                                })}
+                        >
+                            <Select.Option value={"post"}>post</Select.Option>
+                            <Select.Option value={"get"}>get</Select.Option>
+                        </Select>
+                        <span className='error'>
+                            {getFieldError('method')}
+                        </span>
+                    </FormItem>
+                    <FormItem>
                         <Label>权限值</Label>
                         <FormControl placeholder="请输入权限值(包含数字和字母，8-15位)"
                             {...getFieldProps('attr', {
@@ -211,6 +225,19 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                             }/>
                     </FormItem>
                     <FormItem>
+                        <Label>排序值</Label>
+                        <FormControl  placeholder="请输入排序值" {
+                            ...getFieldProps('index', {
+                                initialValue: this.state.record.index,
+                                validateTrigger: 'onBlur',
+                                rules: [{
+                                    pattern: /[0-9]$/, 
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>只能输入数字</span></span>,
+                                }],
+                            }) 
+                            }/>
+                    </FormItem>
+                    <FormItem>
                         <Label>说明</Label>
                         <FormControl placeholder="请输入说明"
                         {
@@ -233,7 +260,6 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                         >
                             <Select.Option value={0}>停用</Select.Option>
                             <Select.Option value={1}>正常</Select.Option>
-                            <Select.Option value={-1}>删除</Select.Option>
                         </Select>
                         <span className='error'>
                             {getFieldError('status')}
