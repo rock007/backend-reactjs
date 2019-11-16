@@ -51,12 +51,12 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
 
   loadData = async () => {
     let refModelUrl = {
-      tableBodyUrl: '/grid-search',//表体请求
-      areaTree: '/getAreaTreeById',
+      tableBodyUrl: '/rest/grid-search',//表体请求
+      areaTree: '/rest/getAreaTreeById',
     }
     let requestList = [
       request(refModelUrl.areaTree, { method: 'get' }),
-      request(refModelUrl.tableBodyUrl, { method: 'Post' ,data:{uid:'001'}}), 
+      request(refModelUrl.tableBodyUrl, { method: 'Post' ,data:{}}),//,data:{uid:'001'} 
     ];
     Promise.all(requestList).then(([treeData, bodyData]) => {
 
@@ -176,7 +176,7 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
           };
 
         return (  <RefTreeTableWithInput
-          
+          {...this.props}
           //base
           title="地区网格选择"
           //menuTitle="地区"

@@ -35,7 +35,7 @@ const formatYYYY = "YYYY";
 let titleArr = ["新增", "修改", "详情"];
 
 
-class ManEdit extends React.Component<any,IPageState> {
+class ManEditPop extends React.Component<any,IPageState> {
     
     state:IPageState={
         btnFlag:0,
@@ -696,4 +696,4 @@ class ManEdit extends React.Component<any,IPageState> {
     }
 }
 
-export default Form.createForm()(ManEdit);
+export default Form.createForm()(ManEditPop);

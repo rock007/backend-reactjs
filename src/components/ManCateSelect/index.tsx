@@ -65,16 +65,17 @@ export default class ManCateSelect extends React.Component<IPanelProps,IPanelSta
 
   render() {
 
-      return (  <TreeSelect
-        showSearch={false}
-        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-        placeholder="请选择"
-        allowClear
-        treeDefaultExpandAll
-        value={this.state.value}
-        onChange={this.onChange}
-        >
-          { this.renderTreeNodes(this.state.data)}
-        </TreeSelect>)
+      return (<TreeSelect
+                { ...this.props}
+                showSearch={false}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="请选择"
+                allowClear
+                treeDefaultExpandAll
+                //value={this.state.value}
+                //onChange={this.onChange}
+              >
+                { this.renderTreeNodes(this.state.data)}
+              </TreeSelect>)
   }
 }

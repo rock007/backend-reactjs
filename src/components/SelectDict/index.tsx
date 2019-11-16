@@ -27,10 +27,10 @@ class SelectDict extends Component<IProps,IState> {
         this.setState({data:data});
     }
     render() {
-     
+         
         return (
             <React.Fragment>
-                <Select>
+                <Select {...this.props}>
                     {
                         this.state.data.map((item: any, index: number) => (
                 

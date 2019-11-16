@@ -6,8 +6,9 @@ class SysService {
 
   public async getDetpTree(): Promise<any> {
    
-    let result = await http.get('/rest/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
-    //let result = await http.get('rest/sys/getDeptTree');
+    //let result = await http.get('/rest/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
+    let result = await http.get('/rest/getDeptTreeByUid');
+    
     return result;
   }
 
@@ -26,7 +27,7 @@ class SysService {
   public async searchOrg(name:string,parentId:string,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
     let result = await http.post('/rest/org-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
-                                {"uid":"22222","deptName":name,"superId":parentId}
+                                {"deptName":name,"superId":parentId}
                         );
     return result;
   }

@@ -15,9 +15,9 @@ import utils from '../../utils/utils';
 import AppConsts from '../../lib/appconst';
 import Footer from '../Footer';
 import Header from '../Header';
-import { getCookie} from '../../utils/index';
-import AccountService from '../../services/account/AccountService'
+import MsgPanel from '../../pages/Sys/Msg/Panel';
 
+import { getCookie} from '../../utils/index';
 import SystemStore from '../../stores/SystemStore';
 import Store from '../../stores/StoreIdentifier';
 import { MenuModel } from '../../services/dto/SystemModel';
@@ -161,13 +161,10 @@ render() {
         </PageLayout.Content>
     </PageLayout>
     <Footer/>
-    <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
-                  <div style={{paddingLeft: "20px"}}>
-                      <p>这是第一行文字</p>
-                      <p>这是第二行文字</p>
-                      <p>这是第三行文字，啦啦啦~</p>                                                 
-                  </div>
+    <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={false} width={'450px'} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
+          <MsgPanel unReadNum={this.props.systemStore.unReadNum}></MsgPanel>
     </Drawer>
+
   </div>);
 
   return <DocumentTitle title={utils.getPageTitle(pathname)}>{layout}</DocumentTitle>;
@@ -265,13 +262,14 @@ render22() {
           </PageLayout.Content>
       </PageLayout>
       <Footer/>
-      <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
+      <Drawer closeIcon={<Icon type="uf-close-c"/>} showClose={true} width={'500px'} title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
                     <div style={{paddingLeft: "20px"}}>
                         <p>这是第一行文字</p>
                         <p>这是第二行文字</p>
                         <p>这是第三行文字，啦啦啦~</p>                                                 
                     </div>
       </Drawer>
+
   </div>
     );
 

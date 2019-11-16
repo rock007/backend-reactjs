@@ -52,9 +52,25 @@ export const appRouters: any = [
     permission: '',
     title: '档案详细',
     path: '/man-view/:id',
-    name: 'man_man_view',
+    name: 'man_view',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Man/View'))
+  },
+  {
+    permission: '',
+    title: '档案编辑',
+    path: '/man-edit/:id',
+    name: 'man_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Edit/ManEditPage'))
+  },
+  {
+    permission: '',
+    title: '亲属关系',
+    path: '/man-relate/:id',
+    name: 'man_relate',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Edit/RelationShipPage'))
   },
   {
     permission: '',

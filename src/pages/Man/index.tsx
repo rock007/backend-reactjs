@@ -12,7 +12,7 @@ import SearchPanel from '../../components/SearchPanel';
 import DatePicker from "bee-datepicker";
 
 import Alert from '../../components/Alert';
-import PopupModal from './Edit';
+
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
@@ -24,6 +24,8 @@ import RelationShipPanel from '../../components/Buss/RelationShipPanel';
 import WorkJobPanel from '../../components/Buss/WorkJobPanel';
 import ManContactPanel from '../../components/Buss/ManContactPanel';
 import ManStatusModifyPanel from '../../components/Buss/ManStatusModifyPanel';
+import TestDlog from './Edit/TestDlg';
+//import PageDlog from '../../components/PageDlg';
 
 import './index.scss';
 import {Info} from '../../utils/index';
@@ -31,7 +33,8 @@ import {Info} from '../../utils/index';
 const FormItem = FormListItem;
 
 interface IPageProps {
-    form:any
+    form:any,
+    history:any,
 }
 interface IPageState {
     expanded:boolean,
@@ -43,7 +46,8 @@ interface IPageState {
     isPopRelation:boolean,
     isPopWorkjob:boolean,
     isPopContact:boolean,
-    isPopStatusModify:boolean
+    isPopStatusModify:boolean,
+    isPopTest:boolean
 }
 export  class Man extends React.Component<IPageProps,IPageState> {
 
@@ -67,7 +71,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         isPopRelation:false,
         isPopWorkjob:false,
         isPopContact:false,
-        isPopStatusModify:false
+        isPopStatusModify:false,
+        isPopTest:false
     }
     async componentDidMount() {
 
@@ -86,6 +91,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         }
     }
 
+    go2Page=(url)=>{
+        this.props.history.push(url);
+    }
     search= ()=>{
         this.props.form.validateFields((err, values) => {
 
@@ -215,18 +223,28 @@ export  class Man extends React.Component<IPageProps,IPageState> {
           
           const toolBtns = [{
             value:'新增',
-            
             bordered:false,
             colors:'primary',
-
             onClick:() => {
-                this.onClickShowModel(0);
+                this.go2Page('/man-edit/0');
             }
         },{
             value:'编辑',
             colors:'default',
             disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
+
+                if(this.checkedRows.length>1){
+
+                    Info('编辑只能选择一条记录');
+
+                }else if(this.checkedRows.length==1){
+
+                    this.go2Page('/man-edit/'+this.checkedRows[0].manId);
+
+                }else{
+                    Info('请选择要删除的记录');
+                }
 
             }
         },{
@@ -238,7 +256,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 }else{
                     Info('请选择要删除的记录');
                 }
-                }
+            }
         },{
             value:'社戒变更',
             iconType:'uf-personin-o',
@@ -256,7 +274,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.checkedRows.length>1?true:false,
             onClick:() => {
-                this.setState({isPopRelation:true})
+               // this.setState({isPopRelation:true});
+                if(this.checkedRows.length>1){
+
+                    Info('亲属关系只能选择一条记录');
+
+                }else if(this.checkedRows.length==1){
+
+                    this.go2Page('/man-relate/'+this.checkedRows[0].manId);
+
+                }else{
+                    Info('请选择要查看亲属关系的戒毒人员');
+                }
             }
         },{
             value:'工作经历',
@@ -267,7 +296,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'导出',
-            iconType:'uf-export'
+            iconType:'uf-export',
+            onClick:()=>{
+                this.setState({isPopTest:true});
+            }
         },{
             value:'打印',
             iconType:'uf-print'
@@ -372,12 +404,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 </Col>
             </Row>
 
-            <PopupModal
-                    editModelVisible={this.state.editModelVisible}
-                    onCloseEdit={this.onCloseEdit}
-                    currentIndex={1}
-                    btnFlag={1}
-            />
             <PopDialog title="亲属关系" size='xlg' show={this.state.isPopRelation} close={()=>this.setState({isPopRelation:false})}>
                 <RelationShipPanel/>
             </PopDialog>
@@ -391,6 +417,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             <PopDialog title="社戒变更" size='lg' show={this.state.isPopStatusModify} close={()=>this.setState({isPopStatusModify:false})}>
                 <ManStatusModifyPanel/>
             </PopDialog>    
+
+            <TestDlog title="测试下" isShow={this.state.isPopTest} onClose={()=>this.setState({isPopTest:false})} url="www.baidu.com"></TestDlog>
             
             <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
