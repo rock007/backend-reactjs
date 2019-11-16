@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Panel, Tree,Message ,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Tree,FormControl } from 'tinper-bee';
 
 import SysService from '../../../../services/SysService';
+import { convertOrgTreeNode } from '../../../../utils/tools';
 
 interface IPanelProps {
     onClick?:(rec:any)=>void
@@ -13,6 +14,8 @@ interface IPanelState {
 
  class OrgPanel extends React.Component<IPanelProps,IPanelState> {
 
+    defaultExpandedKeys=[]
+
     state:IPanelState={
         value:'',
         data:[]
@@ -21,6 +24,8 @@ interface IPanelState {
 
         let data = await SysService.getDetpTree();
 
+        //let treeData=convertOrgTreeNode(data);
+        
         this.setState({data:data.childs});
     }
 
@@ -53,8 +58,13 @@ interface IPanelState {
         ***/
 
       if (item.childs!=null&&item.childs.length>0) {
+
+        //const m2=this.state.defaultExpandedKeys;
+        this.defaultExpandedKeys.push(item.id);
+        //this.setState({defaultExpandedKeys:m2});
+
         return (
-          <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={item.isLeaf} ext={item}>
+          <Tree.TreeNode key={item.id} title={item.deptName} isLeaf={false} ext={item}>
             {loop(item.childs)}
           </Tree.TreeNode>
         );
@@ -63,35 +73,16 @@ interface IPanelState {
     });
     return loop(data);
   }
+
   onSelect=(selectedKeys, info) =>{
     console.log('onSelect', selectedKeys);
     if(this.props.onClick!=null){
       this.props.onClick.call(this,selectedKeys)
     }
   }
-    render() {
-       /** 
-        const loop = data => data.map((item) => {
-            const index = item.key.search(this.state.value);
-            const beforeStr = item.key.substr(0, index);
-            const afterStr = item.key.substr(index + this.state.value.length);
-            const title = index > -1 ? (
-              <span>
-                {beforeStr}
-                <span className="u-tree-searchable-filter">{this.state.value}</span>
-                {afterStr}
-              </span>
-            ) : <span>{item.key}</span>;
-            if (item.children) {
-              return (
-                <Tree.TreeNode key={item.key} title={title}>
-                  {loop(item.children)}
-                </Tree.TreeNode>
-              );
-            }
-            return <Tree.TreeNode key={item.key} title={title} />;
-          });
-***/
+
+  render() {
+       
         return ( <div className="org-tree-left" style={{padding:"10px"}}>
             <div className='tree-head'>组织机构</div>
               <FormControl
@@ -100,12 +91,13 @@ interface IPanelState {
                     type="search"
                 />
                 <div style={{ overflow:'auto'}}>
-                <Tree className="orgTree" showLine 
-                    checkStrictly
-                    defaultExpandAll
+                <Tree className="orgTree" 
+                    showLine ={true}
+                    checkStrictly={true}
+                    defaultExpandedKeys={this.defaultExpandedKeys}
                     onSelect={this.onSelect}
                 >
-                  { this.renderTreeNodes(this.state.data)}
+                 { this.renderTreeNodes(this.state.data)}
               </Tree>
               </div>
         </div >)

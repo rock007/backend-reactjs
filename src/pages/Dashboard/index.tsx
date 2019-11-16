@@ -1,77 +1,75 @@
 import * as React from 'react';
-import LoadableComponent from '../../components/Loadable/index';
 import {Panel,Tabs , PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import utils from '../../utils/utils';
 
 import AcMultiTabs from 'ac-multi-tabs';
 import 'ac-multi-tabs/dist/index.css';
 
-import Login from '../Account/index'
+import { sceneRouters } from '../../components/Router/router.config';
 
 interface IPageProps {
     
 }
 interface IPageState {
- 
     menus: any[],
-    curPanel?:any
-
+    curTabName:string
 }
 
 export class Dashboard extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
-        
+        curTabName:'wellcome',
         menus:[{
             id: 0,
-            router: '/account',
-            title: "首页"
+            name: 'wellcome',
+            title: "首页",
+            component:()=>{return this.getScene('wellcome')}
+            //component:sceneRouters.find((v,i)=>v.name=='wellcome').component
         },{
             id: 1,
-            router: '/visitor',
-            title: "走访查询"
+            name: 'visitor',
+            title: "走访查询",
+            component:()=> ()=>{return this.getScene('visitor')}
         },{
             id: 2,
-            router: '/niaojian',
-            title: "尿检记录"
+            name: 'articleDemo',
+            title: "富文本测试"
         },{
             id: 3,
-            router: '/niaojian',
-            title: "尿检记录44"
+            name: 'chartDemo',
+            title: "图表测试"
+        },{
+            id: 4,
+            name: 'mapDemo',
+            title: "地图测试"
         }]
 
     }
     componentDidMount() {
 
     }
+    getScene=(name:string)=>{
+
+        const one=sceneRouters.find((v,i)=>v.name==name);
+        return one!=null?one.component:()=>(<div>没有找到组件</div>);
+    }
 
     handleChange = (v,target) => {
        
-        console.log(target)
-        
-       var mm= utils.getRoute(target.router);
-
-       //let component= LoadableComponent(() => import('../Account/index'))
-
-       this.setState({curPanel:mm.component});
+        console.log(target.name);
+       this.setState({curTabName:target.name});
     }
-    onChange = (activeKey) => {
-        console.log(`onChange ${activeKey} o-^-o`);
-       
-    }
+
     render() {
         const { menus } = this.state;
 
-        let component= LoadableComponent(() => import('../Account/index')) ;
+        let A=this.getScene(this.state.curTabName) ;
 
         return ( <Panel>
           <AcMultiTabs menus={menus} onChange={this.handleChange}/>
-            <Panel>
-
-                {React.createElement(this.state.curPanel||component) }
-            </Panel>
-            </Panel>)
+          <Panel>
+               <A/>
+           </Panel>
+        </Panel>)
     }
 }
 

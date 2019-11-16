@@ -17,6 +17,9 @@ import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
 import {PageModel,SearchModel} from '../../services/Model/Models';
+import { inject, observer } from 'mobx-react';
+import ManStore from '../../stores/ManStore';
+import Store from '../../stores/StoreIdentifier';
 
 import SelectDict from '../../components/SelectDict';
 import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
@@ -35,11 +38,13 @@ const FormItem = FormListItem;
 interface IPageProps {
     form:any,
     history:any,
+    manStore:ManStore
 }
 interface IPageState {
     expanded:boolean,
     editModelVisible:boolean,
     page:PageModel<any>,
+
     searchModel:SearchModel,
     isLoading:boolean,
     isDeleteAlterShow:boolean,
@@ -47,11 +52,16 @@ interface IPageState {
     isPopWorkjob:boolean,
     isPopContact:boolean,
     isPopStatusModify:boolean,
-    isPopTest:boolean
+    isPopTest:boolean,
+
+    checkedRows:any[];
 }
+
+@inject(Store.ManStore)
+@observer
 export  class Man extends React.Component<IPageProps,IPageState> {
 
-    checkedRows=[]
+    //checkedRows=[]
     pageIndex=1
     pageSize=10
     orgId='';
@@ -72,8 +82,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         isPopWorkjob:false,
         isPopContact:false,
         isPopStatusModify:false,
-        isPopTest:false
+        isPopTest:false,
+        checkedRows:[]
     }
+
     async componentDidMount() {
 
        this.search();
@@ -84,9 +96,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         if(rec!=null&&rec.length>0){
 
             this.orgId=rec[0];
-            //const search = loadsh.defaults(this.state.searchModel, {orgId:rec[0]});
-
-            //this.setState({searchModel:search});
             this.search();
         }
     }
@@ -133,29 +142,15 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
     getSelectedDataFunc = (selectData, record, index) => {
         
-        //console.log("data", JSON.stringify(data));
-        //this.setState({checkedRows:data});
+        //this.checkedRows=selectData;
 
-        let  tableData  = this.state.page.data;
-		let _tableData = loadsh.cloneDeep(tableData);
-		if (index != undefined) {
-			_tableData[index]['_checked'] = !_tableData[index]['_checked'];
-		} else {//点击了全选
-			if (selectData.length > 0) {//全选
-				_tableData.map(item => {
-					if (!item['_disabled']) {
-						item['_checked'] = true
-					}
-				});
-			} else {//反选
-				_tableData.map(item => {
-					if (!item['_disabled']) {
-						item['_checked'] = false
-					}
-				});
-			}
-        }
-        this.checkedRows=selectData;
+        /** 
+        this.props.manStore.selected(
+            _tableData,
+            selectData
+        )
+        ***/
+       this.setState({checkedRows:selectData});
     };
   
     onPageChange=(pageIndex:number,pageSize:number)=>{
@@ -231,16 +226,16 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'编辑',
             colors:'default',
-            disabled:this.checkedRows.length>1?true:false,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
-                if(this.checkedRows.length>1){
+                if(this.state.checkedRows.length>1){
 
                     Info('编辑只能选择一条记录');
 
-                }else if(this.checkedRows.length==1){
+                }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-edit/'+this.checkedRows[0].manId);
+                    this.go2Page('/man-edit/'+this.state.checkedRows[0].manId);
 
                 }else{
                     Info('请选择要删除的记录');
@@ -251,7 +246,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             value:'删除',
             colors:'default',
             onClick:() => {
-                if(this.checkedRows.length>0){
+                if(this.state.checkedRows.length>0){
                     this.setState({isDeleteAlterShow:true});
                 }else{
                     Info('请选择要删除的记录');
@@ -260,28 +255,28 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'社戒变更',
             iconType:'uf-personin-o',
-            disabled:this.checkedRows.length>1?true:false,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{ this.setState({isPopStatusModify:true})}
         },{
             value:'六保一',
             colors:'default',
-            disabled:this.checkedRows.length>1?true:false,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
                 this.setState({isPopContact:true})
             }
         },{
             value:'亲属关系',
             colors:'default',
-            disabled:this.checkedRows.length>1?true:false,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
                // this.setState({isPopRelation:true});
-                if(this.checkedRows.length>1){
+                if(this.state.checkedRows.length>1){
 
                     Info('亲属关系只能选择一条记录');
 
-                }else if(this.checkedRows.length==1){
+                }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-relate/'+this.checkedRows[0].manId);
+                    this.go2Page('/man-relate/'+this.state.checkedRows[0].manId);
 
                 }else{
                     Info('请选择要查看亲属关系的戒毒人员');
@@ -290,7 +285,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'工作经历',
             colors:'default',
-            disabled:this.checkedRows.length>1?true:false,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
                 this.setState({isPopWorkjob:true});
             }
@@ -319,9 +314,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
             <Row>
                 <Col md="2">
-
-                <OrgPanel onClick={this.handler_org_selected}/>
-               
+                    <OrgPanel onClick={this.handler_org_selected}/>
                 </Col>
                 <Col md="10">
                 <SearchPanel
@@ -393,7 +386,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
               
                 <Grid
-                   
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

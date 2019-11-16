@@ -1,6 +1,11 @@
 import React, {Component} from "react";
 import BeeGrid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
+import loadsh from  'lodash';
+
+import { inject, observer } from 'mobx-react';
+import Store from '../../stores/StoreIdentifier';
+import BeeGridStore from '../../stores/BeeGridStore';
 
 import './index.scss'
 import { PageModel } from "../../services/Model/Models";
@@ -13,14 +18,16 @@ interface IComponentProps {
     //exportData?:any[],
     toolBtns?:any[],
     pageChange?:(pageIndex:number,pageSize:number)=>void
-    getSelectedDataFunc:(selectData, record, index)=>void
+    getSelectedDataFunc:(selectData, record, index)=>void,
    
-    
+    beeGridStore:BeeGridStore
 }
 interface IComponentState {
     dataNumIndex:number,
 }
 
+@inject(Store.BeeGridStore)
+@observer
 class Grid extends Component<IComponentProps,IComponentState> {
    
     pageIndex:number=1
@@ -38,6 +45,18 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
     constructor(props) {
         super(props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+       
+        let {page} = this.props;
+        let {page: nextpage, isShow: nextIsShow} = nextProps;
+        // 判断是否 btnFlag新弹框状态  currentIndex当前选中行
+        if (nextpage !== page) {
+
+            this.props.beeGridStore.initData(nextpage);
+        }
+
     }
 
     /**
@@ -79,15 +98,36 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
       this.freshata(1);
     }
-    getSelectedDataFunc = (data, record, index) => {
+    getSelectedDataFunc = (selectData, record, index) => {
         
         //console.log("data", JSON.stringify(data));
        //  this.setState({checkedRows:data});
 
+       let  tableData  = this.props.beeGridStore.page.data;
+       let _tableData = loadsh.cloneDeep(tableData);
+       if (index != undefined) {
+           _tableData[index]['_checked'] = !_tableData[index]['_checked'];
+       } else {//点击了全选
+           if (selectData.length > 0) {//全选
+               _tableData.map(item => {
+                   if (!item['_disabled']) {
+                       item['_checked'] = true
+                   }
+               });
+           } else {//反选
+               _tableData.map(item => {
+                   if (!item['_disabled']) {
+                       item['_checked'] = false
+                   }
+               });
+           }
+       }
+       this.props.beeGridStore.selected(_tableData,selectData);
+      
       if(this.props.getSelectedDataFunc!=null){
-        this.props.getSelectedDataFunc(data,record,index);
+        this.props.getSelectedDataFunc(selectData,record,index);
       }
-
+    
 
     };
     sortFun = (sortParam)=>{
@@ -101,22 +141,22 @@ class Grid extends Component<IComponentProps,IComponentState> {
             items:5,//一页显示多少条
             dataNumSelect: [ "10", "20", "50", "100"],
             dataNum:this.state.dataNumIndex,
-            total:this.props.page.dataCount,//总共多少条、
+            total:this.props.beeGridStore.page.dataCount,//总共多少条、
             freshData:this.freshata,//点击下一页刷新的数据
             onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
             showJump:true,
             noBorder:true
           }
 
-        const {columns, page,   ...otherProps } = this.props;
+        const {columns, beeGridStore,   ...otherProps } = this.props;
         
-        let _exportData =  page.data;
+        let _exportData =  beeGridStore.page.data;
  
         let sortObj = {
             mode:'single',
             backSource:true,//后台排序
             sortFun:this.sortFun
-        }
+        };
 
         return (
             <div className='bs-grid-wrapper'>
@@ -125,7 +165,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={{type:"checkbox"}}
-                    data={page.data}
+                    data={beeGridStore.page.data}
                     loading={this.props.isLoading}
                     columns={columns}
                     {...otherProps}
@@ -134,7 +174,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                     ref={el => this.grid = el}
                     sort={sortObj}
                    // sortFun={this.sortFun}
-                    getSelectedDataFunc={this.props.getSelectedDataFunc}
+                    getSelectedDataFunc={this.getSelectedDataFunc}
                 />
             </div>
         );

@@ -253,4 +253,27 @@ export const appRouters: any = [
   }
 ];
 
-export const routers = [...userRouter, ...appRouters];
+export const sceneRouters: any = [
+  {
+    name:'wellcome',
+    title:'欢迎页',
+    component: LoadableComponent(() => import('../../pages/Scenes/Wellcome'))
+  },
+  {
+    name:'articleDemo',
+    title:'富文本测试',
+    component: LoadableComponent(() => import('../../pages/Scenes/ArticleDemo'))
+  },
+  {
+    name:'chartDemo',
+    title:'图表测试',
+    component: LoadableComponent(() => import('../../pages/Scenes/ChartDemo'))
+  },
+  {
+    name:'mapDemo',
+    title:'地图测试',
+    component: LoadableComponent(() => import('../../pages/Scenes/MapDemo'))
+  }
+]
+
+export const routers = [...userRouter, ...appRouters,...sceneRouters];

@@ -1572,6 +1572,11 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
+ac-editor@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/ac-editor/download/ac-editor-1.0.1.tgz#c246ed5a525c0105a49553dfe4df680afb1c976d"
+  integrity sha1-wkbtWlJcAQWklVPf5N9oCvscl20=
+
 ac-multi-tabs@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npm.taobao.org/ac-multi-tabs/download/ac-multi-tabs-1.0.3.tgz#5aeecf5fb51bce6f28ce5ba76efb698470d90387"
@@ -2136,6 +2141,11 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
+balanced-match@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.npm.taobao.org/balanced-match/download/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
+  integrity sha1-yz8+PHMtwPAe5wtAPzAuYddwmDg=
+
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
@@ -2171,10 +2181,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bee-affix@1.0.16:
-  version "1.0.16"
-  resolved "https://registry.npm.taobao.org/bee-affix/download/bee-affix-1.0.16.tgz#6388a1c870c785d9746d07542c1e25c46febcfa4"
-  integrity sha1-Y4ihyHDHhdl0bQdULB4lxG/rz6Q=
+bee-affix@1.0.17:
+  version "1.0.17"
+  resolved "https://registry.npm.taobao.org/bee-affix/download/bee-affix-1.0.17.tgz#33a7a5427c2002b86aaa6bd38ea00b3a628f5128"
+  integrity sha1-M6elQnwgArhqqmvTjqALOmKPUSg=
   dependencies:
     babel-runtime "^6.23.0"
     classnames "^2.2.5"
@@ -2191,10 +2201,10 @@ bee-alert@2.0.0:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-anchor@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.npm.taobao.org/bee-anchor/download/bee-anchor-0.0.4.tgz#5697b088b60b0cf3ef348a947651a7b13cdc8ecc"
-  integrity sha1-VpewiLYLDPPvNIqUdlGnsTzcjsw=
+bee-anchor@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npm.taobao.org/bee-anchor/download/bee-anchor-0.0.5.tgz#27d2d43393cb3c161d65961de1f4d62903db2297"
+  integrity sha1-J9LUM5PLPBYdZZYd4fTWKQPbIpc=
   dependencies:
     babel-runtime "^6.23.0"
     classnames "^2.2.5"
@@ -2209,10 +2219,10 @@ bee-animate@1.0.0, bee-animate@^1.0.0, bee-animate@latest:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-autocomplete@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npm.taobao.org/bee-autocomplete/download/bee-autocomplete-2.0.3.tgz#534d257c41ef21878ddd2cfbd5d87111dc73689f"
-  integrity sha1-U00lfEHvIYeN3Sz71dhxEdxzaJ8=
+bee-autocomplete@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npm.taobao.org/bee-autocomplete/download/bee-autocomplete-2.0.4.tgz#57f3cfa48d8ecbf5b88ad9a9d779550bdd032ff8"
+  integrity sha1-V/PPpI2Oy/W4itmp13lVC90DL/g=
   dependencies:
     babel-runtime "^6.23.0"
     bee-form-control latest
@@ -2277,13 +2287,14 @@ bee-calendar@2.0.4:
     rc-select "^6.8.6"
     tinper-bee-core latest
 
-bee-carousel@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npm.taobao.org/bee-carousel/download/bee-carousel-1.0.0.tgz#4c3d99cb761f1b80fa002c7a514da286a356ada7"
-  integrity sha1-TD2Zy3YfG4D6ACx6UU2ihqNWrac=
+bee-carousel@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/bee-carousel/download/bee-carousel-1.0.1.tgz#f88eec911c0881a40b9110304a1b2e6456b800d1"
+  integrity sha1-+I7skRwIgaQLkRAwShsuZFa4ANE=
   dependencies:
     babel-runtime "^6.23.0"
     classnames "^2.2.5"
+    omit.js "^1.0.2"
     swiper "^4.0.6"
     tinper-bee-core latest
 
@@ -2303,7 +2314,16 @@ bee-cascader@2.1.6:
     tinper-bee-core latest
     warning "^4.0.3"
 
-bee-checkbox@2.0.7, bee-checkbox@^2.0.3, bee-checkbox@^2.0.5, bee-checkbox@latest:
+bee-checkbox@2.0.9:
+  version "2.0.9"
+  resolved "https://registry.npm.taobao.org/bee-checkbox/download/bee-checkbox-2.0.9.tgz#137d72581facb10f9a913ab8f54d32b1e552960c"
+  integrity sha1-E31yWB+ssQ+akTq49U0yseVSlgw=
+  dependencies:
+    classnames "^2.2.5"
+    lodash.isequal "^4.5.0"
+    tinper-bee-core latest
+
+bee-checkbox@^2.0.3, bee-checkbox@^2.0.5, bee-checkbox@latest:
   version "2.0.7"
   resolved "https://registry.npm.taobao.org/bee-checkbox/download/bee-checkbox-2.0.7.tgz#d44ecd4fce29ad4b78fe3198f439dba1715a790e"
   integrity sha1-1E7NT84prUt4/jGY9DnboXFaeQ4=
@@ -2353,34 +2373,10 @@ bee-colorpicker@0.0.13:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-complex-grid@2.0.24:
-  version "2.0.24"
-  resolved "https://registry.npm.taobao.org/bee-complex-grid/download/bee-complex-grid-2.0.24.tgz#eb58f50c16d829e09620cf7310b273f7c44eb435"
-  integrity sha1-61j1DBbYKeCWIM9zELJz98ROtDU=
-  dependencies:
-    bee-checkbox "^2.0.3"
-    bee-dropdown "^2.0.2"
-    bee-form-control "^2.0.1"
-    bee-icon latest
-    bee-locale "0.0.14"
-    bee-menus "^2.0.2"
-    bee-modal "^2.0.2"
-    bee-pagination "^2.0.4"
-    bee-popover "^2.0.0"
-    bee-radio "^2.0.14"
-    bee-table "^2.1.15-beta.1"
-    bee-tabs "^2.0.6"
-    blob.js "^1.0.1"
-    classnames "^2.2.6"
-    file-saver "^1.3.3"
-    script-loader "0.7.2"
-    tinper-bee-core latest
-    xlsx "^0.11.17"
-
-bee-complex-grid@2.0.25:
-  version "2.0.25"
-  resolved "https://registry.npm.taobao.org/bee-complex-grid/download/bee-complex-grid-2.0.25.tgz#647df9492cf3a9042b4984d5afa6da2b23f50e7b"
-  integrity sha1-ZH35SSzzqQQrSYTVr6baKyP1Dns=
+bee-complex-grid@2.0.27:
+  version "2.0.27"
+  resolved "https://registry.npm.taobao.org/bee-complex-grid/download/bee-complex-grid-2.0.27.tgz#61b788466194d3e7824c8b39f063ebc26c8e9558"
+  integrity sha1-YbeIRmGU0+eCTIs58GPrwmyOlVg=
   dependencies:
     bee-checkbox "^2.0.3"
     bee-dropdown "^2.0.2"
@@ -2393,7 +2389,7 @@ bee-complex-grid@2.0.25:
     bee-popconfirm "^2.0.0"
     bee-popover "^2.0.0"
     bee-radio "^2.0.14"
-    bee-table "^2.1.15-beta.1"
+    bee-table "^2.2.4"
     bee-tabs "^2.0.6"
     blob.js "^1.0.1"
     classnames "^2.2.6"
@@ -2402,10 +2398,10 @@ bee-complex-grid@2.0.25:
     tinper-bee-core latest
     xlsx "^0.11.17"
 
-bee-datepicker@2.2.8:
-  version "2.2.8"
-  resolved "https://registry.npm.taobao.org/bee-datepicker/download/bee-datepicker-2.2.8.tgz#089e2d27149b2db338cab29f9cb050884a3c5e12"
-  integrity sha1-CJ4tJxSbLbM4yrKfnLBQiEo8XhI=
+bee-datepicker@2.2.17:
+  version "2.2.17"
+  resolved "https://registry.npm.taobao.org/bee-datepicker/download/bee-datepicker-2.2.17.tgz#66389429092a26fc1e403fe207f770952663d18d"
+  integrity sha1-ZjiUKQkqJvweQD/iB/dwlSZj0Y0=
   dependencies:
     bee-button latest
     bee-form-control latest
@@ -2493,18 +2489,7 @@ bee-form-control@2.0.6:
     tinper-bee-core latest
     warning "^3.0.0"
 
-bee-form-control@2.0.7:
-  version "2.0.7"
-  resolved "https://registry.npm.taobao.org/bee-form-control/download/bee-form-control-2.0.7.tgz#0bc495448eb42cb2a2ed1bb77edd4ba7b43600f7"
-  integrity sha1-C8SVRI60LLKi7Ru3ft1Lp7Q2APc=
-  dependencies:
-    bee-icon "^1.0.3"
-    classnames "^2.2.5"
-    express "^4.16.3"
-    tinper-bee-core latest
-    warning "^3.0.0"
-
-bee-form-control@^2.0.1, bee-form-control@^2.0.2, bee-form-control@latest:
+bee-form-control@2.0.9, bee-form-control@^2.0.1, bee-form-control@^2.0.2, bee-form-control@latest:
   version "2.0.9"
   resolved "https://registry.npm.taobao.org/bee-form-control/download/bee-form-control-2.0.9.tgz#48f19b07f6386881e729820db1113e64b0f617b9"
   integrity sha1-SPGbB/Y4aIHnKYINsRE+ZLD2F7k=
@@ -2524,18 +2509,7 @@ bee-form-group@2.0.0:
     tinper-bee-core latest
     warning "^3.0.0"
 
-bee-form@2.0.11:
-  version "2.0.11"
-  resolved "https://registry.npm.taobao.org/bee-form/download/bee-form-2.0.11.tgz#e5afecf0e31cfd3801ac191418299dd58fcc47bb"
-  integrity sha1-5a/s8OMc/TgBrBkUGCmd1Y/MR7s=
-  dependencies:
-    babel-runtime "^6.23.0"
-    bee-layout latest
-    classnames "^2.2.5"
-    rc-form "^2.1.7"
-    tinper-bee-core latest
-
-bee-form@^2.0.11, bee-form@latest:
+bee-form@2.0.12, bee-form@^2.0.11, bee-form@latest:
   version "2.0.12"
   resolved "https://registry.npm.taobao.org/bee-form/download/bee-form-2.0.12.tgz#18db258ff22a3283a527193ce5e480508c96dc31"
   integrity sha1-GNslj/IqMoOlJxk85eSAUIyW3DE=
@@ -2572,7 +2546,19 @@ bee-input-group@2.0.3, bee-input-group@^2.0.2, bee-input-group@latest:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-input-number@2.1.4, bee-input-number@^2.0.7:
+bee-input-number@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.npm.taobao.org/bee-input-number/download/bee-input-number-2.1.8.tgz#c721b0f963435dafcf68a657919e36fd60141279"
+  integrity sha1-xyGw+WNDXa/PaKZXkZ42/WAUEnk=
+  dependencies:
+    babel-runtime "^6.22.0"
+    bee-form "^2.0.11"
+    bee-form-control "2.0.6"
+    bee-input-group latest
+    classnames "^2.2.5"
+    tinper-bee-core latest
+
+bee-input-number@^2.0.7:
   version "2.1.4"
   resolved "https://registry.npm.taobao.org/bee-input-number/download/bee-input-number-2.1.4.tgz#150f2342cf406ac7e9fb8cc1cdb38932567daf51"
   integrity sha1-FQ8jQs9Aasfp+4zBzbOJMlZ9r1E=
@@ -2621,10 +2607,10 @@ bee-loading@1.1.2:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-loading@2.0.2, bee-loading@latest:
-  version "2.0.2"
-  resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-2.0.2.tgz#e6f51113081dd9a19cb9df8b78e968e1d735b0f6"
-  integrity sha1-5vUREwgd2aGcud+LeOlo4dc1sPY=
+bee-loading@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-2.0.3.tgz#a8732947b42d444797982ef472e41ebb7eeafd66"
+  integrity sha1-qHMpR7QtREeXmC70cuQeu37q/WY=
   dependencies:
     bee-icon "^1.0.10"
     bee-overlay "^1.0.2"
@@ -2635,6 +2621,16 @@ bee-loading@^1.0.9:
   version "1.1.3"
   resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-1.1.3.tgz#4fc733b48b6fd86f43ff36765d52e0012e812ff2"
   integrity sha1-T8cztItv2G9D/zZ2XVLgAS6BL/I=
+  dependencies:
+    bee-icon "^1.0.10"
+    bee-overlay "^1.0.2"
+    classnames "^2.2.5"
+    tinper-bee-core latest
+
+bee-loading@latest:
+  version "2.0.2"
+  resolved "https://registry.npm.taobao.org/bee-loading/download/bee-loading-2.0.2.tgz#e6f51113081dd9a19cb9df8b78e968e1d735b0f6"
+  integrity sha1-5vUREwgd2aGcud+LeOlo4dc1sPY=
   dependencies:
     bee-icon "^1.0.10"
     bee-overlay "^1.0.2"
@@ -2659,6 +2655,15 @@ bee-locale@0.0.9:
     classnames "^2.2.5"
     tinper-bee-core latest
 
+bee-locale@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/bee-locale/download/bee-locale-1.0.1.tgz#7b925c0da44b1133eb0aea5ba2b979c6bece8159"
+  integrity sha1-e5JcDaRLETPrCupborl5xr7OgVk=
+  dependencies:
+    babel-runtime "^6.23.0"
+    classnames "^2.2.5"
+    tinper-bee-core latest
+
 bee-locale@^0.0.13:
   version "0.0.13"
   resolved "https://registry.npm.taobao.org/bee-locale/download/bee-locale-0.0.13.tgz#43ffab7164b3650f34ace1b6aa11b491d6ec0580"
@@ -2677,7 +2682,24 @@ bee-locale@^0.0.2:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-menus@2.0.10, bee-menus@^2.0.2, bee-menus@^2.0.6:
+bee-menus@2.0.11:
+  version "2.0.11"
+  resolved "https://registry.npm.taobao.org/bee-menus/download/bee-menus-2.0.11.tgz#db0e5723ca1102d3e247662f699ebab9a8ffc1b9"
+  integrity sha1-2w5XI8oRAtPiR2YvaZ66uaj/wbk=
+  dependencies:
+    babel-runtime "6.x"
+    bee-animate "^1.0.0"
+    classnames "^2.2.5"
+    dom-scroll-into-view "^1.2.1"
+    mini-store "^2.0.0"
+    mutationobserver-shim "^0.3.3"
+    rc-trigger "^2.6.2"
+    rc-util "^4.6.0"
+    react-addons-test-utils "15.3.2"
+    resize-observer-polyfill "^1.5.1"
+    tinper-bee-core latest
+
+bee-menus@^2.0.2, bee-menus@^2.0.6:
   version "2.0.10"
   resolved "https://registry.npm.taobao.org/bee-menus/download/bee-menus-2.0.10.tgz#89bcb49c4db17ac907f8454d919ae51bdd583624"
   integrity sha1-iby0nE2xeskH+EVNkZrlG91YNiQ=
@@ -2694,18 +2716,7 @@ bee-menus@2.0.10, bee-menus@^2.0.2, bee-menus@^2.0.6:
     resize-observer-polyfill "^1.5.1"
     tinper-bee-core latest
 
-bee-message@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.npm.taobao.org/bee-message/download/bee-message-2.1.4.tgz#b3bdee0e15d6dea59c058b762b69066dcd24a53c"
-  integrity sha1-s73uDhXW3qWcBYt2K2kGbc0kpTw=
-  dependencies:
-    bee-icon latest
-    bee-notification latest
-    classnames "^2.2.5"
-    tinper-bee-core latest
-    warning "^4.0.3"
-
-bee-message@latest:
+bee-message@2.1.6, bee-message@latest:
   version "2.1.6"
   resolved "https://registry.npm.taobao.org/bee-message/download/bee-message-2.1.6.tgz#ba0aa68c4a60c4900843dc296a5ff3b843807b1b"
   integrity sha1-ugqmjEpgxJAIQ9wpal/zuEOAexs=
@@ -2716,7 +2727,7 @@ bee-message@latest:
     tinper-bee-core latest
     warning "^4.0.3"
 
-bee-modal@2.1.2, bee-modal@^2.0.13, bee-modal@^2.0.2, bee-modal@^2.0.3, bee-modal@^2.0.4, bee-modal@latest:
+bee-modal@2.1.2, bee-modal@^2.0.13, bee-modal@^2.0.2, bee-modal@^2.0.3, bee-modal@^2.0.4, bee-modal@^2.1.2, bee-modal@latest:
   version "2.1.2"
   resolved "https://registry.npm.taobao.org/bee-modal/download/bee-modal-2.1.2.tgz#a6677909c58ce76ce758496fa31f8fbac5753fe8"
   integrity sha1-pmd5CcWM52znWElvox+PusV1P+g=
@@ -2740,19 +2751,7 @@ bee-navbar@2.0.0:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-notification@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npm.taobao.org/bee-notification/download/bee-notification-2.0.2.tgz#e35a84d93c9d3366bc1e0f85a1e84029d75b4518"
-  integrity sha1-41qE2TydM2a8Hg+FoehAKddbRRg=
-  dependencies:
-    bee-animate latest
-    bee-button latest
-    bee-icon "^1.0.11"
-    bee-overlay "^1.0.16"
-    classnames "^2.2.5"
-    tinper-bee-core latest
-
-bee-notification@latest:
+bee-notification@2.0.3, bee-notification@latest:
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/bee-notification/download/bee-notification-2.0.3.tgz#bf61b93d19970d8b8f274df488a6912425086076"
   integrity sha1-v2G5PRmXDYuPJ030iKaRJCUIYHY=
@@ -2796,7 +2795,20 @@ bee-page-layout@1.0.1:
     classnames "^2.2.6"
     tinper-bee-core latest
 
-bee-pagination@2.0.10, bee-pagination@^2.0.4, bee-pagination@^2.0.5, bee-pagination@^2.0.6:
+bee-pagination@2.0.12:
+  version "2.0.12"
+  resolved "https://registry.npm.taobao.org/bee-pagination/download/bee-pagination-2.0.12.tgz#f152d3ba6c2165c664ee0109fc18952f28780681"
+  integrity sha1-8VLTumwhZcZk7gEJ/BiVLyh4BoE=
+  dependencies:
+    bee-button latest
+    bee-icon latest
+    bee-locale "0.0.9"
+    bee-select "^2.0.4"
+    classnames "^2.2.5"
+    react-cookies "^0.1.1"
+    tinper-bee-core latest
+
+bee-pagination@^2.0.4, bee-pagination@^2.0.5, bee-pagination@^2.0.6:
   version "2.0.10"
   resolved "https://registry.npm.taobao.org/bee-pagination/download/bee-pagination-2.0.10.tgz#5217244c1740c1ead933881314d4ae1f08f62214"
   integrity sha1-UhckTBdAwerZM4gTFNSuHwj2IhQ=
@@ -2832,14 +2844,14 @@ bee-popconfirm@2.0.0, bee-popconfirm@^2.0.0:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-popover@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npm.taobao.org/bee-popover/download/bee-popover-3.0.2.tgz#56d9c7b4c13a493f91486d86cc26454755bfa5d3"
-  integrity sha1-VtnHtME6ST+RSG2GzCZFR1W/pdM=
+bee-popover@3.0.6:
+  version "3.0.6"
+  resolved "https://registry.npm.taobao.org/bee-popover/download/bee-popover-3.0.6.tgz#e6635cb324fd7cf9b9a9750adfe9ca32e9c0a31a"
+  integrity sha1-5mNcsyT9fPm5qXUK3+nKMunAoxo=
   dependencies:
     babel-runtime "^6.26.0"
     bee-overlay latest
-    bee-tooltip "^2.1.2"
+    bee-tooltip "^2.1.4"
     classnames "^2.2.5"
     dom-helpers "^3.2.1"
     tinper-bee-core latest
@@ -2865,10 +2877,10 @@ bee-progress-bar@2.0.1, bee-progress-bar@latest:
     nprogress "^0.2.0"
     tinper-bee-core latest
 
-bee-radio@2.0.16:
-  version "2.0.16"
-  resolved "https://registry.npm.taobao.org/bee-radio/download/bee-radio-2.0.16.tgz#091daee8bf48738bff22695b16c69522916530f6"
-  integrity sha1-CR2u6L9Ic4v/ImlbFsaVIpFlMPY=
+bee-radio@2.0.18:
+  version "2.0.18"
+  resolved "https://registry.npm.taobao.org/bee-radio/download/bee-radio-2.0.18.tgz#317d3d1b4a3262995be555a4c3d6b167273ef159"
+  integrity sha1-MX09G0oyYplb5VWkw9axZyc+8Vk=
   dependencies:
     classnames "^2.2.5"
     tinper-bee-core "^2.0.28"
@@ -2915,10 +2927,10 @@ bee-search-panel@^2.0.14:
     is-instance-of "^1.0.1"
     tinper-bee-core latest
 
-bee-select@2.0.14:
-  version "2.0.14"
-  resolved "https://registry.npm.taobao.org/bee-select/download/bee-select-2.0.14.tgz?cache=0&sync_timestamp=1569204933939&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbee-select%2Fdownload%2Fbee-select-2.0.14.tgz#c04e221da516ac15c4bbc855ff3c7da3e30cfa5f"
-  integrity sha1-wE4iHaUWrBXEu8hV/zx9o+MM+l8=
+bee-select@2.0.17:
+  version "2.0.17"
+  resolved "https://registry.npm.taobao.org/bee-select/download/bee-select-2.0.17.tgz#7ecc4b6fd1e578bdd61949b58f2f2d8d00aff208"
+  integrity sha1-fsxLb9HleL3WGUm1jy8tjQCv8gg=
   dependencies:
     bee-animate "^1.0.0"
     bee-menus "^2.0.2"
@@ -2926,6 +2938,7 @@ bee-select@2.0.14:
     classnames "^2.2.5"
     component-classes "1.x"
     dom-scroll-into-view "1.x"
+    omit.js "^1.0.2"
     rc-menu "^7.4.19"
     react-lifecycles-compat "^3.0.4"
     tinper-bee-core latest
@@ -2978,7 +2991,33 @@ bee-switch@2.0.6:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-table@2.2.12, bee-table@^2.0.10, bee-table@^2.0.11, bee-table@^2.1.15-beta.1:
+bee-table@2.2.16:
+  version "2.2.16"
+  resolved "https://registry.npm.taobao.org/bee-table/download/bee-table-2.2.16.tgz#f55d84599774c44cf77f20f8961c8d824d142472"
+  integrity sha1-9V2EWZd0xEz3fyD4lhyNgk0UJHI=
+  dependencies:
+    bee-button latest
+    bee-checkbox latest
+    bee-datepicker "^2.0.28"
+    bee-dropdown "^2.0.4"
+    bee-form-control latest
+    bee-icon latest
+    bee-input-number "^2.0.7"
+    bee-loading "1.1.2"
+    bee-locale "0.0.14"
+    bee-menus "^2.0.6"
+    bee-radio "^2.0.16"
+    bee-select "^2.0.11"
+    classnames "^2.2.5"
+    component-classes "^1.2.6"
+    lodash.clonedeep "^4.5.0"
+    object-path "^0.11.3"
+    shallowequal "^1.0.2"
+    throttle-debounce "^2.0.1"
+    tinper-bee-core latest
+    warning "^3.0.0"
+
+bee-table@^2.0.10, bee-table@^2.0.11:
   version "2.2.12"
   resolved "https://registry.npm.taobao.org/bee-table/download/bee-table-2.2.12.tgz#44c5762e01b6ead226ced251743618c5a56fb19a"
   integrity sha1-RMV2LgG26tImztJRdDYYxaVvsZo=
@@ -3004,10 +3043,36 @@ bee-table@2.2.12, bee-table@^2.0.10, bee-table@^2.0.11, bee-table@^2.1.15-beta.1
     tinper-bee-core latest
     warning "^3.0.0"
 
-bee-tabs@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.npm.taobao.org/bee-tabs/download/bee-tabs-2.1.2.tgz#e7636311171e10a5170a11585500555e4440619e"
-  integrity sha1-52NjERceEKUXChFYVQBVXkRAYZ4=
+bee-table@^2.2.4:
+  version "2.2.17"
+  resolved "https://registry.npm.taobao.org/bee-table/download/bee-table-2.2.17.tgz#1191dadc144fed6dd3f614b73cb9d72186fac060"
+  integrity sha1-EZHa3BRP7W3T9hS3PLnXIYb6wGA=
+  dependencies:
+    bee-button latest
+    bee-checkbox latest
+    bee-datepicker "^2.0.28"
+    bee-dropdown "^2.0.4"
+    bee-form-control latest
+    bee-icon latest
+    bee-input-number "^2.0.7"
+    bee-loading "1.1.2"
+    bee-locale "0.0.14"
+    bee-menus "^2.0.6"
+    bee-radio "^2.0.16"
+    bee-select "^2.0.11"
+    classnames "^2.2.5"
+    component-classes "^1.2.6"
+    lodash.clonedeep "^4.5.0"
+    object-path "^0.11.3"
+    shallowequal "^1.0.2"
+    throttle-debounce "^2.0.1"
+    tinper-bee-core latest
+    warning "^3.0.0"
+
+bee-tabs@2.1.6:
+  version "2.1.6"
+  resolved "https://registry.npm.taobao.org/bee-tabs/download/bee-tabs-2.1.6.tgz#7fed57c465a83ebd7c47b68771df2a1a19d598fc"
+  integrity sha1-f+1XxGWoPr18R7aHcd8qGhnVmPw=
   dependencies:
     bee-icon latest
     classnames "^2.2.5"
@@ -3054,26 +3119,16 @@ bee-timeline@2.0.1:
     classnames "^2.2.5"
     tinper-bee-core latest
 
-bee-timepicker@2.0.5:
-  version "2.0.5"
-  resolved "https://registry.npm.taobao.org/bee-timepicker/download/bee-timepicker-2.0.5.tgz#26a3a0c076a631d900a9b7cba2d2527356e53125"
-  integrity sha1-JqOgwHamMdkAqbfLotJSc1blMSU=
+bee-timepicker@2.0.7:
+  version "2.0.7"
+  resolved "https://registry.npm.taobao.org/bee-timepicker/download/bee-timepicker-2.0.7.tgz#460b322464915a2c6e15cb12b105a65091d58ea3"
+  integrity sha1-RgsyJGSRWixuFcsSsQWmUJHVjqM=
   dependencies:
     babel-runtime "^6.23.0"
     rc-trigger "^2.6.2"
     tinper-bee-core latest
 
-bee-tooltip@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.npm.taobao.org/bee-tooltip/download/bee-tooltip-2.1.2.tgz#db18345f2093411bbb895d04d0b5febe457486c1"
-  integrity sha1-2xg0XyCTQRu7iV0E0LX+vkV0hsE=
-  dependencies:
-    babel-runtime "^6.20.0"
-    bee-overlay latest
-    classnames "^2.2.5"
-    tinper-bee-core latest
-
-bee-tooltip@^2.1.2, bee-tooltip@latest:
+bee-tooltip@2.1.4, bee-tooltip@^2.1.4, bee-tooltip@latest:
   version "2.1.4"
   resolved "https://registry.npm.taobao.org/bee-tooltip/download/bee-tooltip-2.1.4.tgz#aa0b6c1c341eeebaf9b4a73d527e38550f83c40f"
   integrity sha1-qgtsHDQe7rr5tKc9Un44VQ+DxA8=
@@ -3132,16 +3187,17 @@ bee-tree-select@0.0.6:
     tinper-bee-core latest
     warning "^4.0.3"
 
-bee-tree@2.1.6:
-  version "2.1.6"
-  resolved "https://registry.npm.taobao.org/bee-tree/download/bee-tree-2.1.6.tgz#31f69606465dcb1ececd38bd372ffd7a2b486d91"
-  integrity sha1-MfaWBkZdyx7OzTi9Ny/9eitIbZE=
+bee-tree@2.1.12:
+  version "2.1.12"
+  resolved "https://registry.npm.taobao.org/bee-tree/download/bee-tree-2.1.12.tgz#bf9d1f3d7551c33c8e35339fe67ad7f3ae656ed2"
+  integrity sha1-v50fPXVRwzyONTOf5nrX865lbtI=
   dependencies:
     babel-runtime "^6.23.0"
     bee-animate "^1.0.0"
     bee-checkbox latest
     bee-modal "^2.0.13"
     classnames "^2.2.5"
+    omit.js "^1.0.2"
     tinper-bee-core latest
 
 bee-tree@^2.0.7:
@@ -3157,13 +3213,14 @@ bee-tree@^2.0.7:
     omit.js "^1.0.2"
     tinper-bee-core latest
 
-bee-upload@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npm.taobao.org/bee-upload/download/bee-upload-2.0.1.tgz#7782a0645e5e4bf984f6f779b2065729a26ac20a"
-  integrity sha1-d4KgZF5eS/mE9vd5sgZXKaJqwgo=
+bee-upload@2.0.5:
+  version "2.0.5"
+  resolved "https://registry.npm.taobao.org/bee-upload/download/bee-upload-2.0.5.tgz#0c12b97f103bde949a76045b13182c1450a9696a"
+  integrity sha1-DBK5fxA73pSadgRbExgsFFCpaWo=
   dependencies:
     bee-animate "^1.0.0"
     bee-icon "^1.0.3"
+    bee-modal "^2.1.2"
     bee-progress-bar latest
     classnames "^2.2.5"
     tinper-bee-core latest
@@ -4003,6 +4060,11 @@ core-js@^2.4.0, core-js@^2.6.5:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha512-HOpZf6eXmnl7la+cUdMnLvUxKNqLUzJvgIziQ0DiF3JwSImNphIqdGqzj6hIKyX04MmV0poclQ7+wjWvxQyR2A==
 
+core-js@^2.6.10:
+  version "2.6.10"
+  resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.10.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcore-js%2Fdownload%2Fcore-js-2.6.10.tgz#8a5b8391f8cc7013da703411ce5b585706300d7f"
+  integrity sha1-iluDkfjMcBPacDQRzltYVwYwDX8=
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -4365,6 +4427,69 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+d3-array@^1.2.0:
+  version "1.2.4"
+  resolved "https://registry.npm.taobao.org/d3-array/download/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
+  integrity sha1-Y1zk1e6nWfb2BYY9vPww7cc39x8=
+
+d3-collection@1:
+  version "1.0.7"
+  resolved "https://registry.npm.taobao.org/d3-collection/download/d3-collection-1.0.7.tgz#349bd2aa9977db071091c13144d5e4f16b5b310e"
+  integrity sha1-NJvSqpl32wcQkcExRNXk8WtbMQ4=
+
+d3-color@1:
+  version "1.4.0"
+  resolved "https://registry.npm.taobao.org/d3-color/download/d3-color-1.4.0.tgz#89c45a995ed773b13314f06460df26d60ba0ecaf"
+  integrity sha1-icRamV7Xc7EzFPBkYN8m1gug7K8=
+
+d3-format@1:
+  version "1.4.1"
+  resolved "https://registry.npm.taobao.org/d3-format/download/d3-format-1.4.1.tgz#c45f74b17c5a290c072a4ba7039dd19662cd5ce6"
+  integrity sha1-xF90sXxaKQwHKkunA53RlmLNXOY=
+
+d3-interpolate@1, d3-interpolate@^1.3.0:
+  version "1.3.2"
+  resolved "https://registry.npm.taobao.org/d3-interpolate/download/d3-interpolate-1.3.2.tgz#417d3ebdeb4bc4efcc8fd4361c55e4040211fd68"
+  integrity sha1-QX0+vetLxO/Mj9Q2HFXkBAIR/Wg=
+  dependencies:
+    d3-color "1"
+
+d3-path@1:
+  version "1.0.8"
+  resolved "https://registry.npm.taobao.org/d3-path/download/d3-path-1.0.8.tgz#4a0606a794d104513ec4a8af43525f374b278719"
+  integrity sha1-SgYGp5TRBFE+xKivQ1JfN0snhxk=
+
+d3-scale@^2.1.0:
+  version "2.2.2"
+  resolved "https://registry.npm.taobao.org/d3-scale/download/d3-scale-2.2.2.tgz#4e880e0b2745acaaddd3ede26a9e908a9e17b81f"
+  integrity sha1-TogOCydFrKrd0+3iap6Qip4XuB8=
+  dependencies:
+    d3-array "^1.2.0"
+    d3-collection "1"
+    d3-format "1"
+    d3-interpolate "1"
+    d3-time "1"
+    d3-time-format "2"
+
+d3-shape@^1.2.0:
+  version "1.3.5"
+  resolved "https://registry.npm.taobao.org/d3-shape/download/d3-shape-1.3.5.tgz#e81aea5940f59f0a79cfccac012232a8987c6033"
+  integrity sha1-6BrqWUD1nwp5z8ysASIyqJh8YDM=
+  dependencies:
+    d3-path "1"
+
+d3-time-format@2:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/d3-time-format/download/d3-time-format-2.2.1.tgz#971f66aae3b8fb268040494986f41512d4d4dca6"
+  integrity sha1-lx9mquO4+yaAQElJhvQVEtTU3KY=
+  dependencies:
+    d3-time "1"
+
+d3-time@1:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/d3-time/download/d3-time-1.1.0.tgz#b1e19d307dae9c900b7e5b25ffc5dcc249a8a0f1"
+  integrity sha1-seGdMH2unJALflsl/8XcwkmooPE=
+
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"
@@ -4438,6 +4563,11 @@ decamelize@^2.0.0:
   integrity sha512-Ikpp5scV3MSYxY39ymh45ZLEecsTdv/Xj2CaQfI8RLMuwi7XvjX9H/fhraiSuU+C5w5NTDu4ZU72xNiZnurBPg==
   dependencies:
     xregexp "4.0.0"
+
+decimal.js-light@^2.4.1:
+  version "2.5.0"
+  resolved "https://registry.npm.taobao.org/decimal.js-light/download/decimal.js-light-2.5.0.tgz#ca7faf504c799326df94b0ab920424fdfc125348"
+  integrity sha1-yn+vUEx5kybflLCrkgQk/fwSU0g=
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
@@ -7608,7 +7738,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "^3.0.0"
 
-lodash.throttle@^4.0.0:
+lodash.throttle@^4.0.0, lodash.throttle@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npm.taobao.org/lodash.throttle/download/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
@@ -7623,7 +7753,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10:
+"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10, lodash@~4.17.4:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -7711,6 +7841,11 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+math-expression-evaluator@^1.2.14:
+  version "1.2.17"
+  resolved "https://registry.npm.taobao.org/math-expression-evaluator/download/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
+  integrity sha1-3oGf282E3M2PrlnGrreWFbnSZqw=
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -10137,6 +10272,11 @@ react-addons-test-utils@15.3.2:
   resolved "https://registry.npm.taobao.org/react-addons-test-utils/download/react-addons-test-utils-15.3.2.tgz#c09a44f583425a4a9c1b38444d7a6c3e6f0f41f6"
   integrity sha1-wJpE9YNCWkqcGzhETXpsPm8PQfY=
 
+react-amap@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.npm.taobao.org/react-amap/download/react-amap-1.2.8.tgz#cb5a6441c5e83acb0d7b2e8a1b20dc539b759d9b"
+  integrity sha1-y1pkQcXoOssNey6KGyDcU5t1nZs=
+
 react-app-polyfill@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/react-app-polyfill/download/react-app-polyfill-1.0.4.tgz#4dd2636846b585c2d842b1e44e1bc29044345874"
@@ -10341,6 +10481,16 @@ react-resizable@1.x:
     prop-types "15.x"
     react-draggable "^3.0.3"
 
+react-resize-detector@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npm.taobao.org/react-resize-detector/download/react-resize-detector-2.3.0.tgz#57bad1ae26a28a62a2ddb678ba6ffdf8fa2b599c"
+  integrity sha1-V7rRriaiimKi3bZ4um/9+PorWZw=
+  dependencies:
+    lodash.debounce "^4.0.8"
+    lodash.throttle "^4.1.1"
+    prop-types "^15.6.0"
+    resize-observer-polyfill "^1.5.0"
+
 react-router-dom@^5.0.1:
   version "5.1.2"
   resolved "https://registry.npm.taobao.org/react-router-dom/download/react-router-dom-5.1.2.tgz#06701b834352f44d37fbb6311f870f84c76b9c18"
@@ -10383,7 +10533,7 @@ react-router@^4.2.0:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-scripts@3.2.0:
+react-scripts@^3.2.0:
   version "3.2.0"
   resolved "https://registry.npm.taobao.org/react-scripts/download/react-scripts-3.2.0.tgz#58ccd6b4ffa27f1b4d2986cbdcaa916660e9e33c"
   integrity sha1-WMzWtP+ifxtNKYbL3KqRZmDp4zw=
@@ -10451,7 +10601,17 @@ react-side-effect@^1.0.2:
   dependencies:
     shallowequal "^1.0.1"
 
-react-transition-group@^2.6.1:
+react-smooth@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npm.taobao.org/react-smooth/download/react-smooth-1.0.5.tgz#94ae161d7951cdd893ccb7099d031d342cb762ad"
+  integrity sha1-lK4WHXlRzdiTzLcJnQMdNCy3Yq0=
+  dependencies:
+    lodash "~4.17.4"
+    prop-types "^15.6.0"
+    raf "^3.4.0"
+    react-transition-group "^2.5.0"
+
+react-transition-group@^2.5.0, react-transition-group@^2.6.1:
   version "2.9.0"
   resolved "https://registry.npm.taobao.org/react-transition-group/download/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"
   integrity sha1-35zbAleWIRFRpDbGmo87l7WwfI0=
@@ -10559,6 +10719,30 @@ realpath-native@^1.1.0:
   dependencies:
     util.promisify "^1.0.0"
 
+recharts-scale@^0.4.2:
+  version "0.4.3"
+  resolved "https://registry.npm.taobao.org/recharts-scale/download/recharts-scale-0.4.3.tgz#040b4f638ed687a530357292ecac880578384b59"
+  integrity sha1-BAtPY47Wh6UwNXKS7KyIBXg4S1k=
+  dependencies:
+    decimal.js-light "^2.4.1"
+
+recharts@^1.8.5:
+  version "1.8.5"
+  resolved "https://registry.npm.taobao.org/recharts/download/recharts-1.8.5.tgz#ca94a3395550946334a802e35004ceb2583fdb12"
+  integrity sha1-ypSjOVVQlGM0qALjUATOslg/2xI=
+  dependencies:
+    classnames "^2.2.5"
+    core-js "^2.6.10"
+    d3-interpolate "^1.3.0"
+    d3-scale "^2.1.0"
+    d3-shape "^1.2.0"
+    lodash "^4.17.5"
+    prop-types "^15.6.0"
+    react-resize-detector "^2.3.0"
+    react-smooth "^1.0.5"
+    recharts-scale "^0.4.2"
+    reduce-css-calc "^1.3.0"
+
 recursive-readdir@2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/recursive-readdir/-/recursive-readdir-2.2.2.tgz#9946fb3274e1628de6e36b2f6714953b4845094f"
@@ -10573,6 +10757,22 @@ redent@^1.0.0:
   dependencies:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
+
+reduce-css-calc@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/reduce-css-calc/download/reduce-css-calc-1.3.0.tgz#747c914e049614a4c9cfbba629871ad1d2927716"
+  integrity sha1-dHyRTgSWFKTJz7umKYca0dKSdxY=
+  dependencies:
+    balanced-match "^0.4.2"
+    math-expression-evaluator "^1.2.14"
+    reduce-function-call "^1.0.1"
+
+reduce-function-call@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.npm.taobao.org/reduce-function-call/download/reduce-function-call-1.0.3.tgz#60350f7fb252c0a67eb10fd4694d16909971300f"
+  integrity sha1-YDUPf7JSwKZ+sQ/UaU0WkJlxMA8=
+  dependencies:
+    balanced-match "^1.0.0"
 
 redux@^4.0.0, redux@^4.0.1:
   version "4.0.4"
@@ -11993,76 +12193,76 @@ tinper-bee-core@^2.0.28, tinper-bee-core@latest:
     dom-align "^1.5.2"
     warning "^3.0.0"
 
-tinper-bee@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.npm.taobao.org/tinper-bee/download/tinper-bee-2.2.1.tgz?cache=0&sync_timestamp=1569409421803&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftinper-bee%2Fdownload%2Ftinper-bee-2.2.1.tgz#70765d9896cb0112c49d5cefad0abe1747e78cd7"
-  integrity sha1-cHZdmJbLARLEnVzvrQq+F0fnjNc=
+tinper-bee@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.npm.taobao.org/tinper-bee/download/tinper-bee-2.2.4.tgz#289d7473e5b6db7ec88b69b30f3213a162f01e92"
+  integrity sha1-KJ10c+W2237Ii2mzDzIToWLwHpI=
   dependencies:
-    bee-affix "1.0.16"
+    bee-affix "1.0.17"
     bee-alert "2.0.0"
-    bee-anchor "0.0.4"
+    bee-anchor "0.0.5"
     bee-animate "1.0.0"
-    bee-autocomplete "2.0.3"
+    bee-autocomplete "2.0.4"
     bee-backtop "1.0.1"
     bee-badge "2.0.0"
     bee-breadcrumb "2.0.1"
     bee-button "2.0.11"
     bee-button-group "2.0.1"
     bee-calendar "2.0.4"
-    bee-carousel "1.0.0"
+    bee-carousel "1.0.1"
     bee-cascader "2.1.6"
-    bee-checkbox "2.0.7"
+    bee-checkbox "2.0.9"
     bee-clipboard "2.0.2"
     bee-collapse "1.0.2"
     bee-colorpicker "0.0.13"
-    bee-complex-grid "2.0.24"
-    bee-datepicker "2.2.8"
+    bee-complex-grid "2.0.27"
+    bee-datepicker "2.2.17"
     bee-dnd "2.0.0"
     bee-drawer "0.0.6"
     bee-dropdown "2.0.11"
-    bee-form "2.0.11"
-    bee-form-control "2.0.7"
+    bee-form "2.0.12"
+    bee-form-control "2.0.9"
     bee-form-group "2.0.0"
     bee-icon "1.0.11"
     bee-input-group "2.0.3"
     bee-input-group-addon "2.0.1"
-    bee-input-number "2.1.4"
+    bee-input-number "2.1.8"
     bee-label "1.0.0"
     bee-layout "1.2.7"
-    bee-loading "2.0.2"
+    bee-loading "2.0.3"
     bee-loading-state "2.0.2"
-    bee-locale "0.0.14"
-    bee-menus "2.0.10"
-    bee-message "2.1.4"
+    bee-locale "1.0.1"
+    bee-menus "2.0.11"
+    bee-message "2.1.6"
     bee-modal "2.1.2"
     bee-navbar "2.0.0"
-    bee-notification "2.0.2"
+    bee-notification "2.0.3"
     bee-overlay "1.0.31"
     bee-page-layout "1.0.1"
-    bee-pagination "2.0.10"
+    bee-pagination "2.0.12"
     bee-panel "2.0.1"
     bee-popconfirm "2.0.0"
-    bee-popover "3.0.2"
+    bee-popover "3.0.6"
     bee-progress-bar "2.0.1"
-    bee-radio "2.0.16"
+    bee-radio "2.0.18"
     bee-rate "2.0.3"
     bee-search-panel "3.0.1"
-    bee-select "2.0.14"
+    bee-select "2.0.17"
     bee-slider "2.0.1"
     bee-step "2.0.1"
     bee-switch "2.0.6"
-    bee-table "2.2.12"
-    bee-tabs "2.1.2"
+    bee-table "2.2.16"
+    bee-tabs "2.1.6"
     bee-tag "0.0.3"
     bee-tile "1.0.0"
     bee-timeline "2.0.1"
-    bee-timepicker "2.0.5"
-    bee-tooltip "2.1.2"
+    bee-timepicker "2.0.7"
+    bee-tooltip "2.1.4"
     bee-transfer "2.0.12"
     bee-transition "1.0.0"
-    bee-tree "2.1.6"
+    bee-tree "2.1.12"
     bee-tree-select "0.0.6"
-    bee-upload "2.0.1"
+    bee-upload "2.0.5"
 
 tiny-emitter@^2.0.0:
   version "2.1.0"
@@ -12240,10 +12440,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@3.6.3:
-  version "3.6.3"
-  resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.6.3.tgz?cache=0&sync_timestamp=1569650873245&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
-  integrity sha1-/qlC+rsg9+HKcWT/Ym8anz9wtNo=
+typescript@^3.6.3:
+  version "3.7.2"
+  resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.7.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
+  integrity sha1-J+SJuV+lkJRF6f717kjYFpetGPs=
 
 ua-parser-js@^0.7.18:
   version "0.7.20"
