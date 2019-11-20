@@ -22,8 +22,14 @@ const {Option} = Select;
 
 interface IPageProps {
     form:any,
+    //in page
     history:any,
-    match:any
+    match:any,
+
+    //in pop
+    isPage?:boolean,
+    url?:string,
+    handlerBack?:()=>void
 }
 interface IPageState {
     record:any,
@@ -49,8 +55,34 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
         this.handleSelect = this.handleSelect.bind(this);
     }
    
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
+    }
+
     componentDidMount() {
-        this.id=this.props.match.params.id;
+        if(this.isPage()){
+
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/man-edit/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!='0'){
+
+            this.loadData(this.id);
+        }
+
+    }
+
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.findManById(id);
+
+        this.setState({record:result,isLoading:false});
     }
     /**
      * 提交表单信息
@@ -99,12 +131,16 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
     }
 
     goBack=()=>{
-        this.props.history.goBack();
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
     }
    
     renderProcess(){
 
-        if(this.id.length>10) return null;
+        if(this.state.record['manId']!=null) return null;
 
         let {getFieldProps, getFieldError} = this.props.form;
         return (
@@ -214,18 +250,21 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
 
         return (   <Panel>
               <Loading container={this} show={this.state.isLoading}/>
-              <Breadcrumb>
-			    <Breadcrumb.Item href="#">
-			      工作台
-			    </Breadcrumb.Item>
-                <Breadcrumb.Item href="#">
-                  档案库
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item active>
-                  {this.id==''?"添加":"编辑"}
-			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
-			</Breadcrumb>
+             {this.isPage()?
+                (<Breadcrumb>
+			        <Breadcrumb.Item href="#">
+			        工作台
+			        </Breadcrumb.Item>
+                    <Breadcrumb.Item href="#">
+                    档案库
+			        </Breadcrumb.Item>
+			        <Breadcrumb.Item active>
+                    {this.id==''?"添加":"编辑"}
+			        </Breadcrumb.Item>
+                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                </Breadcrumb>)
+                :null}
+              
             <PanelGroup activeKey={this.state.activeKey}  onSelect={this.handleSelect}   accordion>
                 <Panel header="基本信息" eventKey="1">
                 <FormList>

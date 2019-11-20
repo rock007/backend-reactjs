@@ -62,12 +62,56 @@ class ManService {
     let result = await http.post('/rest/man-submit',args);
     return result;
   }
+  public async findManById(id:string): Promise<any> {
+    let result = await http.get('/rest/findManById',{params:{id:id}});
+    return result;
+  }
+  
+  public async deleteManByIds(ids:string): Promise<any> {
+    let result = await http.get('/rest/man-delete',{params:{ids:ids}});
+    return result;
+  }
 
+  //亲属
   public async submitRelate(args:any): Promise<any> {
     let result = await http.post('/rest/relate-submit',args);
     return result;
   }
+  public async deleteRelate(ids:string): Promise<any> {
+    let result = await http.get('/rest/relate-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async searchRelate(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/relate-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
+    return result;
+  }
 
+  //工作
+  public async submitWork(args:any): Promise<any> {
+    let result = await http.post('/rest/work-submit',args);
+    return result;
+  }
+  public async deleteWork(ids:string): Promise<any> {
+    let result = await http.get('/rest/work-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async searchWork(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/work-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
+    return result;
+  }
+  //六保一
+  public async submitContact(args:any): Promise<any> {
+    let result = await http.post('/rest/contact-submit',args);
+    return result;
+  }
+  public async deleteContact(ids:string): Promise<any> {
+    let result = await http.get('/rest/contact-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async searchContact(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/contact-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
+    return result;
+  }
 
 }
 

@@ -55,3 +55,19 @@ export interface SearchModel{
   //排序
   orderBy?:string
 }
+
+export class PopPageModel{
+
+    title:string='详细'
+    url:string='/nofound'
+    permission?:string
+
+    size?:'sm'|'lg'|"xlg"
+
+    constructor(title?:string,url?:string){
+
+      this.title=title;
+      this.url=url;
+    }
+
+}

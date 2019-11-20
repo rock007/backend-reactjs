@@ -1,15 +1,15 @@
 import * as React from 'react';
 import {Panel, Select, FormControl,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+import Grid from '../../components/Grid';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 
 import DatePicker from "bee-datepicker";
-
-import ManCateSelect from '../../components/ManCateSelect';
 
 import ManService from '../../services/ManService';
 import {PageModel} from '../../services/Model/Models';
@@ -23,19 +23,19 @@ interface IPageProps {
     form:any
 }
 interface IPageState {
-    data:any[],
+    page:PageModel<any>,
     selectedkey:any
 }
 
  class CheckinPage extends React.Component<IPageProps,IPageState> {
 
     state:IPageState={
-        data:[],
+        page:new PageModel<any>(),
         selectedkey:''
     }
     async componentDidMount() {
         let page = await ManService.searchCheckin({pageIndex:1,pageSize:20}) as PageModel<any>;
-        this.setState({data:page.data});
+        this.setState({page:page});
     }
     handleSelect = (index) => {
         this.setState({selectedkey: index});
@@ -124,12 +124,12 @@ interface IPageState {
       
 
           const toolBtns = [{
-            value:'生成计划',
+            value:'无效',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
-            iconType:'uf-search',
+            iconType:'uf-export',
             onClick:this.export
         }];
 
@@ -172,34 +172,36 @@ interface IPageState {
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="身份证号"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="性别"
                     >
-                    <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">男</Option>
-                            <Option value="1">女</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem
                         label="人员分类">
                             <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
+                    </FormItem>
+
+                    <FormItem
+                        label="社区"
+                    >
+                        <RefOrgTreeSelect/>
+                        
                     </FormItem>
                     <FormItem
                         label="创建时间"
@@ -218,10 +220,11 @@ interface IPageState {
                 </FormList>
                 </SearchPanel>
         <Grid
+          toolBtns={toolBtns}
           columns={columns}
-          data={this.state.data}
+          page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
+          //paginationObj={paginationObj}
         />
 
 

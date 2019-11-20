@@ -28,9 +28,14 @@
 /**编辑popForm**/
 .edit_form_pop{
     .u-form-item{
-        .u-form-control, .datepicker-container,.u-select{
+        .u-form-control, .u-select{
             min-width: 300px;
         }
-
+        
+    }
+    .other-container{
+        position: relative;
+        display: inline-block;
+        max-width: 300px;
     }
 }

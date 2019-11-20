@@ -1,17 +1,15 @@
 import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+import Grid from '../../components/Grid';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
-
-import InputNumber from 'bee-input-number';
+import { PageModel } from '../../services/Model/Models';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -22,17 +20,20 @@ interface IPageProps {
     form:any
 }
 interface IPageState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    page:PageModel<any>
 }
 
  class LocationPage extends React.Component<IPageProps,IPageState> {
+
+    state:IPageState={
+        page:new PageModel<any>()
+    }
+
     componentDidMount() {
 
     }
     handleSelect = (index) => {
-        this.setState({selectedkey: index});
+       // this.setState({selectedkey: index});
     }
 
     getSelectedDataFunc = data => {
@@ -86,12 +87,12 @@ interface IPageState {
           ];
 
           const toolBtns = [{
-            value:'生成计划',
+            value:'查看轨迹',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
-            iconType:'uf-search',
+            iconType:'uf-export',
             onClick:this.export
         }];
 
@@ -125,66 +126,55 @@ interface IPageState {
             >
 
                 <FormList size="sm">
-                    <FormItem
-                        label="员工编号"
+                <FormItem
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
-
                     <FormItem
-                        label="司龄"
+                        label="身份证号"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
                     <FormItem
-                        label="年份"
+                        label="性别"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
                         </Select>
                     </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
+                    </FormItem>
+
+                    <FormItem
+                        label="社区"
+                    >
+                        <RefOrgTreeSelect/>
+                        
+                    </FormItem>
+                    
                 </FormList>
                 </SearchPanel>
-
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
+          toolBtns={toolBtns}
           columns={columns}
-          data={data}
+          page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
+          //paginationObj={paginationObj}
         />
 
 

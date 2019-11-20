@@ -17,9 +17,6 @@ class SelectDict extends Component<IProps,IState> {
     state:IState={
         data:[]
     }
-    constructor(props) {
-        super(props);
-    }
     async componentDidMount() {
 
         let data = await SysService.getDict(this.props.type);

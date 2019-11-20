@@ -1,11 +1,15 @@
 import * as React from 'react';
 import {Panel, Tabs,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
-
+import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
+
+import {PageModel, PopPageModel} from '../../services/Model/Models';
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
+import PageDlog from '../../components/PageDlg';
 
 import DatePicker from "bee-datepicker";
 import SelectMonth from '../../components/SelectMonth';
@@ -13,7 +17,6 @@ import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import InputNumber from 'bee-input-number';
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -24,22 +27,22 @@ interface IPageProps {
     form:any
 }
 interface IPageState {
-    data:any[],
-    data2:any[],
+    page: PageModel<any>,
+    page2:PageModel<any>,
     selectedkey:any
 }
 
  class DayoffPage extends React.Component<IPageProps,IPageState> {
 
     state:IPageState={
-        data:[],
-        data2:[],
+        page:new PageModel<any>(),
+        page2:new PageModel<any>(),
         selectedkey:''
     }
     async componentDidMount() {
 
         let page = await ManService.searchDayoff({pageIndex:1,pageSize:20}) as PageModel<any>;
-        this.setState({data:page.data});
+        this.setState({page:page});
     }
     handleSelect = (index) => {
         this.setState({selectedkey: index});
@@ -47,7 +50,7 @@ interface IPageState {
 
     getSelectedDataFunc = data => {
         console.log("data", data);
-      };
+    };
     
       selectedRow = (record, index) => {};
       /**
@@ -113,12 +116,12 @@ interface IPageState {
           ];
         
           const toolBtns = [{
-            value:'生成计划',
+            value:'审核',
             bordered:false,
             colors:'primary'
         },{
             value:'导出',
-            iconType:'uf-search',
+            iconType:'uf-export',
             onClick:this.export
         }];
 
@@ -150,85 +153,98 @@ interface IPageState {
                 search={()=>{}}
                 searchOpen={true}
             >
-
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="身份证号"
+                    >
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="性别"
+                    >
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
                     </FormItem>
 
-
                     <FormItem
-                        label="司龄"
+                        label="社区"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
+                        <RefOrgTreeSelect/>
+                        
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
                         />
                     </FormItem>
 
                     <FormItem
-                        label="年份"
+                        label="请假时间"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
+                         <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
                         />
                     </FormItem>
-
                     <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
+                        label="状态">
+                        <Radio.RadioGroup>
+                            <Radio value="">全部</Radio>
+                            <Radio value="0">未处理</Radio>
+                            <Radio value="1">同意</Radio>
+                            <Radio value="-1">不同意</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
-
                     <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        label="类型">
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="事假">事假</Option>
+                            <Option value="病假">病假</Option>
                         </Select>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
 
-            <Tabs
-                defaultActiveKey="1"
-                onChange={()=>{}}
-            >
-                <Tabs.TabPane tab='未处理' key="1">
-
-                    <Grid
+                <Grid
+                        toolBtns={toolBtns}
                         columns={columns}
-                        data={this.state.data}
+                        page={this.state.page}
                         getSelectedDataFunc={this.getSelectedDataFunc}
-                        paginationObj={paginationObj}
+                        
                     />
-
-                </Tabs.TabPane>
-                <Tabs.TabPane tab='已处理' key="2">
-                    <Grid
-                        columns={columns}
-                        data={this.state.data2}
-                        getSelectedDataFunc={this.getSelectedDataFunc}
-                        paginationObj={paginationObj}
-                    />
-                </Tabs.TabPane>
-            </Tabs>
-
         </Panel >)
     }
 }

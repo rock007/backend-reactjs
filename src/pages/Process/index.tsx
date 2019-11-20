@@ -1,26 +1,28 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {Loading ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
 
+import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 import OrgPanel from '../../pages/Sys/Org/Panel';
+import Alert from '../../components/Alert';
 
 import ProcessViewPop from './View';
 
 import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
+import {PageModel, PopPageModel} from '../../services/Model/Models';
 import SelectDict from '../../components/SelectDict';
 import ManCateSelect from '../../components/ManCateSelect';
 import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
+import PageDlog from '../../components/PageDlg';
 
 import { getValidateFieldsTrim ,deepClone} from '../../utils/tools';
 
 import './index.scss';
+import { Info } from '../../utils';
 
 const FormItem = FormListItem;
 
@@ -35,7 +37,12 @@ interface IPageState {
     page:PageModel<any>
     isLoading:boolean,
     dataNumIndex:number,
-    rowSelect:any[]
+    
+    checkedRows:any[];
+
+    isAlterShow:boolean,
+    isPopPage:boolean,
+    pageModel: PopPageModel
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
@@ -48,13 +55,30 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         page:new PageModel<any>(),
         isLoading:false,
         dataNumIndex:0,
-        rowSelect:[]
+        
+        checkedRows:[],
+
+        isAlterShow:false,
+        isPopPage:false,
+        pageModel:new PopPageModel(),
     }
     async componentDidMount() {
         
         this.validFormSubmit();
     }
 
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+        if(isPage){
+            this.props.history.push(url);
+        }else{
+            const model=new PopPageModel(title,url);
+
+            model.size=size;
+
+            this.setState({isPopPage:true,pageModel:model});
+        }
+    }
     validFormSubmit=()=>{
 
         this.props.form.validateFields((err, _values) => {
@@ -120,8 +144,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
     getSelectedDataFunc = (selectData, record, index) => {
         
-        this.rowSelect=selectData;
+        this.setState({checkedRows:selectData});
 
+        //this.rowSelect=selectData;
+
+        /** 
         let  tableData  = this.state.page.data;
 		let _tableData = deepClone(tableData);
 		if (index != undefined) {
@@ -141,12 +168,14 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 				});
 			}
         }
+        ***/
         //this.handler(selectData);
-      };
+    }
     
-      handler=async (data)=>{
-        this.setState({rowSelect:data});
-      }
+    handler=async (data)=>{
+       // this.setState({rowSelect:data});
+    }
+      
 
     onDataNumSelect=(index)=>{
         
@@ -182,6 +211,13 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
     gotoDetail=(id)=>{
         this.props.history.push('/process-view/'+id);
+    }
+
+    onPageChange=(pageIndex:number,pageSize:number)=>{
+
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+       // this.search();
     }
 
     render() {
@@ -234,39 +270,74 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }}
           ];
         
-          const toolBtns = [/**{
-            value:'新增',
-            bordered:false,
-            colors:'primary',
-            onClick:()=>{this.setState({isViewerShow:true})}
-        },{
-            value:'修改',
-            colors:'default',
-            onClick:() => {
-                this.props.history.push('/process-view/'+'220');
-            }
-        },***/{
+          const toolBtns = [{
             value:'社区报到',
             onClick:() => {
-                this.setState({isViewerShow:true})
+                //this.setState({isViewerShow:true});
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-regist/'+this.state.checkedRows[0].processId,"社区报到",false);
+
+                }else{
+                    Info('请选择记录');
+                }
             }
         },{
             value:'发告诫书',
             colors:'default',
             onClick:() => {
 
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-notice/'+this.state.checkedRows[0].processId,"发告诫书",false);
+
+                }else{
+                    Info('请选择记录');
+                }
             }
         },{
             value:'发通知函',
             colors:'default',
             onClick:() => {
 
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-warn/'+this.state.checkedRows[0].processId,"发通知函",false);
+
+                }else{
+                    Info('请选择记录');
+                }
             }
         },{
             value:'变更社区',
             colors:'default',
             disabled:isMultSelect,
             onClick:() => {
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-trans/'+this.state.checkedRows[0].processId,"变更社区",false);
+
+                }else{
+                    Info('请选择记录');
+                }
 
             }
         },{
@@ -275,6 +346,17 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             disabled:isMultSelect,
             onClick:() => {
 
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-release/'+this.state.checkedRows[0].processId,"解除戒毒",false);
+
+                }else{
+                    Info('请选择记录');
+                }
             }
         },{
             value:'执行强戒',
@@ -282,10 +364,21 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             disabled:isMultSelect,
             onClick:() => {
 
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/process-reback/'+this.state.checkedRows[0].processId,"执行强戒",false);
+
+                }else{
+                    Info('请选择记录');
+                }
             }
         },{
             value:'导出',
-            iconType:'uf-search',
+            iconType:'uf-export',
             onClick:this.export
         }];
 
@@ -309,7 +402,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         return (
 
             <Panel>
-                <Loading container={this} show={this.state.isLoading}/>
                  <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
@@ -404,28 +496,44 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="状态">
                         <Radio.RadioGroup>
+                            <Radio value="">全部</Radio>
                             <Radio value="1">执行中</Radio>
                             <Radio value="100">已完成</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
-                <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+
                 <Grid
-                    ref="grid"
-                    className="table-color"
+                    //ref="grid"
+                    //className="table-color"
+                    toolBtns={toolBtns}
                     columns={columns}
-                    data={this.state.page.data}
-                    exportData={this.state.page.data}
-                    sheetName="档案库"
+                    isLoading={this.state.isLoading}
+                    page={this.state.page}
+                    //exportData={this.state.page.data}
+                    //sheetName="档案库"
                     getSelectedDataFunc={this.getSelectedDataFunc}
-                    paginationObj={paginationObj}
-                    sort={sortObj}
-                    sortFun={this.sortFun}
+                    pageChange={this.onPageChange}
+                    //paginationObj={paginationObj}
+                    //sort={sortObj}
+                    //sortFun={this.sortFun}
                 />
                
                 </Col>
             </Row>
+            <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+            </PageDlog>
+            <Alert show={this.state.isAlterShow} context="是否要删除 ?"
+                           confirmFn={() => {
+                             //  this.confirmGoBack(1);
+                           }}
+                           cancelFn={() => {
+                              // this.confirmGoBack(2);
+                              this.setState({isAlterShow:false})
+                           }}
+            />
             <ProcessViewPop isShow={this.state.isViewerShow} onCloseEdit={()=>{this.setState({isViewerShow:false})}}/>
             </Panel>
         )

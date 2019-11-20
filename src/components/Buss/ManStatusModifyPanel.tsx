@@ -41,14 +41,16 @@ class ManStatusModifyPanel extends React.Component<IFooBar,IPanelState> {
     componentDidMount() {
 
     }
+    submit=()=>{
+        
+    }
     render() {
       const me=this;
       let {getFieldProps, getFieldError} = this.props.form;
 
   //{this.props.others}
         return (<React.Fragment>
-   <Panel>
-
+   <div>
           <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>业务操作</Label>
@@ -78,15 +80,9 @@ class ManStatusModifyPanel extends React.Component<IFooBar,IPanelState> {
                   </FormItem>
                 ):null}
                 
-               {this.state.selectedValue==2?(
-                 <FormItem>
-                    <Label>网格单元</Label>
-                    <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
-                    <FormError errorMsg={getFieldError('dept')}/>
-                </FormItem>
-               ):null}
+             
                
-               {this.state.selectedValue==3?(
+               {this.state.selectedValue==2?(
                  <FormItem>
                   <Label>人员分类</Label>
                   
@@ -94,26 +90,34 @@ class ManStatusModifyPanel extends React.Component<IFooBar,IPanelState> {
                  
                 </FormItem>
                ):null}
-               
-               {this.state.selectedValue==4?(
+
+               {this.state.selectedValue==3?(
                  <FormItem>
-                 <Label>风险等级</Label>
-                   <SelectDict onChange={()=>{}} type={31} {...getFieldProps('level', {initialValue: ''})}  style={{width:'200px'}} />
-                   <FormError errorMsg={getFieldError('dept')}/>
-           </FormItem>
+                    <Label>风险等级</Label>
+                    <SelectDict onChange={()=>{}} type={31} {...getFieldProps('level', {initialValue: ''})}  style={{width:'200px'}} />
+                    <FormError errorMsg={getFieldError('dept')}/>
+                </FormItem>
+               ):null}
+
+                {this.state.selectedValue==4?(
+                 <FormItem>
+                    <Label>网格单元</Label>
+                    <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
+                    <FormError errorMsg={getFieldError('dept')}/>
+                </FormItem>
                ):null}
                
                {this.state.selectedValue==5?(
-                 <FormItem>
-                 <Label>社区报到时间</Label>
-                <DatePicker  format={'YYYY-MM-DD'} 
+                    <FormItem>
+                        <Label>社区报到时间</Label>
+                        <DatePicker  format={'YYYY-MM-DD'} 
                                {...getFieldProps('registSetDate', {
                                    initialValue: '',
                                    validateTrigger: 'onBlur',
                                    rules: [{required: true, message: '请选择申请时间'}],
                                })}
-               />
-           </FormItem>
+                        />
+                    </FormItem>
                ):null}
                
                 <FormItem>
@@ -137,8 +141,12 @@ class ManStatusModifyPanel extends React.Component<IFooBar,IPanelState> {
                                 )}
                    />
                </FormItem>
-        </Form> 
-                </Panel>
+               <FormItem style={{'paddingLeft':'106px'}}>
+                        <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
+                        <Button colors="primary" className="login" onClick={this.submit}>保存</Button>
+                </FormItem>
+            </Form> 
+                </div>
             </React.Fragment>);
     }
 }

@@ -1,20 +1,19 @@
 import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
-
+import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
-import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
+import {PageModel, PopPageModel} from '../../services/Model/Models';
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
+import PageDlog from '../../components/PageDlg';
 
-import InputNumber from 'bee-input-number';
+import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
 
 import './index.scss';
 
@@ -27,7 +26,7 @@ interface IPageProps {
 }
 interface IPageState {
     expanded:boolean,
-    data:any[],
+    page:PageModel<any>,
     selectedkey:any
 }
 
@@ -35,13 +34,13 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
         expanded:false,
-        data:[],
+        page:new PageModel<any>(),
         selectedkey:null
     }
 
     async componentDidMount() {
         let page = await ManService.searchVisit({pageIndex:1,pageSize:20}) as PageModel<any>;
-        this.setState({data:page.data});
+        this.setState({page:page});
     }
 
     handleSelect = (index) => {
@@ -131,9 +130,12 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
 
           const toolBtns = [{
             value:'新增',
-            
             bordered:false,
             colors:'primary'
+        },{
+            value:'修改'
+        },{
+            value:'删除'
         },{
             value:'导出',
             iconType:'uf-search',
@@ -141,15 +143,6 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
         },{
             value:'打印',
             iconType:'uf-print',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
         }];
 
         let paginationObj = {
@@ -186,70 +179,109 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                 search={()=>{}}
                 searchOpen={true}
             >
-
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
-
                     <FormItem
-                        label="司龄"
+                        label="身份证号"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
-                        />
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
                     </FormItem>
-
                     <FormItem
-                        label="年份"
+                        label="性别"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
-                        />
-                    </FormItem>
-
-                    <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
-                    </FormItem>
-
-                    <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
                         </Select>
+                    </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
+                    </FormItem>
+
+                    <FormItem
+                        label="社区"
+                    >
+                        <RefOrgTreeSelect/>
+                        
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                        />
+                    </FormItem>
+
+                    <FormItem
+                        label="走访时间"
+                    >
+                         <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label="被访人">
+                        <FormControl placeholder='请输入被访人姓名' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="和戒毒人员关系">
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">是</Option>
+                            <Option value="0">否</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="被访人联系方式">
+                        <FormControl placeholder='请输入被访人联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="走访地点">
+                        <FormControl placeholder='请输入走访地点' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="走访结果">
+                        <Radio.RadioGroup>
+                            <Radio value="">全部</Radio>
+                            <Radio value="找到">找到</Radio>
+                            <Radio value="未找到">未找到</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
-
-
-                            <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
+          toolBtns={toolBtns}
           columns={columns}
-          data={this.state.data}
+          page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-          sort={sortObj}
-          sortFun={this.sortFun}
+          //paginationObj={paginationObj}
+          //sort={sortObj}
+          //sortFun={this.sortFun}
         />
 
         </Panel >)

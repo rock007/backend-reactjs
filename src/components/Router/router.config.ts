@@ -83,6 +83,60 @@ export const appRouters: any = [
   },
   {
     permission: '',
+    title: '社戒管理-报到',
+    path: '/process-regist/:id',
+    name: 'man_process_regist',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManRegist'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-告诫书',
+    path: '/process-notice/:id',
+    name: 'man_process_notice',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManNotice'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-通知函',
+    path: '/process-warn/:id',
+    name: 'man_process_warn',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManWarn'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-变更社区',
+    path: '/process-trans/:id',
+    name: 'man_process_trans',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManTrans'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-解除戒毒',
+    path: '/process-release/:id',
+    name: 'man_process_release',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManRelease'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-执行强戒',
+    path: '/process-reback/:id',
+    name: 'man_process_reback',
+    icon: '9square-2',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/Buss/ManReback'))
+  },
+  {
+    permission: '',
     title: '社戒详细',
     path: '/process-view/:id',
     name: 'man_process_view',

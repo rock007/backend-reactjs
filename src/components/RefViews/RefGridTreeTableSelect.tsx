@@ -30,7 +30,7 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
         //pageCount:-1,
         //totalElements:0,
         treeData:[],
-        tablePage:new PageModel,
+        tablePage:new PageModel(),
         matchData:[],
         //value:JSON.stringify({
         //        refname: "用友集团",

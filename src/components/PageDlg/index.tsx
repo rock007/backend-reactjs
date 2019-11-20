@@ -1,101 +1,63 @@
 import * as React from 'react';
 import PopDialog from '../../components/Pop';
+import {PopPageModel} from '../../services/Model/Models';
 import { appRouters } from '../../components/Router/router.config';
 
 interface IProps {
-    url:string,
-    title?:string,
+    model: PopPageModel,
     isShow:boolean,
-    onClose:()=>void
+    onClose:()=>void,
+    //size?:'lg'|'lg'|"xlg"
 }
 interface IState {
    
 }
 
 class PageDlog extends React.Component<IProps,IState> {
-    
-    state:IState={
- 
-    }
-    
-    constructor(args) {
-        super(args);
-        
-    }
-
+    /** 
     componentWillReceiveProps(nextProps) {
        
-        let {url, isShow} = this.props;
-        let {url: nextUrl, isShow: nextIsShow} = nextProps;
+        let {model, isShow} = this.props;
+        let {model: nextmodel, isShow: nextIsShow} = nextProps;
         // 判断是否 btnFlag新弹框状态  currentIndex当前选中行
-        if (url !== nextUrl || isShow !== nextIsShow) {
+        if (model !== nextmodel || isShow !== nextIsShow) {
 
             if(nextIsShow){
 
             }
         }
-
     }
 
     componentDidMount() {
 
     }
-
-    onHandleBtns = (btnFlag) => {
-        let _this = this;
-        let btns = [
-
-            {
-                label: '取消',
-                fun: this.props.onClose,
-                shape: 'border'
-            },
-            {
-                label: '确定',
-                //fun: _this.onSubmitEdit,
-                colors: 'primary'
-            },
-        ];
-
-        if (btnFlag == 2) {
-            btns = [];
-        }
-        return btns;
-    }
-   
-    getRoute=()=>{
-        
-        const route=appRouters.find((v,i)=>v.path==this.props.url);
-        if(route!=null){
-          console.log('go2Page:'+route.path);
-          //this.props.history.push(route.path);
-        }else{
-          //this.props.history.push('/exception?code=404');
-        }
-
-    }
-
+*/
     render() {
+
+        const one= appRouters.find((v,i)=>{
+
+            if(v.path.indexOf(':')!=-1){
+                const m1=new RegExp(v.path.replace(':id','\w?'));
+                return m1.test(this.props.model.url);
+            }else{
+
+                return v.path===this.props.model.url;
+            }
+         
+        });
+
+        let A= one!=null?one.component:()=>(<div>没有找到</div>);
         
-        const _this = this;
-
-        const one= appRouters.find((v,i)=>v.path==this.props.url);
-
-        let A= one!=null?one.component:(<div>没有找到</div>);
-        let btns = _this.onHandleBtns(0);
-
         return (   <PopDialog
             show={this.props.isShow}
-            title={this.props.title||'查看'}
-            size='lg'
-            btns={btns}
+            title={this.props.model.title}
+            size={this.props.model.size||'lg'}
             autoFocus={false}
             enforceFocus={false}
             close={this.props.onClose}
             className="single-table-pop-model"
         >
-           {this.props.url}
-           <A/>
+           <A isPage={false} url={this.props.model.url} handlerBack={this.props.onClose}/>
         </PopDialog>)
     }
 }

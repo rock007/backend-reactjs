@@ -1,7 +1,6 @@
 import { observable, action } from 'mobx';
 import AccountService from '../services/account/AccountService';
-import { MenuModel,ActionModel,PermissionModel,RoleModel } from '../services/dto/SystemModel';
-import { appRouters } from '../components/Router/router.config';
+import { MenuModel,PermissionModel,RoleModel } from '../services/dto/SystemModel';
 
 //系统信息
 class SystemStore {
@@ -46,7 +45,7 @@ class SystemStore {
 
   private _getMenus=()=>{
 
-    if(this.menus.length==0&&this._permissions!=null&&this._permissions.length>0){
+    if(this.menus.length===0&&this._permissions!=null&&this._permissions.length>0){
 
       this.menus=this._getMenuChild(0);
     }
@@ -55,15 +54,15 @@ class SystemStore {
 
   private _getChild(parentId:number):Array<PermissionModel>{
 
-    if(this._permissions==null||this._permissions.length==0) return [];
-    return this._permissions.filter((v,i,arr)=>v.parentId==parentId);
+    if(this._permissions===null||this._permissions.length===0) return [];
+    return this._permissions.filter((v,i,arr)=>v.parentId===parentId);
   }
 
   private _getMenuChild(parentId:number):Array<MenuModel>{
 
-    if(this._permissions==null||this._permissions.length==0) return [];
+    if(this._permissions===null||this._permissions.length===0) return [];
 
-    const mm= this._permissions.filter((v,i,array)=>v.parentId==parentId)
+    const mm= this._permissions.filter((v,i,array)=>v.parentId===parentId)
       .map((v,i,arr)=>{
 
         return {

@@ -1,19 +1,21 @@
 import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
-
+import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
+import {PageModel, PopPageModel} from '../../services/Model/Models';
+import SelectDict from '../../components/SelectDict';
+import ManCateSelect from '../../components/ManCateSelect';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
+import PageDlog from '../../components/PageDlg';
+
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
 
-import InputNumber from 'bee-input-number';
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
+
 import NiaojianEdit from './Edit';
 
 
@@ -27,7 +29,7 @@ interface IPageProps {
 }
 interface IPageState {
    
-    data:any[],
+    page:PageModel<any>,
     selectedkey?:any
     isEditPop:boolean
 }
@@ -35,14 +37,14 @@ interface IPageState {
  class NiaojianPage extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
-        data:[],
+        page:new PageModel<any>(),
         isEditPop:false
     }
     async componentDidMount() {
 
         let page = await ManService.searchNiaojian({pageIndex:1,pageSize:20}) as PageModel<any>;
 
-        this.setState({data:page.data});
+        this.setState({page:page});
     }
     handleSelect = (index) => {
         this.setState({selectedkey: index});
@@ -127,26 +129,15 @@ interface IPageState {
             bordered:false,
             colors:'primary'
         },{
+            value:'编辑'
+        },{
+            value:'删除'
+        },{
+            value:'打印'
+        },{
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
-        },{
-            value:'上传',
-            iconType:'uf-cloud-up',
-        },{
-            value:'批量操作',
-            //onClick:this.dispatchOpt,
-            children:[
-                {
-                    value:'修改',  
-                    onClick:this.dispatchUpdate
-                },{
-                    value:'删除',  
-                    onClick:this.dispatchDel
-                }
-            ]
-        },{
-            iconType:'uf-copy',
         }];
 
         let paginationObj = {
@@ -186,67 +177,104 @@ interface IPageState {
 
                 <FormList size="sm">
                     <FormItem
-                        label="员工编号"
+                        label="姓名"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="员工姓名"
+                        label="联系方式"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="身份证号"
+                    >
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                    </FormItem>
+                    <FormItem
+                        label="性别"
+                    >
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="人员分类">
+                            <ManCateSelect/>
+                    </FormItem>
+                    <FormItem
+                        label="风险等级">
+                        <SelectDict onChange={()=>{}} type={31}/>
                     </FormItem>
 
-
                     <FormItem
-                        label="司龄"
+                        label="社区"
                     >
-                        <InputNumber
-                            min={0}
-                            max={99}
-                            iconStyle="one"
-                            {...getFieldProps('serviceYearsCompany', {initialValue: "0",})}
+                        <RefOrgTreeSelect/>
+                        
+                    </FormItem>
+                    <FormItem
+                        label="创建时间"
+                    >
+                        <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
                         />
                     </FormItem>
 
                     <FormItem
-                        label="年份"
+                        label="尿检时间"
                     >
-                        <DatePicker.YearPicker
-                            {...getFieldProps('year', {initialValue: null})}
-                            format={format}
-                            locale={zhCN}
-                            placeholder="选择年"
+                         <DatePicker.RangePicker
+                            placeholder={'开始 ~ 结束'}
+                            dateInputPlaceholder={['开始', '结束']}
+                            showClear={true}
+                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
+                            showClose={true}
                         />
                     </FormItem>
-
                     <FormItem
-                        label="月份"
-                    >
-                        <SelectMonth {...getFieldProps('month', {initialValue: ''})} />
+                        label="结果">
+                        <Radio.RadioGroup>
+                            <Radio value="">全部</Radio>
+                            <Radio value="阴性">阴性</Radio>
+                            <Radio value="阳性">阳性</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
-
                     <FormItem
-                        label="是否超标"
-                    >
-                        <Select {...getFieldProps('exdeeds', {initialValue: ''})}>
-                            <Option value="">请选择</Option>
-                            <Option value="0">未超标</Option>
-                            <Option value="1">超标</Option>
+                        label="尿检类型">
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="常规">常规</Option>
+                            <Option value="随机">随机</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem
+                        label="是否本地">
+                        <Select >
+                            <Option value="">(请选择)</Option>
+                            <Option value="1">是</Option>
+                            <Option value="0">否</Option>
                         </Select>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
 
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
         <Grid
+          toolBtns={toolBtns}
           columns={columns}
-          data={this.state.data}
+          page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          paginationObj={paginationObj}
-          sort={sortObj}
-          sortFun={this.sortFun}
+          //paginationObj={paginationObj}
+          //sort={sortObj}
+          //sortFun={this.sortFun}
         />
         <NiaojianEdit   isShow={this.state.isEditPop}  onCloseEdit={()=>this.setState({isEditPop:false})}/>
         </Panel >)

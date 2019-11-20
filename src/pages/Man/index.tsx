@@ -16,7 +16,7 @@ import Alert from '../../components/Alert';
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
-import {PageModel,SearchModel} from '../../services/Model/Models';
+import {PageModel,SearchModel,PopPageModel} from '../../services/Model/Models';
 import { inject, observer } from 'mobx-react';
 import ManStore from '../../stores/ManStore';
 import Store from '../../stores/StoreIdentifier';
@@ -27,8 +27,8 @@ import RelationShipPanel from '../../components/Buss/RelationShipPanel';
 import WorkJobPanel from '../../components/Buss/WorkJobPanel';
 import ManContactPanel from '../../components/Buss/ManContactPanel';
 import ManStatusModifyPanel from '../../components/Buss/ManStatusModifyPanel';
-import TestDlog from './Edit/TestDlg';
-//import PageDlog from '../../components/PageDlg';
+//import TestDlog from './Edit/TestDlg';
+import PageDlog from '../../components/PageDlg';
 
 import './index.scss';
 import {Info} from '../../utils/index';
@@ -52,7 +52,9 @@ interface IPageState {
     isPopWorkjob:boolean,
     isPopContact:boolean,
     isPopStatusModify:boolean,
-    isPopTest:boolean,
+
+    isPopPage:boolean,
+    pageModel: PopPageModel,
 
     checkedRows:any[];
 }
@@ -82,7 +84,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         isPopWorkjob:false,
         isPopContact:false,
         isPopStatusModify:false,
-        isPopTest:false,
+        
+        isPopPage:false,
+        pageModel:new PopPageModel(),
+
         checkedRows:[]
     }
 
@@ -100,8 +105,17 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         }
     }
 
-    go2Page=(url)=>{
-        this.props.history.push(url);
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+        if(isPage){
+            this.props.history.push(url);
+        }else{
+            const model=new PopPageModel(title,url);
+
+            model.size=size;
+
+            this.setState({isPopPage:true,pageModel:model});
+        }
     }
     search= ()=>{
         this.props.form.validateFields((err, values) => {
@@ -151,7 +165,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         )
         ***/
        this.setState({checkedRows:selectData});
-    };
+    }
   
     onPageChange=(pageIndex:number,pageSize:number)=>{
 
@@ -221,7 +235,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             bordered:false,
             colors:'primary',
             onClick:() => {
-                this.go2Page('/man-edit/0');
+
+                this.go2Page('/man-edit/0',"档案新增",false);
+
             }
         },{
             value:'编辑',
@@ -235,7 +251,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-edit/'+this.state.checkedRows[0].manId);
+                    //this.go2Page('/man-edit/'+this.state.checkedRows[0].manId);
+
+                    this.go2Page('/man-edit/'+this.state.checkedRows[0].manId,"档案修改",false);
 
                 }else{
                     Info('请选择要删除的记录');
@@ -269,14 +287,14 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
-               // this.setState({isPopRelation:true});
+
                 if(this.state.checkedRows.length>1){
 
                     Info('亲属关系只能选择一条记录');
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-relate/'+this.state.checkedRows[0].manId);
+                    this.go2Page('/man-relate/'+this.state.checkedRows[0].manId,"亲属关系",false,'xlg');
 
                 }else{
                     Info('请选择要查看亲属关系的戒毒人员');
@@ -287,13 +305,26 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
-                this.setState({isPopWorkjob:true});
+                //this.setState({isPopWorkjob:true});
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('亲属关系只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    //this.go2Page('/man-relate/'+this.state.checkedRows[0].manId,"亲属关系",false);
+
+                }else{
+                    Info('请选择要查看亲属关系的戒毒人员');
+                }
             }
         },{
             value:'导出',
             iconType:'uf-export',
             onClick:()=>{
-                this.setState({isPopTest:true});
+                //this.setState({isPopPage:true});
+                this.go2Page('/test-pop',"测试",false);
             }
         },{
             value:'打印',
@@ -410,7 +441,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 <ManStatusModifyPanel/>
             </PopDialog>    
 
-            <TestDlog title="测试下" isShow={this.state.isPopTest} onClose={()=>this.setState({isPopTest:false})} url="www.baidu.com"></TestDlog>
+            <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+            </PageDlog>
             
             <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
