@@ -251,8 +251,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    //this.go2Page('/man-edit/'+this.state.checkedRows[0].manId);
-
                     this.go2Page('/man-edit/'+this.state.checkedRows[0].manId,"档案修改",false);
 
                 }else{
@@ -280,7 +278,19 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
-                this.setState({isPopContact:true})
+                //this.setState({isPopContact:true})
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/man-contact/'+this.state.checkedRows[0].manId,"六保一",false,'xlg');
+
+                }else{
+                    Info('请选择要查看戒毒人员');
+                }
+
             }
         },{
             value:'亲属关系',
@@ -309,14 +319,14 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 if(this.state.checkedRows.length>1){
 
-                    Info('亲属关系只能选择一条记录');
+                    Info('只能选择一条记录');
 
                 }else if(this.state.checkedRows.length==1){
 
-                    //this.go2Page('/man-relate/'+this.state.checkedRows[0].manId,"亲属关系",false);
+                    this.go2Page('/man-work/'+this.state.checkedRows[0].manId,"工作经历",false);
 
                 }else{
-                    Info('请选择要查看亲属关系的戒毒人员');
+                    Info('请选择要查看的戒毒人员');
                 }
             }
         },{
@@ -365,7 +375,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="姓名"
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('manName', {initialValue: ''})}/>
+                        <FormControl placeholder='模糊查询' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem

@@ -19,13 +19,11 @@ import RefDept from './RefDept';
 import RefLevel from './RefLevel';
 //日期组件
 import DateField from './DateField';
-
-
       
 const renderComponentMap = {
     relationship: {
         component: SelectField,
-        selectList: [{//月份
+        selectList: [{
             key: "请选择",
             value: "",
             disabled: true
@@ -83,6 +81,47 @@ const renderComponentMap = {
     address: {
         component: TextField,
         type: 'text'
+    },
+    contact_postion: {
+        component: SelectField,
+        selectList: [{
+            key: "请选择",
+            value: "",
+            disabled: true
+        }, {
+            key: "主任",
+            value: "主任"
+        }, {
+            key: "(村/社区)责任人",
+            value: "(村/社区)责任人"
+        }, {
+            key: "家庭成员及其监护人（担保人）",
+            value: "家庭成员及其监护人（担保人）"
+        }, {
+            key: "专（兼）职社工",
+            value: "专（兼）职社工"
+        }, {
+            key: "社区网格员",
+            value: "社区网格员"
+        }, {
+            key: "社区民警",
+            value: "社区民警"
+        }, {
+            key: "社区医护人员",
+            value: "社区医护人员"
+        }, {
+            key: "禁毒志愿者",
+            value: "禁毒志愿者"
+        }],
+        type: 'select'
+    },
+    textInput: {
+        component: TextField,
+        type: 'text'
+    },
+    dateInput:{
+        component: DateField,
+        type: 'date'
     }
   };
   

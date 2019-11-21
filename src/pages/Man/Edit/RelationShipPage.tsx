@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Panel,Checkbox,Breadcrumb,Loading, Button, ButtonGroup, Table} from 'tinper-bee';
 import loadsh from  'lodash';
+import moment from "moment";
 
 import multiSelect from "tinper-bee/lib/multiSelect.js";
 
@@ -31,7 +32,7 @@ interface IPageState {
     
     editModel?:'add'|'edit',
     data:Array<any>,
-    oldData:Array<any>,
+    //oldData:Array<any>,
     isLoading:boolean,
     showAlert:boolean
 }
@@ -45,7 +46,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
 
     state:IPageState={
         data:[],
-        oldData:[],
+        //oldData:[],
         isLoading:false,
         showAlert:false
     }
@@ -65,7 +66,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }},
     {title: "姓名",dataIndex: "name",key: "name",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
-            type='name'
+            type='textInput'
             value={text}
             field='name'
             index={index}
@@ -89,8 +90,8 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }},
     {title: "出生年月",dataIndex: "birthday",key: "birthday",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
-          type='birthday'
-          value={text}
+          type='textInput'
+          value={ text }
           field='birthday'
           index={index}
           required={true}
@@ -101,7 +102,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }},
     {title: "身份证号",dataIndex: "idCard",key: "idCard",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
-          type='idCard'
+          type='textInput'
           value={text}
           field='idCard'
           index={index}
@@ -113,7 +114,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }},
     {title: "联系方式",dataIndex: "phone",key: "phone",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
-          type='phone'
+          type='textInput'
           value={text}
           field='phone'
           index={index}
@@ -125,7 +126,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }},
     {title: "家庭住址",dataIndex: "address",key: "address",width: 200,  render: (text, record, index) => {
       return  <FactoryComp
-        type='address'
+        type='textInput'
         value={text}
         field='address'
         index={index}
@@ -169,11 +170,21 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
     }
 
     saveData= async (args:any)=>{
-      
-      debugger
-      if(args.manId==null) args.manId=this.manId;
         
-      let result =  await ManService.submitRelate(args);
+      this.setState({isLoading:true});
+      ManService.submitRelate(args)
+        .then((resp)=>{
+
+          debugger;
+        })
+        .catch((err)=>{
+
+          Error('保存数据出错');
+
+        }).finally(()=>{
+
+          this.setState({isLoading:false});
+        });
 
 
     }
@@ -295,7 +306,9 @@ isVerifyData = (data) => {
           birthday:'',
           idCard:'',
           phone:'',
-          address:''
+          address:'',
+          id:'0',
+          manId:this.manId
       }
       //当第一次新增的时候
       // 禁用其他checked
@@ -305,9 +318,6 @@ isVerifyData = (data) => {
               item['_disabled'] = true;
               item['_checked'] = false;
           });
-
-          //debugger;
-          //this.grid.resetColumns(this.columns);
       }
 
       this.oldData.unshift(tmp);//插入到最前
@@ -324,37 +334,21 @@ isVerifyData = (data) => {
               }
           }
       }
-      //保存处理后的数据，并且切换操作态'新增' this.oldData.concat(
-      //actions.inlineEdit.updateState({ list:newData, status: "new", rowEditStatus: false, selectData: [] });
-
-      this.setState({oldData:this.state.data,data:newData,editModel:'add'});
-    }
-
+      this.setState({data:newData,editModel:'add'});
+  }
 
   handler_modify=()=>{
       
-     const oldData=this.state.data;
+      this.oldData=this.state.data;
 
-     if(this.checkedRows.length==0){
-        Info('请勾选要编辑的记录');
-        return;
-      }
-      //当前行数据设置编辑态
-      let editData = this.checkedRows.map(item => {
-        item['_edit'] = true;
-        item['_checked'] = false;
-        item['_status'] = 'edit';
-        return item
-      });
+      let editData = this.state.data.map(item => {
+            item['_edit'] = true;
+            item['_checked'] = false;
+            item['_status'] = 'edit';
+            return item
+        });
 
-    //重置操作栏位
-    //this.grid.resetColumns(this.columns);
-    
-    //同步操作数据
-    //!!this.oldData = loadsh.cloneDeep(editData);
-    //保存处理后的数据，并且切换操作态'编辑'
-    //actions.inlineEdit.updateState({ list: editData, status: "edit", rowEditStatus: false });
-     this.setState({oldData:oldData,data:editData,editModel:'edit'}); 
+      this.setState({data:editData,editModel:'edit'}); 
     }
 
     handler_delete=()=>{
@@ -363,34 +357,23 @@ isVerifyData = (data) => {
         Info('请勾选要删除的记录');
         return;
       }
-      //let { selectData } = this.props;
-      //let delResult = await actions.inlineEdit.removes(selectData);
-      //if (delResult) {
-      //    this.oldData = [];
-      //}
+
       this.setState({  showAlert: true });
     }
 
     handler_save=async ()=>{
-      
-      if(this.checkedRows.length==0){
-        Info('请勾选要保存编辑的记录');
-
-        return;
-      }
-
+    
       let filterResult = null;
-      let ajaxFun = null;
+      
       let msg = "请勾选数据后再新增";
 
-        switch (this.state.editModel) {
+      switch (this.state.editModel) {
             case 'add':
                 filterResult = this.filterList(this.oldData, this.state.data, 'key');
-                ajaxFun = ()=>{};//actions.inlineEdit.adds;
+               
                 break;
             case 'edit':
-                filterResult = this.filterList(this.oldData, this.state.data, 'manId');
-                ajaxFun =  ()=>{};//actions.inlineEdit.updates;
+                filterResult = this.filterList(this.oldData, this.state.data, 'id');
                 msg = '请勾选数据后再更新';
                 break;
             default:
@@ -398,32 +381,19 @@ isVerifyData = (data) => {
         }
 
         if (filterResult.selectList.length > 0) {
-            //开始校验actions
-            //!!await actions.inlineEdit.updateState({list: filterResult.newList});
 
-            //检查是否验证通过
             if (this.isVerifyData(filterResult.selectList)) {
 
-                //let newResult = await ajaxFun(filterResult.selectList);
-                let newResult =  this.saveData(filterResult.selectList);
-                if (newResult) {
-                    this.oldData = [];
-                }
+                this.saveData(filterResult.selectList);
+                //if (newResult) {
+                //    this.oldData = [];
+                //}
             } else {
                 Info('数据填写不完整')
             }
         } else {
             Info(msg);
         }
-
-      //this.checkedRows.forEach((item,index)=>{
-
-      //  let result =  this.saveData(item);
-
-
-      //});
-
-
     }
 
     handler_cancel=()=>{
@@ -432,14 +402,10 @@ isVerifyData = (data) => {
       if (this.hasCheck()) {
         //this.setState({ showAlert: true });
       } else {
-        this.oldData = [];//清空上一次结果
-        //重置store内的数据
-        //actions.inlineEdit.resetData(true);
-        //清空选中的数据
-        //actions.inlineEdit.updateState({ selectData: [], rowEditStatus: true });
+        this.oldData = [];
       }
-
-      this.setState({editModel:null,data:this.state.oldData});
+      this.oldData = [];
+      this.setState({editModel:null,data:this.oldData});
 
     }
     onValidate = (field, flag, index) => {
@@ -450,6 +416,7 @@ isVerifyData = (data) => {
       }
 
     }
+
     changeAllData = (field, value, index,refname) => {
 
       let oldData = this.oldData;

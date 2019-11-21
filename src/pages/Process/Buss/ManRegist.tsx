@@ -1,17 +1,11 @@
 import * as React from 'react';
-import {Panel,Form,FormControl,Label,Upload,Icon,ButtonGroup,Button} from 'tinper-bee';
+import {Form,Label,Upload,Icon,Button} from 'tinper-bee';
 
 import {getValidateFieldsTrim, Warning} from "../../../utils";
 
 import moment from "moment";
-import FormError from '../../../components/FormError';
-import SelectDict from '../../../components/SelectDict';
-import {RefGridTreeTableSelect} from '../../../components/RefViews/RefGridTreeTableSelect';
-import ManCateSelect from '../../../components/ManCateSelect';
-
 import DatePicker from "bee-datepicker";
-import InputNumber from 'bee-input-number';
-import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
+import AppConsts from '../../../lib/appconst';
 
 /**
  * 社区报到
@@ -43,7 +37,23 @@ class ManRegistPage extends React.Component<ISceneProps,ISceneState> {
         let {getFieldProps, getFieldError} = this.props.form;
 
         const demo4props = {
-            action: '/upload.do',
+            action: AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload',
+            headers: {
+                Authorization: 'Bearer '+AppConsts.authorization.token,
+            },
+            name: 'files',
+            onChange(info) {
+                if (info.file.status !== 'uploading') {
+                  console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+
+
+                  console.log(`${info.file.name} file uploaded successfully`);
+                } else if (info.file.status === 'error') {
+                  console.log(`${info.file.name} file upload failed.`);
+                }
+            },
             listType: 'picture-card',
             defaultFileList: [ {
               uid: -2,
@@ -62,7 +72,7 @@ class ManRegistPage extends React.Component<ISceneProps,ISceneState> {
                         <div>
                             <Upload {...demo4props}>
                                 <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传</p>
+                                <p>上传11</p>
                             </Upload>
                         </div>
                     </FormItem>

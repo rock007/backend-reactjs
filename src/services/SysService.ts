@@ -77,6 +77,26 @@ class SysService {
     return result;
   }
 
+  //上传文件
+  public async upload(files:any): Promise<any> {
+   
+    var formData = new FormData();
+    //var imagefile = document.querySelector('#file');
+    formData.append("files", files);
+
+    let result = await http.post('/web/rest/file/upload',formData,
+      {
+        headers:{'Content-Type':'multipart/form-data'}
+      });
+    return result;
+  }
+
+  public async download(fileId:string): Promise<any> {
+   
+    let result = await http.get('/web/rest/file/download',{params:{id:fileId}});
+    return result;
+  }
+
 }
 
 export default new SysService();

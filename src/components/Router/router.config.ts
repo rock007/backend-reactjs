@@ -66,11 +66,27 @@ export const appRouters: any = [
   },
   {
     permission: '',
-    title: '亲属关系',
+    title: '戒毒人员>亲属关系',
     path: '/man-relate/:id',
     name: 'man_relate',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Man/Edit/RelationShipPage'))
+  },
+  {
+    permission: '',
+    title: '戒毒人员>六保一',
+    path: '/man-contact/:id',
+    name: 'man_relate',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Edit/ManContactPage'))
+  },
+  {
+    permission: '',
+    title: '戒毒人员>工作经历',
+    path: '/man-work/:id',
+    name: 'man_relate',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Edit/ManWorkPage'))
   },
   {
     permission: '',
