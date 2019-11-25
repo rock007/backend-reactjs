@@ -5,39 +5,48 @@ import {FormControl ,Radio} from 'tinper-bee';
 import { RefTreeTableWithInput } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
 
+import request from '../../utils/request';
 import SysService from '../../services/SysService';
 import { convertOrgTreeNode } from '../../utils/tools';
+import { PageModel } from '../../services/Model/Models';
 
 interface IComponentProps {
    // form:any
 }
 interface IComponentState {
     loading:boolean,
-    pageCount:number,
-    totalElements:number,
+    //pageCount:number,
+    //totalElements:number,
     treeData:any,
     matchData?:any,
     value?:string
-    showModal:boolean
+    showModal:boolean,
+
+    tablePage:PageModel<any>,
 }
 export  class RefUserTreeTableSelect extends React.Component<IComponentProps,IComponentState> {
 
+    orgId:string='';
+    pageIndex:number=1;
+    pageSize:number=10;
+
     state:IComponentState={
         loading:false,
-        pageCount:-1,
-        totalElements:0,
+        //pageCount:-1,
+        //totalElements:0,
         treeData:[],
-        matchData:[{name:'用友集团',refname:'用友集团',code:'001'}],
-        value:JSON.stringify({
+        matchData:[],//{name:'用友集团',refname:'用友集团',code:'001'}
+        value:'',/***JSON.stringify({
                 refname: "用友集团",
                 refpk: "001",  //value中指定的refpk要等于valueField对应的字段
-        }),
-        showModal:false
+        })**/
+        showModal:false,
+
+        tablePage:new PageModel(),
     }
+
     componentDidMount() {
 
-        //let data = await SysService.getDetpTree();
-        //this.setState({treeData:data.childs});
     }
   
     canClickGoOn = async () =>{
@@ -46,7 +55,7 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
       let treeData=convertOrgTreeNode(data);
       
       this.setState({treeData: treeData.children});
-      return true;//必须要有
+      return true;
   }
 
     onSave = (result) =>{
@@ -57,8 +66,6 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
     clearFunc = () =>{
         this.setState({
             matchData:[],
-        },()=>{
-         //   this.props.form.setFieldsValue({table3:''});
         })
       }
       searchFilterInfo = (value) => {
@@ -82,15 +89,23 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
       onCancel = () => {
         this.setState({ showModal: false })
       }
-      loadData = () => {
 
-      }
       onTreeChange = (record) => {
-       // this.tableData = this.originTableData.slice(Math.floor(Math.random() * 8), -1);
-       // this.setState({
-       //   mustRender: Math.random()
-       // })
+       
+       if(record!=null&&record.length>0){
+          this.setState({loading:true});
+          this.orgId=record[0].key;
+          this.loadData({orgIdSelected:this.orgId})
+        }
       }
+
+      loadData=async (arg)=>{
+
+        let page = await SysService.searchAccount(arg,this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({tablePage:page,loading:false});
+      }
+
       /**
        * @msg: 左树上的搜索回调
        * @param {type} 
@@ -108,94 +123,79 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
         console.log('onTableSearch', value)
       }
       loadTableData = (param) => {
-        console.log('loadTableData', param)
+        console.log('loadTableData', param);
+        if(param['refClientPageInfo.currPageIndex']!=null){
+
+          this.setState({loading:true});
+          this.pageIndex=param['refClientPageInfo.currPageIndex']+1;
+          this.pageSize=param['refClientPageInfo.pageSize'];
+          this.loadData({orgIdSelected:this.orgId});
+        }
       }
 
     render() {
 
-        const {treeData,matchData,value} = this.state;
+        const pageData= this.state.tablePage.data;
 
-        const fliterFormInputs=[];
+        pageData.forEach(element => {
+          element['key']=element.manId;
+        });
 
         const columns = [
-            {
-                title: " ",
-                dataIndex: "a1",
-                key: "a1",
-                width: 45,
-                render(text, record, index) {
+            { title: '姓名', dataIndex: 'trueName', key: 'trueName', textAlign:'center', width: 120 },
+            { title: '性别', dataIndex: 'sex', key: 'sex', width: 80, textAlign:'center' ,render(text,record,index) {
 
-                  return (
-                    <Radio.RadioGroup
-                      name={record.key}
-                      selectedValue={record._checked ? record.key : null}
-                    >
-                      <Radio value={record.title}></Radio>
-                    </Radio.RadioGroup>
-                  )
-                }
-            },
-            { title: '用户名', dataIndex: 'a', key: 'a', width: 100 },
-            { title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
-          ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
+              if(text==null||text=='') return '';
+              return text===1?'男':'女';
+            }},
+            { title: '手机号', dataIndex: 'mobile', key: 'mobile', textAlign:'center', width: 150 },
+            { title: '社区部门', dataIndex: 'dept', key: 'dept', textAlign:'center', width: 180 ,render(text,record,index) {
+
+              return text==null?'':text.deptName;
+            }},
+            { title: '角色', dataIndex: 'roles', key: 'roles', textAlign:'center', width: 150 ,render(text,record,index) {
+
+              return text==null?'':JSON.stringify(text);
+            }},
           ];
 
-          let options = {
-            displayField: '{refname}',
-            valueField: 'refpk',
-            lang: 'zh_CN',
-            miniSearch: true,
-            multiple: true,
-          }
+        const page = {
+            pageCount:  this.state.tablePage.totalPage,
+            currPageIndex:  (this.state.tablePage.pageIndex-1),
+            totalElements:  this.state.tablePage.dataCount,
+        };
 
-          let page = {
-            pageCount:  1,
-            currPageIndex:  1,
-            totalElements:  3,
-          };
+        return (<RefTreeTableWithInput
+            {...this.props}
+            title="社区人员选择"
+            lang= "zh_CN"
+            miniSearch= {true}
+            multiple= {true}
 
-        return (  <RefTreeTableWithInput
+            nodeDisplay={ (record) => {
+              return record.title
+            }}
+            displayField={ (record) => {
+              return record.trueName
+            }}  //显示内容的键
+            valueField={ 'key'} 
+            showLine={true}
+            treeData={this.state.treeData}
+            columnsData={columns}
+            tableData={pageData}
+            page={page}
+            matchData={this.state.matchData}
+            value={this.state.value}
           
-          title="社区人员选择"
-          lang= "zh_CN"
-          miniSearch= {true}
-          multiple= {true}
+            canClickGoOn={this.canClickGoOn}
 
-          nodeDisplay={ (record) => {
-            return record.title
-        }}
-        displayField={ (record) => {
-            return record.title
-        }}  //显示内容的键
-        valueField={ 'key'} 
-          showLine={true}
-          treeData={this.state.treeData}
-          columnsData={columns}
-          tableData={data}
-          page={page}
-          matchData={matchData}
-          value={value}
-          
-          canClickGoOn={this.canClickGoOn}
-
-          searchable={false}
-          onTreeChange={this.onTreeChange}
-          onTreeSearch={this.onTreeSearch}
-          onTableSearch={this.onTableSearch}
-          onSave={this.onSave}
-          onCancel={this.onCancel}
-          //loadTableData={this.loadTableData}
+            searchable={false}
+            onTreeChange={this.onTreeChange}
+            onTreeSearch={this.onTreeSearch}
+            onTableSearch={this.onTableSearch}
+            onSave={this.onSave}
+            onCancel={this.onCancel}
+            loadTableData={this.loadTableData}
 
         />)
     }

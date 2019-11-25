@@ -32,7 +32,6 @@ interface IPageState {
     
     editModel?:'add'|'edit',
     data:Array<any>,
-    //oldData:Array<any>,
     isLoading:boolean,
     showAlert:boolean
 }
@@ -46,7 +45,6 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
 
     state:IPageState={
         data:[],
-        //oldData:[],
         isLoading:false,
         showAlert:false
     }
@@ -210,13 +208,8 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
         
       this.checkedRows=selectData;
 
-      //let { list } = this.props;
       let _list =loadsh.cloneDeep(this.state.data);
-      //当第一次没有同步数据
-      // if (this.oldData.length == 0) {
-      //     this.oldData = deepClone(list);
-      // }
-      //同步list数据状态
+    
       if (index != undefined) {
           _list[index]['_checked'] = !_list[index]['_checked'];
       } else {//点击了全选
@@ -235,10 +228,10 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
           }
       }
       this.setState({data:_list});
-      //actions.inlineEdit.updateState({ selectData, list: _list });
   }
 
   filterList = (oldData,data, key) => {
+
     let newData = data.slice();
     let selectList = [];
 
@@ -273,7 +266,10 @@ isVerifyData = (data) => {
         //如果标准为false直接不参与计算说明已经出现了错误
         if (flag) {
             for (let i = 0; i < keys.length; i++) {
+
+                console.log(JSON.stringify(pattern)+' key:'+ keys[i]+'');
                 if (pattern.test(keys[i])) {
+
                     if (data[index][keys[i]]) {
                         flag = true;
                     } else {
@@ -314,26 +310,17 @@ isVerifyData = (data) => {
       // 禁用其他checked
       //重置表头状态
       if (this.oldData.length <= 0) {
+
+          this.oldData=loadsh.cloneDeep(this.state.data);
+
           newData.forEach(item => {
               item['_disabled'] = true;
               item['_checked'] = false;
           });
       }
 
-      this.oldData.unshift(tmp);//插入到最前
       newData.unshift(tmp);
 
-      if(this.oldData.length != 0 ){
-          for (let index = 0; index < this.oldData.length; index++) {
-              const element = this.oldData[index];
-              for (let i = 0; i < newData.length; i++) {
-                  if(element.key ===  newData[i].key){
-                      newData[i] = {...element};
-                      break;
-                  }
-              }
-          }
-      }
       this.setState({data:newData,editModel:'add'});
   }
 
@@ -364,7 +351,7 @@ isVerifyData = (data) => {
     handler_save=async ()=>{
     
       let filterResult = null;
-      
+       
       let msg = "请勾选数据后再新增";
 
       switch (this.state.editModel) {
@@ -379,62 +366,70 @@ isVerifyData = (data) => {
             default:
                 break;
         }
-
+        
         if (filterResult.selectList.length > 0) {
 
             if (this.isVerifyData(filterResult.selectList)) {
 
                 this.saveData(filterResult.selectList);
-                //if (newResult) {
-                //    this.oldData = [];
-                //}
+                
             } else {
                 Info('数据填写不完整')
             }
         } else {
             Info(msg);
         }
+
     }
 
     handler_cancel=()=>{
       
-      //去掉编辑数据（新增、修改）
-      if (this.hasCheck()) {
-        //this.setState({ showAlert: true });
-      } else {
-        this.oldData = [];
-      }
-      this.oldData = [];
       this.setState({editModel:null,data:this.oldData});
+      this.oldData = [];
 
     }
     onValidate = (field, flag, index) => {
 
-      //只要是修改过就启用校验
-      if (this.oldData.length > 0) {
-          this.oldData[index][`_${field}Validate`] = (flag == null);
+      let _sourseData = loadsh.cloneDeep(this.state.data);
+
+      if (_sourseData.length > 0) {
+        _sourseData[index][`_${field}Validate`] = (flag == null);
       }
+
+      this.setState({data:_sourseData});
+
+      //只要是修改过就启用校验
+      //if (this.oldData.length > 0) {
+      //    this.oldData[index][`_${field}Validate`] = (flag == null);
+      //}
 
     }
 
     changeAllData = (field, value, index,refname) => {
 
-      let oldData = this.oldData;
+      //let oldData = this.oldData;
       let _sourseData = loadsh.cloneDeep(this.state.data);
-      oldData[index][field] = value;
+      //oldData[index][field] = value;
+      _sourseData[index][field] = value;
 
       if(refname){
-          oldData[index][field+"Name"] = refname;
+          //oldData[index][field+"Name"] = refname;
+          _sourseData[index][field+"Name"] = refname;
       }
+
       //有字段修改后去同步左侧对号checkbox
       if (!_sourseData[index]['_checked']) {
           _sourseData[index]['_checked'] = true;
           //actions.inlineEdit.updateState({ list: _sourseData });
-          this.setState({data:_sourseData});
+          //!!this.setState({data:_sourseData});
       }
-      oldData[index]['_checked'] = true;
+
+      //oldData[index]['_checked'] = true;
+      //_sourseData[index]['_checked'] = true;
       
-      this.oldData = oldData;
+      //this.oldData = oldData;
+
+      this.setState({data:_sourseData});
     }
 
     hasCheck = () => {

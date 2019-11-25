@@ -28,6 +28,18 @@ class ManService {
     let result = await http.post('/rest/visit-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async findVisitById(id:string): Promise<any> {
+    let result = await http.get('/rest/visit-get',{params:{id:id}});
+    return result;
+  }
+  public async submitVisit(args:any): Promise<any> {
+    let result = await http.post('/rest/visit-submit',args);
+    return result;
+  }
+  public async deleteVisit(ids:string): Promise<any> {
+    let result = await http.get('/rest/visit-delete',{params:{ids:ids}});
+    return result;
+  }
 
   //请假
   public async searchDayoff(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {

@@ -181,6 +181,19 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Visit'))
   },{
+    path: '/visit-edit/:id',
+    title: '走访记录-编辑',
+    name: 'visit_edit',
+    icon: 'rulerpen-o',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Visit/Edit'))
+  },{
+    path: '/visit-detail/:id',
+    title: '走访记录-详细',
+    name: 'visit_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Visit/View'))
+  },{
     path: '/dayoff',
     title: '请假',
     name: 'dayoff',

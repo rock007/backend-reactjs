@@ -12,7 +12,6 @@ import SearchPanel from '../../components/SearchPanel';
 import DatePicker from "bee-datepicker";
 
 import Alert from '../../components/Alert';
-
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
 import ManService from '../../services/ManService';
@@ -254,7 +253,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     this.go2Page('/man-edit/'+this.state.checkedRows[0].manId,"档案修改",false);
 
                 }else{
-                    Info('请选择要删除的记录');
+                    Info('请选择要编辑的记录');
                 }
 
             }

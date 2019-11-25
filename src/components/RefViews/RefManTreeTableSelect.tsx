@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Radio} from 'tinper-bee';
+import {Radio,FormControl} from 'tinper-bee';
 
-import { RefTreeTableWithInput } from 'ref-tree-table'
+import { RefTreeTableWithInput ,SearchPanelItem } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
 
 import SysService from '../../services/SysService';
@@ -130,8 +130,28 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
           element['key']=element.manId;
         });
 
+        /**
+          {
+            title: " ",
+            dataIndex: "manId",
+            key: "manId",
+            width: 100,
+            render(text, record, index) {
+
+              return (
+                <Radio.RadioGroup
+                  name={record['manId']}
+                  selectedValue={record._checked ? record['manId'] : null}
+                >
+                  <Radio value={record['manId']}></Radio>
+                </Radio.RadioGroup>
+              )
+            }
+          },
+         */
+
         const columns = [
-          { title: 'manId', dataIndex: 'manId', key: 'manId',textAlign:'center', isShow:false,width: 100 },
+         
           { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 },
           { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
           { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
@@ -149,11 +169,12 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
         };
 
         return (  <RefTreeTableWithInput
+          {...this.props}
           title="戒毒人员选择"
           lang= "zh_CN"
           value={value}
           showLoading={this.state.loading}
-          valueField={ 'id'}
+          valueField="key"
           //WithInput
           canClickGoOn={this.canClickGoOn}
           placeholder='请选择戒毒人员'
@@ -165,24 +186,14 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
           onCancel={this.onCancel}
 
           //table
-          miniSearch= {true}
-          multiple= {false}
+          miniSearch= {false}
+          multiple= {true}
           columnsData={columns}
           tableData={pageData}
           page={page}
           loadTableData={this.loadTableData}
           onTableSearch={this.onTableSearch}
           matchData={matchData}
-          tableProps = {{
-            rowClassName:(record,index,indent)=>{
-              if (index === this.state.selectedRowIndex) {
-                  return 'selected';
-              } else {
-                  return '';
-              }
-            },
-            getSelectedDataFunc:this.getSelectedDataFunc
-          }}
           
           //树
           searchable={false}

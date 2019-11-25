@@ -142,6 +142,7 @@ class FactoryComp extends Component<any,any> {
             let { component: Com, type: comType, props } = renderMap;
             let _props = props || {};
             let { _edit, _status, _validate } = record;
+            
             let _value;
             switch (comType) {
                 case 'dateYear':

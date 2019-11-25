@@ -86,8 +86,6 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
       this.setState({
             matchData:result,
       })
-    
-
     }
     clearFunc = () =>{
         
@@ -161,14 +159,6 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
             { title: '备注', dataIndex: 'remarks', key: 'remarks', width: 200 }
           ];
           
-          /** 
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
-          ***/
-
           let page = {
             pageCount:  this.state.tablePage.totalPage,
             currPageIndex:  this.state.tablePage.pageIndex,
