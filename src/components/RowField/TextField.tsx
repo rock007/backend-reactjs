@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 //类型校验
 import PropTypes from 'prop-types';
 //验证组件 https://www.npmjs.com/package/async-validator
-import schema from 'async-validator';
+import schema,{Rules} from 'async-validator';
 //Tinper-bee
 import { FormControl } from 'tinper-bee';
 import FieldWrap from './FieldWrap'
@@ -93,9 +93,9 @@ class TextField extends Component<any,any> {
         //设置校验规则
         let descriptor = {
             [field]: { type: "string", required }
-        }
+        } as Rules;
         let validator = new schema(descriptor);
-        validator.validate({ [field]: value }, (errors, fields) => {
+        validator.validate({ [field]: value }, {},(errors, fields) => {
             if (errors) {
                 this.setState({
                     error: true

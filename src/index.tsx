@@ -24,7 +24,6 @@ ReactDOM.render(
   document.getElementById('root') as HTMLElement
 );
 
-//ReactDOM.render(<App />, document.getElementById('root'));
 
 
 

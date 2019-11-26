@@ -18,6 +18,18 @@ class ManService {
     let result = await http.post('/rest/niaojian-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async submitNiaojian(args:any): Promise<any> {
+    let result = await http.post('/rest/niaojian-submit',args);
+    return result;
+  }
+  public async deleteNiaojian(ids:string): Promise<any> {
+    let result = await http.get('/rest/niaojian-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async findNiaojianById(id:string): Promise<any> {
+    let result = await http.get('/rest/niaojian-get',{params:{id:id}});
+    return result;
+  }
   
   public async searchNiaojianPlan(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/niaojianPlan-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);

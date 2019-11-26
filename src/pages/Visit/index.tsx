@@ -246,7 +246,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="姓名"
                     >
-                        <FormControl placeholder='精确查询' {...getFieldProps('realName', {initialValue: ''})}/>
+                        <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
@@ -327,7 +327,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                         label="走访结果">
                         <Radio.RadioGroup {...getFieldProps('result', {initialValue: ''})}>
                             <Radio value="">(请选择)</Radio>
-                            <Radio value="找到">找到</Radio>
+                            <Radio value="已找到">已找到</Radio>
                             <Radio value="未找到">未找到</Radio>
                         </Radio.RadioGroup>
                     </FormItem>

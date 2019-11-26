@@ -166,6 +166,20 @@ export const appRouters: any = [
     icon: 'pencil',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Niaojian'))
+  },
+  {
+    path: '/niaojian-edit/:id',
+    title: '尿检记录-编辑',
+    name: 'niaojian_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Niaojian/Edit'))
+  },
+  {
+    path: '/niaojian-detail/:id',
+    title: '尿检记录-查看',
+    name: 'niaojian_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Niaojian/View'))
   },{
     path: '/niaojian-schedule',
     title: '尿检计划',

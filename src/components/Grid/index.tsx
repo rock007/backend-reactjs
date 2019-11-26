@@ -158,6 +158,11 @@ class Grid extends Component<IComponentProps,IComponentState> {
             sortFun:this.sortFun
         };
 
+        const pageData= beeGridStore.page.data;
+        pageData.forEach(element => {
+          element['key']=element.manId;
+        });
+
         return (
             <div className='bs-grid-wrapper'>
                 
@@ -165,7 +170,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={{type:"checkbox"}}
-                    data={beeGridStore.page.data}
+                    data={pageData}
                     loading={this.props.isLoading}
                     columns={columns}
                     {...otherProps}

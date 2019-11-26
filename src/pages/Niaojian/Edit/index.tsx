@@ -1,213 +1,178 @@
 import * as React from 'react';
-import {Panel,  FormControl, Form, Icon,Select, Upload ,Row, Col,Label,Radio } from 'tinper-bee';
+import {Panel,  FormControl, Form, Icon,Select, Button ,LoadingState, Col,Label,Radio } from 'tinper-bee';
 
-import {getValidateFieldsTrim} from "../../../utils";
+import {getValidateFieldsTrim, Warning,Info} from "../../../utils";
 
-import moment from "moment";
-import PopDialog from '../../../components/Pop';
 import FormError from '../../../components/FormError';
-
+import UploadFile from '../../../components/UploadFile';
 import DatePicker from "bee-datepicker";
 
 import RefManTreeTableSelect from '../../../components/RefViews/RefManTreeTableSelect';
+import ManService from '../../../services/ManService';
+
 import './index.scss';
 
 const FormItem = Form.FormItem;;
 
 interface IPageProps {
     form:any,
-    isShow:boolean,
-    onCloseEdit:()=>void
+    //in page
+    history:any,
+    match:any,
+
+    //in pop
+    isPage?:boolean,
+    url?:string,
+    handlerBack?:()=>void
 }
 interface IPageState {
-    btnFlag:number,
-    rowData:any,
-    activeKey:string,
-    testType:number
+   
+    isLoading:boolean,
+    record:any,
+
+    file1Ids:Array<any>,
+    file2Ids:Array<any>,
+    file3Ids:Array<any>,
 }
-type IFooBar = IPageProps & any;
 
 class NiaojianEdit extends React.Component<IPageProps,IPageState> {
     
+    id:string='';
     state:IPageState={
-        btnFlag:0,
-        rowData:{},
-        activeKey:'1',
-        testType:0
+        isLoading:false,
+        record:{},
+        file1Ids:[],
+        file2Ids:[],
+        file3Ids:[]
     }
-    
-    constructor(args) {
-        super(args);
-        
-        this.handleSelect = this.handleSelect.bind(this);
-    }
-    componentWillReceiveProps(nextProps:IPageProps) {
-        let _this = this;
-        //let {btnFlag, currentIndex} = this.props;
-        /** 
-        let {btnFlag: nextBtnFlag, currentIndex: nextCurrentIndex, isShow} = nextProps;
-        // 判断是否 btnFlag新弹框状态  currentIndex当前选中行
-        if (btnFlag !== nextBtnFlag || currentIndex !== nextCurrentIndex) {
-            _this.props.form.resetFields();
-            // 防止网络阻塞造成btnFlag显示不正常
-            this.setState({btnFlag: nextBtnFlag}); 
-            if (nextBtnFlag !== 0 && editModelVisible) {
-                let {list} = this.props;
-                let rowData = list[nextCurrentIndex] || {};
-                this.setState({rowData});
-            }
-        }
-        ***/
+    isPage=()=>{
 
+        return this.props.match&&this.props.history;
     }
+  
     componentDidMount() {
 
+        if(this.isPage()){
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/niaojian-edit/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!='0'){
+
+            this.loadData(this.id);
+        }
     }
 
-     /**
-     * 关闭Modal
-     */
-    onCloseEdit = () => {
-        this.setState({rowData: {}, btnFlag: 0});
-        
-        this.props.onCloseEdit();
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.findNiaojianById(id);
+
+        this.setState({record:result,isLoading:false});
     }
 
-    /**
-     * 提交表单信息
-     */
-    onSubmitEdit = () => {
-        let _this = this;
-        let {btnFlag}=_this.state;
-        _this.props.form.validateFields((err, _values) => {
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
+    }
+
+    handler_submit=()=>{
+
+        this.props.form.validateFields((err, _values) => {
             let values = getValidateFieldsTrim(_values);
+
             if (!err) {
-                values = _this.onHandleSaveData(values);
-                this.onCloseEdit();
-                values.btnFlag=btnFlag; // 弹框状态标识
-            //    actions.popupEdit.saveOrder(values);
+
+                values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+
+                //戒毒人员
+                if(values.toUid&&values.toUid!=''){
+
+                    let oo=JSON.parse(values.toUid);
+                    values.toUid=oo.refpk;
+                    values.toUser=oo.refname;
+                }
+
+                values['file1Ids']=this.state.file1Ids;//.join(',');
+                values['file2Ids']=this.state.file2Ids;
+                values['file3Ids']=this.state.file3Ids;
+
+                this.setState({isLoading:true});
+
+                ManService.submitNiaojian(values).then(()=>{
+
+                    Info('保存操作成功');
+                    this.goBack()
+                })
+                .catch((err)=>{
+                    Error('保存操作失败');
+                }).finally(()=>{
+                    this.setState({isLoading:false});
+                });
+
+            }else{
+                Warning('输入验证不通过，请检查');
             }
         } );
     }
 
-    /**
-     *
-     * @description 处理保存数据
-     * @param {Object} values 待处理数据
-     */
-    onHandleSaveData = (values) => {
-        
-    }
+    handler_uploadChange=(files:Array<any>,where:string)=>{
 
-    onHandleRef = (values) => {
-        let arr = ['dept', 'postLevel'];
-        for (let i = 0, len = arr.length; i < len; i++) {
-            let item = JSON.parse(values[arr[i]]);
-            values[arr[i]] = item['refpk'];
-        }
-    }
+        const m1=files.map((m,i)=>m.fileId);
+        const o1={};
+        o1[where]=m1;
 
-    /**
-     *
-     * @description 底部按钮是否显示处理函数
-     * @param {Number} btnFlag 为页面标识
-     * @returns footer中的底部按钮
-     */
-    onHandleBtns = (btnFlag) => {
-        let _this = this;
-        let btns = [
-
-            {
-                label: '取消',
-                fun: this.onCloseEdit,
-                shape: 'border'
-            },
-            {
-                label: '确定',
-                fun: _this.onSubmitEdit,
-                colors: 'primary'
-            },
-        ];
-
-        if (btnFlag == 2) {
-            btns = [];
-        }
-        return btns;
-    }
-    handleSelect(activeKey) {
-        this.setState({activeKey:activeKey});
+        this.setState(o1);
     }
 
     render() {
         
         const _this = this;
-        let {form, isShow} = _this.props;
-        let {rowData, btnFlag} = _this.state;
-        let {getFieldProps, getFieldError} = form;
-   
+        let {getFieldProps, getFieldError} = this.props.form;
 
-        // console.log('rowData', allowanceStandard);
-        let btns = _this.onHandleBtns(btnFlag);
-
-        const demo4props = {
-            action: '/upload.do',
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            },{
-                uid: 2,
-                name: 'zzz.png',
-                status: 'done',
-                url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-                thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              }],
-          };
-
-        return (<PopDialog
-            show={this.props.isShow}
-            title='新增尿检记录'
-            size='lg'
-            btns={btns}
-            autoFocus={false}
-            enforceFocus={false}
-            close={this.onCloseEdit}
-            className="single-table-pop-model"
-        >
+        return (<Panel >
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>
+                    <RefManTreeTableSelect {
+                            ...getFieldProps('toUid', {
+                                validateTrigger: 'onBlur',
+                                initialValue: '',
+                                rules: [{ required: true ,message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
+                            })
+                    }/>
                     
-                    <RefManTreeTableSelect />
+                    <FormError errorMsg={getFieldError('toUid')}/>
+                    
                 </FormItem>
                 <FormItem>
                     <Label>尿检类型</Label>
                     <Radio.RadioGroup
-                            selectedValue={this.state.testType}
                             {
                             ...getFieldProps('testType', {
-                                initialValue: '',
-                                onChange(value) {
-                                   // me.setState({ selectedValue: value });
-                                },
-                                rules: [{ required: true }]
-                            }
-                            ) }
-                        >
-                            <Radio value="0" >常规</Radio>
-                            <Radio value="1" >随机</Radio>
-                        </Radio.RadioGroup>
+                                initialValue: this.state.record.testType,
+                                rules: [{ required: true ,message: '请选择尿检类型',}]
+                            })}>
+                        <Radio value="0" >常规</Radio>
+                        <Radio value="1" >随机</Radio>
+                    </Radio.RadioGroup>
                     <FormError errorMsg={getFieldError('testType')}/>
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
                     <Label>尿检时间</Label>
                     <DatePicker
+                            {
+                            ...getFieldProps('testDate', {
+                                initialValue: this.state.record.testDate,
+                                rules: [{ required: true ,message: '请选择尿检时间',}]
+                            })}
                             format={'YYYY-MM-DD'}
-                            onSelect={()=>{}}
-                            onChange={()=>{}}
                         />
                     <FormError errorMsg={getFieldError('testDate')}/>
                 </FormItem>
@@ -215,7 +180,7 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem>
                     <Label>尿检结果</Label>
                     <Radio.RadioGroup {...getFieldProps('result', {
-                                initialValue: '',
+                                initialValue: this.state.record.result,
                                 rules: [{
                                     required: true, message: '请选择尿检结果',
                                 }],
@@ -223,12 +188,12 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                             <Radio value="阴性">阴性</Radio>
                             <Radio value="阳性">阳性</Radio>
                         </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('sex')}/>
+                    <FormError errorMsg={getFieldError('result')}/>
                 </FormItem>
                 <FormItem>
                     <Label>是否本地</Label>
                     <Radio.RadioGroup {...getFieldProps('isLocal', {
-                                initialValue:  0,
+                                initialValue: this.state.record.isLocal,
                                 rules: [{
                                     required: true, message: '请选择是否本地',
                                 }],
@@ -236,34 +201,35 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                             <Radio value="0">是</Radio>
                             <Radio value="1">否</Radio>
                         </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('sex')}/>
+                    <FormError errorMsg={getFieldError('isLocal')}/>
                 </FormItem>
                 <FormItem>
                     <Label>尿检地点</Label>
                     <FormControl 
                                  {...getFieldProps('address', {
                                      validateTrigger: 'onBlur',
-                                     initialValue: '',
+                                     initialValue: this.state.record.address,
                                      rules: [{
                                          type: 'string',
                                          required: true,
                                          pattern: /\S+/ig,
-                                         message: '请输入员工姓名',
+                                         message: '请输入尿检地点',
                                      }],
                                  })}
                     />
+                    <FormError errorMsg={getFieldError('address')}/>
                 </FormItem>
                 <FormItem>
                     <Label>说明</Label>
-                    <FormControl disabled={btnFlag === 2}
+                    <FormControl 
                                  {...getFieldProps('remarks', {
                                      validateTrigger: 'onBlur',
-                                     initialValue:  '',
+                                     initialValue:  this.state.record.remarks,
                                      rules: [{
                                          type: 'string',
                                          required: true,
                                          pattern: /\S+/ig,
-                                         message: '请输入员工姓名',
+                                         message: '请输入说明',
                                      }],
                                  })}
                     />
@@ -272,36 +238,31 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>尿检人</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                    <Upload {...demo4props} >
-                        <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                        <p>上传</p>
-                    </Upload>
+                        <UploadFile uploadChange={this.handler_uploadChange} from='file1Ids'/>
                     </div>
                 </FormItem>
                 
                 <FormItem  style={{display:'flex'}}>
                     <Label>尿检报告</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                    <Upload {...demo4props}  >
-                        <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                        <p>上传</p>
-                    </Upload>
+                        <UploadFile uploadChange={this.handler_uploadChange}  from='file2Ids'/>
                     </div>
 
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
                     <Label>谈话记录</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                    <Upload {...demo4props}  >
-                        <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                        <p>上传</p>
-                    </Upload>
+                        <UploadFile uploadChange={this.handler_uploadChange}  from='file3Ids'/>
                     </div>
 
                 </FormItem>
              
                 </Form>
-        </PopDialog>)
+                <div style={{'textAlign':'center'}}>
+                    <Button shape="border" style={{"marginRight":"8px"}} onClick={this.goBack} >取消</Button>
+                    <LoadingState  colors="primary" show={ this.state.isLoading } onClick={this.handler_submit}>保存</LoadingState>
+                </div>
+        </Panel>)
     }
 }
 

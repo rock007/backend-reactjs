@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 //日期处理
 import moment from 'moment';
 //验证组件 https://www.npmjs.com/package/async-validator
-import schema from 'async-validator';
+import schema,{Rules} from 'async-validator';
 import FieldWrap from './FieldWrap'
 //日期组件
 import DatePicker from 'bee-datepicker';
@@ -100,9 +100,9 @@ class YearField extends Component<any,any> {
         //设置校验规则
         let descriptor = {
             [field]: { type: "object", required }
-        }
+        } as Rules;
         let validator = new schema(descriptor);
-        validator.validate({ [field]: value }, (errors, fields) => {
+        validator.validate({ [field]: value },{},(errors, fields) => {
             if (errors) {
                 this.setState({
                     error: true

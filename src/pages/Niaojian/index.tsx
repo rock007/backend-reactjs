@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel,Select, FormControl,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
+import Alert from '../../components/Alert';
 import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -12,87 +13,145 @@ import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import PageDlog from '../../components/PageDlg';
 
 import DatePicker from "bee-datepicker";
-import zhCN from "rc-calendar/lib/locale/zh_CN";
 
 import ManService from '../../services/ManService';
 
-import NiaojianEdit from './Edit';
-
+import { getValidateFieldsTrim } from '../../utils/tools';
+import { Info } from '../../utils';
 
 const FormItem = FormListItem;
 const {Option} = Select;
-const format = "YYYY";
-
 
 interface IPageProps {
-    form:any
+    form:any,
+    history:any,
 }
 interface IPageState {
-   
     page:PageModel<any>,
-    selectedkey?:any
-    isEditPop:boolean
+    isLoading:boolean,
+    checkedRows:Array<any>,
+
+    pageModel: PopPageModel,
+    isPopPage:boolean,
+
+    isDeleteAlterShow:boolean
 }
 
  class NiaojianPage extends React.Component<IPageProps,IPageState> {
     
+    pageIndex=1
+    pageSize=10
+
     state:IPageState={
         page:new PageModel<any>(),
-        isEditPop:false
-    }
-    async componentDidMount() {
+        isLoading:false,
+        checkedRows:[],
+        pageModel:new PopPageModel(),
+        isPopPage:false,
 
-        let page = await ManService.searchNiaojian({pageIndex:1,pageSize:20}) as PageModel<any>;
-
-        this.setState({page:page});
+        isDeleteAlterShow:false
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
+    componentDidMount() {
+        this.search();
+    }
+
+    search= ()=>{
+        this.props.form.validateFields((err, _values) => {
+
+            debugger;
+            let values = getValidateFieldsTrim(_values);
+            
+            if(values.orgId){
+                values.orgId=JSON.parse(values.orgId).refpk;
+            }
+
+            if(values.createDate){
+                values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
+            }
+            if(values.testDate){
+                values.testDate=values.testDate[0].format('YYYY-MM-DD')+'~'+values.testDate[1].format('YYYY-MM-DD');
+            }
+
+            this.setState({isLoading:true});
+            this.loadData(values);
+        });
+    }
+
+    loadData=async (args:any)=>{
+        
+        let page = await ManService.searchNiaojian(args, this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({page:page,isLoading:false});
     }
 
     getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
+        this.setState({checkedRows:data});
+    };
+
+    clear=()=>{
+        this.props.form.resetFields()
+    }
+
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+        if(isPage){
+            this.props.history.push(url);
+        }else{
+            const model=new PopPageModel(title,url);
+
+            model.size=size;
+
+            this.setState({isPopPage:true,pageModel:model});
+        }
+    }
+
+    handler_delete=async ()=>{
+
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+
+        let ids:string='';
+        this.state.checkedRows.map((item,index)=>{
+            ids=ids+','+item.id;
+        });
+       await ManService.deleteNiaojian(ids).then(()=>{
+
+            Info('删除操作成功');
+            this.search();
+        })
+        .catch((err)=>{
+            Error('删除操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
+  
     export = ()=>{
         console.log('export=======');
     }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
-    sortFun = (sortParam)=>{
-        console.info(sortParam);
-        //将参数传递给后端排序
-    }
+    
     render() {
+        const me=this;
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <a href="#">{text}</a>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/visit-detail/'+record.id,'尿检详细',false)}}>{text}</Label>;
               }
             },
+            { title: '尿检时间', dataIndex: 'testDate', key: 'testDate', textAlign:'center',width: 120 },
+            { title: '尿检类型', dataIndex: 'testType', key: 'testType', textAlign:'center',width: 100 ,render(text,record,index) {
+
+                return text==0?'常规':'随机' ;
+              }},
+            { title: '是否异地', dataIndex: 'isLocal', key: 'isLocal', textAlign:'center',width: 120 ,render(text,record,index) {
+
+                return text==0?'本地':'异地' ;
+              }},
+            { title: '尿检地点', dataIndex: 'address', key: 'address', textAlign:'center',width: 200 },
+            { title: '结果', dataIndex: 'result', key: 'result', textAlign:'center',width: 80 },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 120 },
+
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
@@ -113,25 +172,45 @@ interface IPageState {
             sorterClick:(data,type)=>{
               //type value is up or down
               console.log("data",data);
-            }},
-            { id: '123', title: '性别', dataIndex: 'b', key: 'b', width: 100 },
-            { title: '年龄', dataIndex: 'c', key: 'c', width: 200 },
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
+            }}
           ];
         
           const toolBtns = [{
             value:'新增',
-            onClick:()=>this.setState({isEditPop:true}),
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            onClick:()=>{
+                this.go2Page('/niaojian-edit/0',"尿检新增",false);
+            }
         },{
-            value:'编辑'
+            value:'编辑',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:()=>{
+                
+                if(this.state.checkedRows.length>1){
+
+                    Info('编辑只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/niaojian-edit/'+this.state.checkedRows[0].id,"尿检编辑",false);
+
+                }else{
+                    Info('请选择要编辑的记录');
+                }
+            }
         },{
-            value:'删除'
+            value:'删除',
+            onClick:()=>{
+
+                if(this.state.checkedRows.length==0){
+
+                    Info('请选择要删除的记录');
+                }else{
+
+                    this.setState({isDeleteAlterShow:true});
+                }
+            }
         },{
             value:'打印'
         },{
@@ -140,20 +219,6 @@ interface IPageState {
             onClick:this.export
         }];
 
-        let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
-            noBorder:true
-          };
-
-          let sortObj = {
-            mode:'multiple',
-            // backSource:true,
-            sortFun:this.sortFun
-          };
         return ( <Panel>
 
             <Breadcrumb>
@@ -169,9 +234,9 @@ interface IPageState {
 			</Breadcrumb>
 
             <SearchPanel
-                reset={()=>{}}
+                reset={this.clear}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.search}
                 searchOpen={true}
             >
 
@@ -179,23 +244,23 @@ interface IPageState {
                     <FormItem
                         label="姓名"
                     >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
+                        <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="身份证号"
                     >
-                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('idsNo', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="性别"
                     >
-                        <Select >
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
                             <Option value="1">男</Option>
                             <Option value="0">女</Option>
@@ -203,28 +268,24 @@ interface IPageState {
                     </FormItem>
                     <FormItem
                         label="人员分类">
-                            <ManCateSelect/>
+                            <ManCateSelect  {...getFieldProps('cateType', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="风险等级">
-                        <SelectDict onChange={()=>{}} type={31}/>
+                        <SelectDict {...getFieldProps('level', {initialValue: ''})} type={31}/>
                     </FormItem>
 
                     <FormItem
-                        label="社区"
-                    >
-                        <RefOrgTreeSelect/>
-                        
+                        label="社区">
+                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="创建时间"
                     >
-                        <DatePicker.RangePicker
+                        <DatePicker.RangePicker {...getFieldProps('createDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                         />
                     </FormItem>
@@ -232,25 +293,24 @@ interface IPageState {
                     <FormItem
                         label="尿检时间"
                     >
-                         <DatePicker.RangePicker
+                         <DatePicker.RangePicker {...getFieldProps('testDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                         />
                     </FormItem>
                     <FormItem
                         label="结果">
-                        <Radio.RadioGroup>
-                            <Radio value="">全部</Radio>
+                        <Radio.RadioGroup  {...getFieldProps('result', {initialValue: ''})}>
+                            <Radio value="">(请选择)</Radio>
                             <Radio value="阴性">阴性</Radio>
                             <Radio value="阳性">阳性</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                     <FormItem
                         label="尿检类型">
-                        <Select >
+                        <Select {...getFieldProps('testType', {initialValue: ''})} >
                             <Option value="">(请选择)</Option>
                             <Option value="常规">常规</Option>
                             <Option value="随机">随机</Option>
@@ -258,7 +318,7 @@ interface IPageState {
                     </FormItem>
                     <FormItem
                         label="是否本地">
-                        <Select >
+                        <Select  {...getFieldProps('isLocal', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
                             <Option value="1">是</Option>
                             <Option value="0">否</Option>
@@ -272,11 +332,19 @@ interface IPageState {
           columns={columns}
           page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          //paginationObj={paginationObj}
-          //sort={sortObj}
-          //sortFun={this.sortFun}
         />
-        <NiaojianEdit   isShow={this.state.isEditPop}  onCloseEdit={()=>this.setState({isEditPop:false})}/>
+
+        <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+        </PageDlog>
+        <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
+                           confirmFn={() => {
+                               this.handler_delete();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isDeleteAlterShow:false})
+                           }}
+        />
         </Panel >)
     }
 }

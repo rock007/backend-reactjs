@@ -31,10 +31,7 @@ interface IPageProps {
     handlerBack?:()=>void
 }
 interface IPageState {
-    btnFlag:number,
-    rowData:any,
-    activeKey:string,
-    testType:number,
+
     isLoading:boolean,
     fileIds:Array<String>,
     record:any
@@ -46,10 +43,6 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
     id:string='';
 
     state:IPageState={
-        btnFlag:0,
-        rowData:{},
-        activeKey:'1',
-        testType:0,
         isLoading:false,
         fileIds:[],
         record:{}
@@ -122,7 +115,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                     values.visitorUid=oo.refpk.replace(/;/g,',');
                     values.visitorName=oo.refname.replace(/;/g,',');
                 }
-                values['fileIds']=this.state.fileIds.join(',');
+                values['fileIds']=this.state.fileIds;//.join(',');
 
                 this.setState({isLoading:true});
 
@@ -143,6 +136,12 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
         } );
     }
 
+    handler_uploadChange=(files:Array<any>)=>{
+
+        const m1=files.map((m,i)=>m.fileId);
+        
+        this.setState({fileIds:files.map((m,i)=>m.fileId)});
+    }
     render() {
         
         let {getFieldProps, getFieldError} = this.props.form;
@@ -342,8 +341,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>附件</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                    
-                    <UploadFile/>
+                        <UploadFile uploadChange={this.handler_uploadChange} />
                     </div>
                 </FormItem>
                 <FormItem>

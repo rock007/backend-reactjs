@@ -5,7 +5,7 @@ import {FormControl, Select,InputNumber} from 'tinper-bee'
 //类型校验
 import PropTypes from 'prop-types';
 //验证组件 https://www.npmjs.com/package/async-validator
-import schema from 'async-validator';
+import schema,{Rules} from 'async-validator';
 
 import FieldWrap from './FieldWrap'
 //数值组件
@@ -115,10 +115,11 @@ class NumberField extends Component<any,any> {
         let { value ,required,error} = this.state;
         //设置校验规则
         let descriptor = {
-            [field]: { type: "number", required:"false" }
-        }
+            [field]: { type: "number", required }
+        }  as Rules;
+
         let validator = new schema(descriptor);
-        validator.validate({ [field]: value }, (errors, fields) => {
+        validator.validate({ [field]: value }, {},(errors, fields) => {
             this.setState({
                 error: true,
                 message:"输入值,最大值为 "+max+" ,最小为 "+min
@@ -137,10 +138,10 @@ class NumberField extends Component<any,any> {
         //设置校验规则
         let descriptor = {
             [field]: { type: "number", required }
-        }
+        }as Rules
         value = parseFloat(value);
         let validator = new schema(descriptor);
-        validator.validate({ [field]: value }, (errors, fields) => {
+        validator.validate({ [field]: value },null, (errors, fields) => {
             if (errors || value > max) { 
                 this.setState({
                     error: true
@@ -180,6 +181,8 @@ class NumberField extends Component<any,any> {
         )
     }
 }
+
+
 
 //NumberField.propTypes = propTypes;
 //NumberField.defaultProps = defaultProps;

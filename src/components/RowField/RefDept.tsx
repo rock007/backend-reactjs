@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 //类型校验
 import PropTypes from 'prop-types';
 //验证组件 https://www.npmjs.com/package/async-validator
-import schema from 'async-validator';
+import schema,{Rules} from 'async-validator';
 import FieldWrap from './FieldWrap'
 //部门参照组件
 import RefOrgTreeSelect from '../RefViews/RefOrgTreeSelect';
@@ -114,9 +114,9 @@ class RefDept extends Component<any,any> {
         //设置校验规则
         let descriptor = {
             [field]: { type: "string", required, pattern: /[^({"refname":"","refpk":""}|{"refpk":"","refname":""})]/ }
-        }
+        } as Rules;
         let validator = new schema(descriptor);
-        validator.validate({ [field]: value }, (errors, fields) => {
+        validator.validate({ [field]: value }, {},(errors, fields) => {
             if (errors) {
                 this.setState({
                     error: true
