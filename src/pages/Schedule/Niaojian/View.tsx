@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {Panel,  Form,Label } from 'tinper-bee';
+import {Panel,  Form, Label} from 'tinper-bee';
 
 import ManService from '../../../services/ManService';
+
+import './index.scss';
 
 const FormItem = Form.FormItem;;
 
@@ -17,31 +19,37 @@ interface IPageProps {
     handlerBack?:()=>void
 }
 interface IPageState {
+   
     isLoading:boolean,
     record:any,
+
+    file1Ids:Array<any>,
+    file2Ids:Array<any>,
+    file3Ids:Array<any>,
 }
 
-class DayoffView extends React.Component<IPageProps,IPageState> {
+class NiaojianScheduleView extends React.Component<IPageProps,IPageState> {
     
     id:string='';
-
     state:IPageState={
         isLoading:false,
         record:{},
+        file1Ids:[],
+        file2Ids:[],
+        file3Ids:[]
     }
-    
     isPage=()=>{
 
         return this.props.match&&this.props.history;
     }
-
+  
     componentDidMount() {
-    
+
         if(this.isPage()){
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/dayoff-detail/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/niaojian-schedule-detail/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -54,10 +62,11 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
+        let result = await ManService.findNiaojianById(id);
 
         this.setState({record:result,isLoading:false});
     }
+
     goBack=()=>{
         if(this.isPage()){
             this.props.history.goBack();
@@ -73,43 +82,32 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
                 <FormItem>
                     <Label>戒毒人员</Label>
                     <strong>{this.state.record.realName}</strong>
-                    
                 </FormItem>
                 <FormItem>
-                    <Label>请假类型</Label>
-                    <strong>{this.state.record.dayoffType}</strong>
-                </FormItem>
-                <FormItem  style={{display:'flex'}}>
-                    <Label>请假时间</Label>
-                    <strong>{this.state.record.startDate}~{this.state.record.endDate}</strong>
+                    <Label>时间区间</Label>
+                    <strong>{this.state.record.startDate}~{this.state.record.startDate}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>内容</Label>
-                    <strong>{this.state.record.content}</strong>
-                </FormItem>
-
-                <FormItem>
-                    <Label>审核</Label>
-                    <strong>{this.state.record.status==0?'未审核':(this.state.record.status==1?'同意':this.state.record.status==-1?'不同意':'错误状态')}</strong>
-                   
-                </FormItem>
-                
-                <FormItem>
-                    <Label>回复</Label>
-                    <p>{this.state.record.respContent}</p>
+                    <Label>类型</Label>
+                    <strong>{this.state.record.examType==0?'尿检':(this.state.record.examType==1?'评估':this.state.record.examType==2?'走访':'未知')}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>回复人</Label>
-                    <strong>{this.state.record.respUser}</strong>
+                    <Label>状态</Label>
+                    <strong>{this.state.record.status==0?'未到':this.state.record.status==1?'待执行':this.state.record.status==2?'已完成':this.state.record.status==3?'已过期':'未知'}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>回复时间</Label>
-                    <strong>{this.state.record.respDate}</strong>
+                    <Label>完成时间</Label>
+                    <strong>{this.state.record.finishDate}</strong>
                 </FormItem>
+                <FormItem>
+                    <Label>结果</Label>
+                    <strong>{this.state.record.result}</strong>
+                </FormItem>
+             
                 </Form>
                
         </Panel>)
     }
 }
 
-export default Form.createForm()(DayoffView);
+export default NiaojianScheduleView;

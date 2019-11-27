@@ -288,6 +288,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 }
             }
         },{
+            value:'尿检计划',
+        },{
             value:'发告诫书',
             colors:'default',
             onClick:() => {
@@ -382,23 +384,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             onClick:this.export
         }];
 
-        let paginationObj = {
-            activePage:this.pageIndex,
-            items:5,
-            dataNumSelect:[10,20,50,100],
-            dataNum:this.state.dataNumIndex,
-            total:this.state.page.dataCount,
-            freshData:this.freshata,
-            onDataNumSelect:this.onDataNumSelect, 
-            showJump:true,
-            noBorder:true
-          }
-
-          let sortObj = {
-            mode:'multiple',
-            // backSource:true,
-            sortFun:this.sortFun
-          }
         return (
 
             <Panel>
@@ -427,47 +412,47 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="姓名"
                     >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
+                        <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="身份证号"
                     >
-                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('idsNo', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="性别"
                     >
-                        <Select >
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem
                         label="人员分类">
-                            <ManCateSelect/>
+                            <ManCateSelect  {...getFieldProps('cateType', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="风险等级">
-                        <SelectDict onChange={()=>{}} type={31}/>
+                        <SelectDict  {...getFieldProps('level', {initialValue: ''})} type={31}/>
                     </FormItem>
 
                     <FormItem
                         label="网格"
                     >
-                        <RefGridTreeTableSelect/>
+                        <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
                         
                     </FormItem>
                     <FormItem
                         label="创建时间"
                     >
-                        <DatePicker.RangePicker
+                        <DatePicker.RangePicker {...getFieldProps('createDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
@@ -482,7 +467,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="报到时间"
                     >
-                         <DatePicker.RangePicker
+                         <DatePicker.RangePicker {...getFieldProps('registDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
@@ -495,7 +480,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                     <FormItem
                         label="状态">
-                        <Radio.RadioGroup>
+                        <Radio.RadioGroup  {...getFieldProps('status', {initialValue: ''})}>
                             <Radio value="">全部</Radio>
                             <Radio value="1">执行中</Radio>
                             <Radio value="100">已完成</Radio>
@@ -505,19 +490,12 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 </SearchPanel>
 
                 <Grid
-                    //ref="grid"
-                    //className="table-color"
                     toolBtns={toolBtns}
                     columns={columns}
                     isLoading={this.state.isLoading}
                     page={this.state.page}
-                    //exportData={this.state.page.data}
-                    //sheetName="档案库"
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     pageChange={this.onPageChange}
-                    //paginationObj={paginationObj}
-                    //sort={sortObj}
-                    //sortFun={this.sortFun}
                 />
                
                 </Col>

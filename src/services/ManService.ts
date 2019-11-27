@@ -71,12 +71,28 @@ class ManService {
     let result = await http.post('/rest/help-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async find4HelpById(id:string): Promise<any> {
+    let result = await http.get('/rest/forhelp-get',{params:{id:id}});
+    return result;
+  }
+  public async submit4HelpResp(args:any): Promise<any> {
+    let result = await http.post('/rest/forhelp-resp',args);
+    return result;
+  }
 
   //签到
   public async searchCheckin(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/checkin-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
 
+  }
+  public async findCheckinById(id:string): Promise<any> {
+    let result = await http.get('/rest/checkin-get',{params:{id:id}});
+    return result;
+  }
+  public async submitCheckinAudit(args:any): Promise<any> {
+    let result = await http.post('/rest/checkin-audit',args);
+    return result;
   }
   
   //位置人员

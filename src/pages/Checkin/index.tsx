@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, Select, FormControl,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Select, FormControl,Form,Label, Breadcrumb,Tag } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
 
@@ -12,135 +12,172 @@ import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
-import {PageModel} from '../../services/Model/Models';
+import {PageModel,PopPageModel} from '../../services/Model/Models';
+import PageDlog from '../../components/PageDlg';
+
+import { getValidateFieldsTrim } from '../../utils/tools';
+import { Info } from '../../utils';
 
 const FormItem = FormListItem;
 const {Option} = Select;
-const format = "YYYY";
-
 
 interface IPageProps {
-    form:any
+    form:any,
+    history:any,
 }
 interface IPageState {
     page:PageModel<any>,
-    selectedkey:any
+    isLoading:boolean,
+    checkedRows:Array<any>,
+
+    pageModel: PopPageModel,
+    isPopPage:boolean,
+
+    isDeleteAlterShow:boolean
 }
 
- class CheckinPage extends React.Component<IPageProps,IPageState> {
+class CheckinPage extends React.Component<IPageProps,IPageState> {
+
+    pageIndex=1
+    pageSize=10
+    orderBy=[]
 
     state:IPageState={
         page:new PageModel<any>(),
-        selectedkey:''
+        isLoading:false,
+        checkedRows:[],
+        pageModel:new PopPageModel(),
+        isPopPage:false,
+
+        isDeleteAlterShow:false
     }
-    async componentDidMount() {
-        let page = await ManService.searchCheckin({pageIndex:1,pageSize:20}) as PageModel<any>;
-        this.setState({page:page});
+    componentDidMount() {
+       
+        this.search();
     }
-    handleSelect = (index) => {
-        this.setState({selectedkey: index});
+
+    search= ()=>{
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+            
+            if(values.orgId){
+                values.orgId=JSON.parse(values.orgId).refpk;
+            }
+
+            if(values.createDate){
+                values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
+            }
+           
+            this.setState({isLoading:true});
+            this.loadData(values);
+        });
+    }
+
+    loadData=async (args:any)=>{
+        
+        args['orderby']=this.orderBy;
+
+        let page = await ManService.searchCheckin(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        this.setState({page:page,isLoading:false});
     }
 
     getSelectedDataFunc = data => {
-        console.log("data", data);
-      };
-    
-      selectedRow = (record, index) => {};
-      /**
-       * 请求页面数据
-       */
-      freshata=()=>{
-    
-      }
-     
-      onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
-      }
+        this.setState({checkedRows:data});
+    }
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
+
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+        this.orderBy=orderBy;
+        this.search();
+    }
+
+    clear=()=>{
+        this.props.form.resetFields()
+    }
+
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+        if(isPage){
+            this.props.history.push(url);
+        }else{
+            const model=new PopPageModel(title,url);
+
+            model.size=size;
+
+            this.setState({isPopPage:true,pageModel:model});
+        }
+    }
+
+   
     export = ()=>{
         console.log('export=======');
     }
-    /**
-     *批量修改操作
-     */
-    dispatchUpdate = ()=>{
-      console.log('--dispatch---update')
-    }
-    /**
-     *批量删除
-     */
-    dispatchDel = ()=>{
-      console.log('--dispatch---del')
-    }
-
-    
-    onStartInputBlur = (e,startValue,array) => {
-        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
-    }
-    /**
-     *@param e 事件对象
-     *@param endValue 结束时间
-     *@param array 包含开始时间和结束时间的数组
-     */
-    onEndInputBlur = (e,endValue,array) => {
-        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
-    }
-
+   
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
+        const me=this;
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <a href="#">{text}</a>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/checkin-detail/'+record.id,'签到详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-              
-                console.log("data",data);
+             },
+            { title: '时间', dataIndex: 'inDay', key: 'inDay',textAlign:'center', width: 180,sorter: (pre, after) => {return pre.c - after.c},},
+            { title: '位置', dataIndex: 'location', key: 'location',textAlign:'center', width: 180},
+            { title: '照片', dataIndex: 'photo', key: 'photo',textAlign:'center', width: 180,render(text,record,index) {
+                  
+                return (
+                    <img id="image" width={60} height={60} src='http://design.yonyoucloud.com/static/bee.tinper.org-demo/swiper-demo-1-min.jpg' alt="Picture"/>
+                );
             }},
-            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-                
-                console.log("data",data);
-                }
+            { title: '是否有效', dataIndex: 'isValid', key: 'isValid',textAlign:'center', width: 120,
+            render(text,record,index) {
+                  
+                return text==0?<Tag colors="warning">无效</Tag>:(text==1?<Tag colors="success">有效</Tag>:<Tag colors="warning">未知状态</Tag>);
+
             },
+            sorter: (pre, after) => {return pre.c - after.c},},
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 120,sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180},
             { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
             sorter: (pre, after) => {return pre.c - after.c},
-            sorterClick:(data,type)=>{
-              //type value is up or down
-              console.log("data",data);
-            }},
-            {
-              title: '操作', dataIndex: '', key: 'd', render() {
-                return <a href="#">一些操作</a>;
-              },
-            },
+            }
           ];
       
 
           const toolBtns = [{
             value:'无效',
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:()=>{
+                
+                if(this.state.checkedRows.length>1){
+
+                    Info('审核只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/dayoff-edit/'+this.state.checkedRows[0].id,"请假审核",false);
+
+                }else{
+                    Info('请选择要审核的记录');
+                }
+            }
         },{
             value:'导出',
             iconType:'uf-export',
             onClick:this.export
         }];
 
-        let paginationObj = {
-            items:10,//一页显示多少条
-            total:100,//总共多少条、
-            freshData:this.freshata,//点击下一页刷新的数据
-            onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
-            showJump:false,
-            noBorder:true
-          }
         return ( <Panel>
 
             <Breadcrumb>
@@ -156,33 +193,30 @@ interface IPageState {
 			</Breadcrumb>
 
             <SearchPanel
-                reset={()=>{}}
+                reset={this.clear}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.search}
                 searchOpen={true}
             >
 
                 <FormList size="sm">
                 <FormItem
-                        label="姓名"
-                    >
-                        <FormControl placeholder='精确查询' {...getFieldProps('code', {initialValue: ''})}/>
+                        label="姓名">
+                        <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
                         label="联系方式"
                     >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入联系方式'  {...getFieldProps('linkPhone', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="身份证号"
-                    >
-                        <FormControl placeholder='请输入身份证号' {...getFieldProps('name', {initialValue: ''})}/>
+                        label="身份证号">
+                        <FormControl placeholder='请输入身份证号' {...getFieldProps('idsNo', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="性别"
-                    >
-                        <Select >
+                        label="性别">
+                        <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
                             <Option value="1">男</Option>
                             <Option value="0">女</Option>
@@ -190,31 +224,24 @@ interface IPageState {
                     </FormItem>
                     <FormItem
                         label="人员分类">
-                            <ManCateSelect/>
+                            <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="风险等级">
-                        <SelectDict onChange={()=>{}} type={31}/>
+                        <SelectDict {...getFieldProps('level', {initialValue: ''})} type={31}/>
                     </FormItem>
 
                     <FormItem
-                        label="社区"
-                    >
-                        <RefOrgTreeSelect/>
-                        
+                        label="社区">
+                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
-                        <DatePicker.RangePicker
+                        label="创建时间">
+                        <DatePicker.RangePicker  {...getFieldProps('createDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={()=>{}}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
-                            onStartInputBlur={this.onStartInputBlur}
-                            onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
                 </FormList>
@@ -224,10 +251,11 @@ interface IPageState {
           columns={columns}
           page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
-          //paginationObj={paginationObj}
+          pageChange={this.onPageChange}
         />
-
-
+        <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+        </PageDlog>
         </Panel >)
     }
 }

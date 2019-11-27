@@ -4,6 +4,7 @@ import {Panel,  FormControl, Form, Icon,LoadingState, Button ,Label,Radio } from
 import {getValidateFieldsTrim,Warning,Info} from "../../../utils";
 
 import FormError from '../../../components/FormError';
+
 import ManService from '../../../services/ManService';
 
 const FormItem = Form.FormItem;;
@@ -24,7 +25,7 @@ interface IPageState {
     record:any,
 }
 
-class DayoffEdit extends React.Component<IPageProps,IPageState> {
+class ForHelpEdit extends React.Component<IPageProps,IPageState> {
     
     id:string='';
 
@@ -44,7 +45,7 @@ class DayoffEdit extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/dayoff-edit/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/forhelp-edit/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -57,7 +58,7 @@ class DayoffEdit extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
+        let result = await ManService.find4HelpById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -78,10 +79,9 @@ class DayoffEdit extends React.Component<IPageProps,IPageState> {
 
                 //values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
 
-                values['id']=this.id;
                 this.setState({isLoading:true});
 
-                ManService.submitDayoffAudit(values).then(()=>{
+                ManService.submit4HelpResp(values).then(()=>{
 
                     Info('操作成功');
                     this.goBack()
@@ -110,32 +110,17 @@ class DayoffEdit extends React.Component<IPageProps,IPageState> {
                     <strong>{this.state.record.realName}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>请假类型</Label>
-                    <strong>{this.state.record.dayoffType}</strong>
+                    <Label>类型</Label>
+                    <strong>{this.state.record.helpType}</strong>
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
-                    <Label>请假时间</Label>
-                    <strong>{this.state.record.startDate}~{this.state.record.endDate}</strong>
+                    <Label>时间</Label>
+                    <strong>{this.state.record.createDate}</strong>
                 </FormItem>
                 <FormItem>
                     <Label>内容</Label>
-                    <strong>{this.state.record.content}</strong>
+                    <p>{this.state.record.content}</p>
                 </FormItem>
-
-                <FormItem>
-                    <Label>审核</Label>
-                    <Radio.RadioGroup {...getFieldProps('status', {
-                                initialValue: '',
-                                rules: [{
-                                    required: true, message: '请选择审核结果',
-                                }],
-                            })}>
-                            <Radio value="1">同意</Radio>
-                            <Radio value="-1">不同意</Radio>
-                        </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('status')}/>
-                </FormItem>
-                
                 <FormItem>
                     <Label>回复</Label>
                     <FormControl 
@@ -161,4 +146,4 @@ class DayoffEdit extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default Form.createForm()(DayoffEdit);
+export default Form.createForm()(ForHelpEdit);

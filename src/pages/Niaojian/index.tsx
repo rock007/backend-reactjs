@@ -151,7 +151,7 @@ interface IPageState {
                 sorter: (pre, after) => {return pre.c - after.c},
              },
             { title: '尿检时间', dataIndex: 'testDate', key: 'testDate', textAlign:'center',width: 120, sorter: (pre, after) => {return pre.c - after.c}, },
-            { title: '尿检类型', dataIndex: 'testType', key: 'testType', textAlign:'center',width: 100, sorter: (pre, after) => {return pre.c - after.c} ,render(text,record,index) {
+            { title: '尿检类型', dataIndex: 'testType', key: 'testType', textAlign:'center',width: 120, sorter: (pre, after) => {return pre.c - after.c} ,render(text,record,index) {
 
                 return text==0?'常规':'随机' ;
               }},
@@ -160,7 +160,7 @@ interface IPageState {
                 return text==1?'本地':'异地' ;
               }},
             { title: '尿检地点', dataIndex: 'address', key: 'address', textAlign:'center',width: 200 },
-            { title: '结果', dataIndex: 'result', key: 'result', textAlign:'center',width: 80  ,sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '结果', dataIndex: 'result', key: 'result', textAlign:'center',width: 100  ,sorter: (pre, after) => {return pre.c - after.c}},
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 120 },
 
          

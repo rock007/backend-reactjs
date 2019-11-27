@@ -1,5 +1,9 @@
 import * as React from 'react';
-import {Panel,  Form,Label } from 'tinper-bee';
+import {Panel,  FormControl, Form, Icon,LoadingState, Button ,Label,Radio } from 'tinper-bee';
+
+import {getValidateFieldsTrim,Warning,Info} from "../../../utils";
+
+import FormError from '../../../components/FormError';
 
 import ManService from '../../../services/ManService';
 
@@ -21,7 +25,7 @@ interface IPageState {
     record:any,
 }
 
-class DayoffView extends React.Component<IPageProps,IPageState> {
+class ForHelpView extends React.Component<IPageProps,IPageState> {
     
     id:string='';
 
@@ -37,11 +41,12 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
 
     componentDidMount() {
     
+        debugger;
         if(this.isPage()){
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/dayoff-detail/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/forhelp-detail/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -54,7 +59,7 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
+        let result = await ManService.find4HelpById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -73,27 +78,19 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
                 <FormItem>
                     <Label>戒毒人员</Label>
                     <strong>{this.state.record.realName}</strong>
-                    
                 </FormItem>
                 <FormItem>
-                    <Label>请假类型</Label>
-                    <strong>{this.state.record.dayoffType}</strong>
+                    <Label>类型</Label>
+                    <strong>{this.state.record.helpType}</strong>
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
-                    <Label>请假时间</Label>
-                    <strong>{this.state.record.startDate}~{this.state.record.endDate}</strong>
+                    <Label>时间</Label>
+                    <strong>{this.state.record.createDate}</strong>
                 </FormItem>
                 <FormItem>
                     <Label>内容</Label>
                     <strong>{this.state.record.content}</strong>
                 </FormItem>
-
-                <FormItem>
-                    <Label>审核</Label>
-                    <strong>{this.state.record.status==0?'未审核':(this.state.record.status==1?'同意':this.state.record.status==-1?'不同意':'错误状态')}</strong>
-                   
-                </FormItem>
-                
                 <FormItem>
                     <Label>回复</Label>
                     <p>{this.state.record.respContent}</p>
@@ -106,10 +103,11 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
                     <Label>回复时间</Label>
                     <strong>{this.state.record.respDate}</strong>
                 </FormItem>
+
                 </Form>
                
         </Panel>)
     }
 }
 
-export default Form.createForm()(DayoffView);
+export default ForHelpView;

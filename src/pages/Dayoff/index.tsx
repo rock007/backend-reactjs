@@ -35,7 +35,6 @@ interface IPageState {
     isPopPage:boolean,
 
     isDeleteAlterShow:boolean
-    
 }
 
  class DayoffPage extends React.Component<IPageProps,IPageState> {
@@ -212,9 +211,9 @@ interface IPageState {
 			</Breadcrumb>
 
             <SearchPanel
-                reset={()=>{}}
+                reset={this.clear}
                 onCallback={()=>{}}
-                search={()=>{}}
+                search={this.search}
                 searchOpen={true}
             >
                 <FormList size="sm">

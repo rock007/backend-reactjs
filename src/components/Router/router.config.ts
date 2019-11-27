@@ -186,7 +186,21 @@ export const appRouters: any = [
     name: 'niaojian_schedule',
     icon: 'calendar',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Niaojian/Schedule'))
+    component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/index'))
+  },{
+    path: '/niaojian-generate/:id',
+    title: '尿检计划-生成',
+    name: 'niaojian_generate',
+    icon: 'calendar',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/Generate'))
+  },{
+    path: '/niaojian-schedule-detail/:id',
+    title: '计划-详细',
+    name: 'schedule_detail',
+    icon: 'calendar',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/View'))
   },{
     path: '/visit',
     title: '走访记录',
@@ -234,6 +248,18 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Forhelp'))
   },{
+    path: '/forhelp-edit/:id',
+    title: '求助-审核',
+    name: 'forhelp_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Forhelp/Edit'))
+  },{
+    path: '/forhelp-detail/:id',
+    title: '求助-查看',
+    name: 'forhelp_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Forhelp/View'))
+  },{
     path: '/location',
     title: '位置轨迹',
     name: 'location',
@@ -247,6 +273,12 @@ export const appRouters: any = [
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Checkin'))
+  },{
+    path: '/checkin-detail/:id',
+    title: '签到-查看',
+    name: 'checkin_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Checkin/View'))
   },
   {
     path: '/audit-noticewarn',
