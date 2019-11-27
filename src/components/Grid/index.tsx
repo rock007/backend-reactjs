@@ -17,7 +17,7 @@ interface IComponentProps {
     page:PageModel<any>,
     //exportData?:any[],
     toolBtns?:any[],
-    pageChange?:(pageIndex:number,pageSize:number)=>void
+    pageChange?:(pageIndex:number,pageSize:number,orderBy?:Array<any>)=>void
     getSelectedDataFunc:(selectData, record, index)=>void,
    
     beeGridStore:BeeGridStore
@@ -36,7 +36,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
     grid:any
     
     static defaultProps: Partial<IComponentProps> = {
-        pageChange: (index,size)=>{console.log('pageChange>> index'+index+',size:'+size)},
+        pageChange: (index,size,orderBy)=>{console.log('pageChange>> index'+index+',size:'+size+',orderBy'+JSON.stringify(orderBy))},
         isLoading:false
     }
     state:IComponentState={
@@ -131,8 +131,9 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
     };
     sortFun = (sortParam)=>{
-        console.info(sortParam);
-        //将参数传递给后端排序
+        //console.info(sortParam);
+
+        this.props.pageChange(this.pageIndex,this.pageSize,sortParam);
     }
     render() {
 
@@ -160,7 +161,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
         const pageData= beeGridStore.page.data;
         pageData.forEach(element => {
-          element['key']=element.manId;
+          element['key']=element.id||element.processId||element.manId;
         });
 
         return (
@@ -178,7 +179,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                     paginationObj={paginationObj}
                     ref={el => this.grid = el}
                     sort={sortObj}
-                   // sortFun={this.sortFun}
+                    sortFun={this.sortFun}
                     getSelectedDataFunc={this.getSelectedDataFunc}
                 />
             </div>

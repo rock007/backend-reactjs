@@ -215,6 +215,18 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Dayoff'))
   },{
+    path: '/dayoff-edit/:id',
+    title: '请假-审核',
+    name: 'dayoff_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Dayoff/Edit'))
+  },{
+    path: '/dayoff-detail/:id',
+    title: '请假-查看',
+    name: 'dayoff_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Dayoff/View'))
+  },{
     path: '/forhelp',
     title: '求助',
     name: 'forhelp',

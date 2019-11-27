@@ -41,6 +41,7 @@ interface IPageState {
     
     pageIndex=1
     pageSize=10
+    orderBy=[]
 
     state:IPageState={
         page:new PageModel<any>(),
@@ -58,7 +59,6 @@ interface IPageState {
     search= ()=>{
         this.props.form.validateFields((err, _values) => {
 
-            debugger;
             let values = getValidateFieldsTrim(_values);
             
             if(values.orgId){
@@ -79,6 +79,7 @@ interface IPageState {
 
     loadData=async (args:any)=>{
         
+        args['orderby']=this.orderBy;
         let page = await ManService.searchNiaojian(args, this.pageIndex,this.pageSize) as PageModel<any>;
 
         this.setState({page:page,isLoading:false});
@@ -87,7 +88,13 @@ interface IPageState {
     getSelectedDataFunc = data => {
         this.setState({checkedRows:data});
     };
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
 
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+        this.orderBy=orderBy;
+        this.search();
+    }
     clear=()=>{
         this.props.form.resetFields()
     }
@@ -139,40 +146,32 @@ interface IPageState {
                 return <Label  className='link-go' onClick={()=>{me.go2Page('/visit-detail/'+record.id,'尿检详细',false)}}>{text}</Label>;
               }
             },
-            { title: '尿检时间', dataIndex: 'testDate', key: 'testDate', textAlign:'center',width: 120 },
-            { title: '尿检类型', dataIndex: 'testType', key: 'testType', textAlign:'center',width: 100 ,render(text,record,index) {
-
-                return text==0?'常规':'随机' ;
-              }},
-            { title: '是否异地', dataIndex: 'isLocal', key: 'isLocal', textAlign:'center',width: 120 ,render(text,record,index) {
-
-                return text==0?'本地':'异地' ;
-              }},
-            { title: '尿检地点', dataIndex: 'address', key: 'address', textAlign:'center',width: 200 },
-            { title: '结果', dataIndex: 'result', key: 'result', textAlign:'center',width: 80 },
-            { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 120 },
-
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-              
-                console.log("data",data);
-            }},
+             },
+            { title: '尿检时间', dataIndex: 'testDate', key: 'testDate', textAlign:'center',width: 120, sorter: (pre, after) => {return pre.c - after.c}, },
+            { title: '尿检类型', dataIndex: 'testType', key: 'testType', textAlign:'center',width: 100, sorter: (pre, after) => {return pre.c - after.c} ,render(text,record,index) {
+
+                return text==0?'常规':'随机' ;
+              }},
+            { title: '是否本地', dataIndex: 'isLocal', key: 'isLocal', textAlign:'center',width: 120, sorter: (pre, after) => {return pre.c - after.c}, render(text,record,index) {
+
+                return text==1?'本地':'异地' ;
+              }},
+            { title: '尿检地点', dataIndex: 'address', key: 'address', textAlign:'center',width: 200 },
+            { title: '结果', dataIndex: 'result', key: 'result', textAlign:'center',width: 80  ,sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 120 },
+
+         
             { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
+               
                 
-                console.log("data",data);
-                }
             },
             { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-            sorter: (pre, after) => {return pre.c - after.c},
-            sorterClick:(data,type)=>{
-              //type value is up or down
-              console.log("data",data);
-            }}
+            sorter: (pre, after) => {return pre.c - after.c}
+            }
           ];
         
           const toolBtns = [{
@@ -262,8 +261,8 @@ interface IPageState {
                     >
                         <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem
@@ -312,8 +311,8 @@ interface IPageState {
                         label="尿检类型">
                         <Select {...getFieldProps('testType', {initialValue: ''})} >
                             <Option value="">(请选择)</Option>
-                            <Option value="常规">常规</Option>
-                            <Option value="随机">随机</Option>
+                            <Option value="0">常规</Option>
+                            <Option value="1">随机</Option>
                         </Select>
                     </FormItem>
                     <FormItem
@@ -328,10 +327,12 @@ interface IPageState {
                 </SearchPanel>
 
         <Grid
-          toolBtns={toolBtns}
-          columns={columns}
-          page={this.state.page}
-          getSelectedDataFunc={this.getSelectedDataFunc}
+            isLoading={this.state.isLoading}
+            toolBtns={toolBtns}
+            columns={columns}
+            page={this.state.page}
+            getSelectedDataFunc={this.getSelectedDataFunc}
+            pageChange={this.onPageChange}
         />
 
         <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}

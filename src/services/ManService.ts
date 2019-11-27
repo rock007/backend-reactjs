@@ -58,6 +58,14 @@ class ManService {
     let result = await http.post('/rest/dayoff-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async findDayoffById(id:string): Promise<any> {
+    let result = await http.get('/rest/dayoff-get',{params:{id:id}});
+    return result;
+  }
+  public async submitDayoffAudit(args:any): Promise<any> {
+    let result = await http.post('/rest/dayoff-audit',args);
+    return result;
+  }
 
   public async search4Help(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/help-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);

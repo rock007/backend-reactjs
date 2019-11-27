@@ -40,6 +40,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
     
     pageIndex=1
     pageSize=10
+    orderBy=[]
 
     state:IPageState={
         page:new PageModel<any>(),
@@ -78,14 +79,21 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
     }
 
     loadData=async (args:any)=>{
-
+        args['orderby']=this.orderBy;
         let page = await ManService.searchVisit(args,this.pageIndex,this.pageSize) as PageModel<any>;
         this.setState({page:page,isLoading:false});
     }
 
     getSelectedDataFunc = data => {
         this.setState({checkedRows:data});
-    };
+    }
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
+
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+        this.orderBy=orderBy;
+        this.search();
+    }
 
     clear=()=>{
         this.props.form.resetFields()
@@ -141,35 +149,25 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-              
-                console.log("data",data);
-            }},
-            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-                
-                console.log("data",data);
-                }
+                sorter: (pre, after) => {return pre.c - after.c}
             },
-            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
-            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-            sorter: (pre, after) => {return pre.c - after.c},
-            sorterClick:(data,type)=>{
-              //type value is up or down
-              console.log("data",data);
-            }},
+           
             { title: '被走访人', dataIndex: 'toVisitor', key: 'toVisitor',textAlign:'center', width: 160 },
             { title: '关系', dataIndex: 'toVisitorRelationship', key: 'toVisitorRelationship',textAlign:'center', width: 100 },
             { title: '走访地点', dataIndex: 'address', key: 'address',textAlign:'center', width: 150 },
-            { title: '结果', dataIndex: 'result', key: 'result',textAlign:'center', width: 120 },
+            { title: '结果', dataIndex: 'result', key: 'result',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
          
-            { title: '走访时间 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150 },
+            { title: '走访时间 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
             { title: '走访人', dataIndex: 'visitorName', key: 'visitorName',textAlign:'center', width: 100 },
             
-            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 }
-            
+            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c}
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
+                sorter: (pre, after) => {return pre.c - after.c},
+            },
           ];
        
           const toolBtns = [{
@@ -299,7 +297,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="走访时间"
                     >
-                         <DatePicker.RangePicker {...getFieldProps('visitDate', {initialValue: ''})}
+                         <DatePicker.RangePicker {...getFieldProps('visitorDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
@@ -309,7 +307,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                     <FormItem
                         label="被访人">
-                        <FormControl placeholder='请输入被访人姓名' {...getFieldProps('toUser', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入被访人姓名' {...getFieldProps('toVisitor', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="和戒毒人员关系">
@@ -339,6 +337,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             columns={columns}
             page={this.state.page}
             getSelectedDataFunc={this.getSelectedDataFunc}
+            pageChange={this.onPageChange}
         />
 
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
