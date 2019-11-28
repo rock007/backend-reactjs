@@ -171,7 +171,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={{type:"checkbox"}}
-                    data={pageData}
+                    data={beeGridStore.page.data}
                     loading={this.props.isLoading}
                     columns={columns}
                     {...otherProps}

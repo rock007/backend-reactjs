@@ -32,6 +32,10 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
         treeData:[],
         tablePage:new PageModel(),
         matchData:[],
+        value:JSON.stringify({
+            refname: "用友集团",
+            refpk: "001",  
+          }),
         showModal:false,
         selectedRowIndex:-1
     }
@@ -172,7 +176,7 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
           {...this.props}
           title="戒毒人员选择"
           lang= "zh_CN"
-          value={value}
+         //!! value={value}
           showLoading={this.state.loading}
           valueField="key"
           //WithInput

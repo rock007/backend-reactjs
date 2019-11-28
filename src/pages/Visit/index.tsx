@@ -69,8 +69,8 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
             }
-            if(values.visitDate){
-                values.visitDate=values.visitDate[0].format('YYYY-MM-DD')+'~'+values.visitDate[1].format('YYYY-MM-DD');
+            if(values.visitorDate){
+                values.visitorDate=values.visitorDate[0].format('YYYY-MM-DD')+'~'+values.visitorDate[1].format('YYYY-MM-DD');
             }
 
             this.setState({isLoading:true});

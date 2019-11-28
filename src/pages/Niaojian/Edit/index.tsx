@@ -11,6 +11,7 @@ import RefManTreeTableSelect from '../../../components/RefViews/RefManTreeTableS
 import ManService from '../../../services/ManService';
 
 import './index.scss';
+import { convertFiles } from '../../../utils/tools';
 
 const FormItem = Form.FormItem;;
 
@@ -140,11 +141,13 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>
-                    <RefManTreeTableSelect {
+                    <RefManTreeTableSelect disabled={!(this.state.record==null||this.state.record.id==null)}  {
                             ...getFieldProps('toUid', {
                                 validateTrigger: 'onBlur',
-                                initialValue: '',
-                                rules: [{ required: true ,message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
+                                initialValue: JSON.stringify({refpk:this.state.record.toUid,refname:this.state.record.toUser}),
+                                rules: [{ required: true ,
+                                    pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/,
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
                             })
                     }/>
                     
@@ -238,21 +241,21 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>尿检人</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile uploadChange={this.handler_uploadChange} from='file1Ids'/>
+                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files1)}  uploadChange={this.handler_uploadChange} from='file1Ids'/>
                     </div>
                 </FormItem>
                 
                 <FormItem  style={{display:'flex'}}>
                     <Label>尿检报告</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile uploadChange={this.handler_uploadChange}  from='file2Ids'/>
+                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files2)}  uploadChange={this.handler_uploadChange}  from='file2Ids'/>
                     </div>
 
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
                     <Label>谈话记录</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile uploadChange={this.handler_uploadChange}  from='file3Ids'/>
+                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files3)}  uploadChange={this.handler_uploadChange}  from='file3Ids'/>
                     </div>
 
                 </FormItem>

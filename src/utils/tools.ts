@@ -1,5 +1,6 @@
 import cloneDeep from 'clone-deep';
 import {ITreeNode} from '../services/Model/Models';
+import AppConsts from "../lib/appconst";
 
 export function isMoment(obj){
     return typeof obj === 'object' && obj.date && obj.format;
@@ -160,3 +161,24 @@ export function convertMenuTreeNode(item:any):ITreeNode{
     return obj;
 }
 
+
+
+export function convertFiles(list):Array<any>{
+
+    if(list==null) return [];
+     
+    const files= list.map((item,index)=>{
+
+        return {
+            uid:  item.fileId,
+            name: item.fileName,
+            //status: 'done',
+            //url:  AppConsts.uploadUrl+item.fileUrl,
+            //response:item,
+            url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+            thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+        }
+    });
+
+    return files;
+}

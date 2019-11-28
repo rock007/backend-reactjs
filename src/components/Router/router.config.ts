@@ -267,6 +267,12 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Location'))
   },{
+    path: '/location-man/:id',
+    title: '位置轨迹-人员查看',
+    name: 'location_man',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Location/Man'))
+  },{
     path: '/checkin',
     title: '签到',
     name: 'checkin',

@@ -143,7 +143,7 @@ interface IPageState {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label  className='link-go' onClick={()=>{me.go2Page('/visit-detail/'+record.id,'尿检详细',false)}}>{text}</Label>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/niaojian-detail/'+record.id,'尿检详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },

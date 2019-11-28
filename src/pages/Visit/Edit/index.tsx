@@ -14,6 +14,7 @@ import UploadFile from '../../../components/UploadFile';
 
 import './index.scss';
 import ManService from '../../../services/ManService';
+import { convertFiles } from '../../../utils/tools';
 
 const FormItem = Form.FormItem;;
 
@@ -95,7 +96,6 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
         this.props.form.validateFields((err, _values) => {
             let values = getValidateFieldsTrim(_values);
 
-            debugger;
             if (!err) {
 
                 values.visitorDate = values.visitorDate!=null?values.visitorDate.format(format):"";
@@ -146,33 +146,17 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
         
         let {getFieldProps, getFieldError} = this.props.form;
    
-        const demo4props = {
-            action: '/upload.do',
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            },{
-                uid: 2,
-                name: 'zzz.png',
-                status: 'done',
-                url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-                thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              }],
-          };
-
         return (<Panel>
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>
-                    <RefManTreeTableSelect  {
+                    <RefManTreeTableSelect disabled={!(this.state.record==null||this.state.record.id==null)}  {
                             ...getFieldProps('toUid', {
                                 validateTrigger: 'onBlur',
-                                initialValue: '',
-                                rules: [{ required: true ,message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
+                                initialValue: JSON.stringify({refpk:this.state.record.toUid,refname:this.state.record.toUser}),
+                                rules: [{ required: true ,
+                                    pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/,
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
                             })
                     }/>
                     <span className='error'>
@@ -341,7 +325,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>附件</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile uploadChange={this.handler_uploadChange} />
+                        <UploadFile uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files)}/>
                     </div>
                 </FormItem>
                 <FormItem>
@@ -366,7 +350,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                     <RefUserTreeTableSelect  {
                             ...getFieldProps('visitorName', {
                                 validateTrigger: 'onBlur',
-                                initialValue: {refId:this.state.record.visitorUid,refname:this.state.record.visitorName},
+                                initialValue: JSON.stringify({refpk:this.state.record.visitorUid,refname:this.state.record.visitorName}),
                                 rules: [{ required: true }],message: <span><Icon type="uf-exc-t"></Icon><span>请选择走访人员</span></span>
                             }
                     )}/>

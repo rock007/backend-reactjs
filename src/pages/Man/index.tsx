@@ -365,7 +365,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             >
 
                 <FormList size="sm">
-                <FormItem
+                    <FormItem
                         label="身份证号"
                     >
                         <FormControl placeholder='精确查询' {...getFieldProps('idsNo', {initialValue: ''})}/>
@@ -420,7 +420,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                             {...getFieldProps('createDate', {initialValue: ''})}
                         />
                     </FormItem>
-
                     
                 </FormList>
                 </SearchPanel>

@@ -15,10 +15,7 @@ import { getValidateFieldsTrim } from '../../utils/tools';
 import { Info } from '../../utils';
 
 import DatePicker from "bee-datepicker";
-import SelectMonth from '../../components/SelectMonth';
-import zhCN from "rc-calendar/lib/locale/zh_CN";
 
-import InputNumber from 'bee-input-number';
 import ManService from '../../services/ManService';
 
 const FormItem = FormListItem;
@@ -126,7 +123,7 @@ interface IPageState {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label  className='link-go' onClick={()=>{me.go2Page('/forhelp-detail/'+record.id,'求助详细',false)}}>111{text}</Label>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/forhelp-detail/'+record.id,'求助详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
