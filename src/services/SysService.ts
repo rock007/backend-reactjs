@@ -12,6 +12,33 @@ class SysService {
     return result;
   }
 
+  public async getAreaTree(areaId:string=''): Promise<any> {
+   
+    let result = await http.get('/rest/getAreaTreeById',{params:{areaId:areaId}});
+    
+    return result;
+  }
+  public async searchArea(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+   
+    let result = await http.post('/rest/area-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async deleteAreaByIds(ids:string): Promise<any> {
+    let result = await http.get('/rest/area-delete',{params:{ids:ids}});
+    return result;
+  }
+
+  //网格
+  public async searchGrid(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+   
+    let result = await http.post('/rest/grid-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async deleteGridByIds(ids:string): Promise<any> {
+    let result = await http.get('/rest/grid-delete',{params:{ids:ids}});
+    return result;
+  }
+
   public async getManCateTree(): Promise<any> {
    
     let result = await http.get('/rest/getCategroryTree');

@@ -71,3 +71,35 @@ export class PopPageModel{
     }
 
 }
+
+export interface LocationModel{
+
+  id?:string
+
+  pointX:number
+  pointY:number
+  pointZ?:number
+
+  sn?:string  
+  address?:string
+  from?:string
+
+  createDate?:string
+}
+
+//page属性
+export  interface IPageCommProps {
+  form:any,
+  history:any,
+}
+
+export interface IListPageCommState {
+  page:PageModel<any>,
+  isLoading:boolean,
+  checkedRows:Array<any>,
+
+  pageModel: PopPageModel,
+  isPopPage:boolean,
+
+  isDeleteAlterShow:boolean
+}

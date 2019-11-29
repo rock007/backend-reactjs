@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Panel, Select, FormControl,Form,Label, Breadcrumb,Tag } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
+import Alert from '../../components/Alert';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -109,7 +110,25 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
             this.setState({isPopPage:true,pageModel:model});
         }
     }
+    handler_delete=async ()=>{
 
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+    
+        let ids:string='';
+        this.state.checkedRows.map((item,index)=>{
+            ids=ids+','+item.id;
+        });
+       await ManService.submitCheckinInvalid(ids).then(()=>{
+    
+            Info('操作成功');
+            this.search();
+        })
+        .catch((err)=>{
+            Error('操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
    
     export = ()=>{
         console.log('export=======');
@@ -157,20 +176,16 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
             value:'无效',
             bordered:false,
             colors:'primary',
-            disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
                 
-                if(this.state.checkedRows.length>1){
+                if(this.state.checkedRows.length==0){
 
-                    Info('审核只能选择一条记录');
-
-                }else if(this.state.checkedRows.length==1){
-
-                    this.go2Page('/dayoff-edit/'+this.state.checkedRows[0].id,"请假审核",false);
-
+                    Info('请选择要标记无效的记录');
                 }else{
-                    Info('请选择要审核的记录');
+
+                    this.setState({isDeleteAlterShow:true});
                 }
+                
             }
         },{
             value:'导出',
@@ -256,6 +271,14 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
         <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
         </PageDlog>
+        <Alert show={this.state.isDeleteAlterShow} context="确定要标记选择的记录为无效签到吗?"
+                           confirmFn={() => {
+                               this.handler_delete();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isDeleteAlterShow:false})
+                           }}
+        />
         </Panel >)
     }
 }

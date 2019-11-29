@@ -103,7 +103,7 @@ initMenuItem=(route:MenuModel)=>{
 
   return (
     <Menu.Item key={route.name} onClick={this.go2Page.bind(this,route)}>
-     {route.icon==null?'':<Icon type={'uf-'+route.icon} />} 
+     {route.icon==null||route.icon==''?'':<Icon type={'uf-'+route.icon} />} 
       <span>{route.name}</span>
     </Menu.Item>
   );

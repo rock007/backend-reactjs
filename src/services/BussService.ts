@@ -22,6 +22,26 @@ class BussService {
     return result;
   }
 
+  //包办单位
+  public async searchUnit(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/unit-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async deleteUnit(ids:string): Promise<any> {
+    let result = await http.get('/rest/unit-delete',{params:{ids:ids}});
+    return result;
+  }
+
+  //信息发布
+  public async searchArticle(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/article-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async deleteArticle(ids:string): Promise<any> {
+    let result = await http.get('/rest/article-delete',{params:{ids:ids}});
+    return result;
+  }
+
 }
 
 export default new BussService();

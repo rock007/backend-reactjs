@@ -315,6 +315,19 @@ export const appRouters: any = [
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Notices'))
+  },
+  {
+    path: '/notice-detail/:id',
+    title: '告诫书-详细',
+    name: 'notice_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Notices/View'))
+  },{
+    path: '/yellowcard/:id',
+    title: '红黄牌-详细',
+    name: 'yellowcard_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/YellowCard/View'))
   },{
     path: '/yellowcard',
     title: '红黄牌',
@@ -324,12 +337,25 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/YellowCard'))
   },
   {
-    path: '/man13',
+    path: '/report/buss-today',
     title: '今日签到',
-    name: 'man1',
-    icon: 'caven',
+    name: 'buss_today',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Man'))
+    component: LoadableComponent(() => import('../../pages/Report/BussToday'))
+  },
+  {
+    path: '/report/buss-daily',
+    title: '业务日报',
+    name: 'buss_daily',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Report/BussDaily'))
+  },
+  {
+    path: '/report/buss-month',
+    title: '业务月报',
+    name: 'buss_month',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Report/BussMonth'))
   },
   {
     path: '/org',
@@ -368,26 +394,45 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Sys/Menu/Edit'))
   },{
-    path: '/man4',
+    path: '/sys/area',
     title: '地区管理',
     name: 'man4',
     icon: 'caven',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Man'))
+    component: LoadableComponent(() => import('../../pages/Sys/Area'))
   },{
-    path: '/man5',
+    path: '/sys/grid',
     title: '网格管理',
     name: 'man5',
     icon: 'caven',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Man'))
+    component: LoadableComponent(() => import('../../pages/Sys/Grid'))
   },{
-    path: '/man6',
+    path: '/grid-unit',
     title: '包办单位',
     name: 'man6',
     icon: 'caven',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Man'))
+    component: LoadableComponent(() => import('../../pages/Grid-unit'))
+  },{
+    path: '/articles/:id',
+    title: '信息发布-详细',
+    name: 'article_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Cms/article'))
+  },{
+    path: '/articles',
+    title: '信息发布',
+    name: 'article',
+    icon: 'caven',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Cms/index'))
+  },{
+    path: '/article-cate',
+    title: '信息发布-分类',
+    name: 'article_cate',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Cms/cate'))
   },
   {
     path: '/exception',
