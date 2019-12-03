@@ -91,6 +91,7 @@ export interface LocationModel{
 export  interface IPageCommProps {
   form:any,
   history:any,
+  match:any,
 }
 
 export interface IPageCommState {

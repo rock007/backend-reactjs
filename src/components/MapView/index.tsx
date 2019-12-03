@@ -65,8 +65,7 @@ export default class MapView extends React.Component<ISceneProps,ISceneState> {
         
         return (
                 <div style={{ width: this.props.width||'100%', height: this.props.height||'100%' }}>
-                    <Loading show={this.state.isLoading}
-                    /> 
+                    <Loading show={this.state.isLoading} container={this} /> 
                     <Map zoom={10} center={this.state.mapCenter} 
                         status={{ 
                             zoomEnable: true,

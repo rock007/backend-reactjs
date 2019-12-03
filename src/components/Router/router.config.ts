@@ -90,12 +90,28 @@ export const appRouters: any = [
   },
   {
     permission: '',
+    title: '戒毒人员-业务查看',
+    path: '/man-buss/:id',
+    name: 'man_buss_all',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Buss'))
+  },
+  {
+    permission: '',
     title: '社戒管理',
     path: '/process',
     name: 'man_process',
     icon: '9square-2',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Process'))
+  },
+  {
+    permission: '',
+    title: '社戒管理-详细',
+    path: '/process-view/:id',
+    name: 'man_process_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Process/View'))
   },
   {
     permission: '',

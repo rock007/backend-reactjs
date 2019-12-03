@@ -1,88 +1,75 @@
 import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select,Tile, PanelGroup,Tabs,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import './index.scss';
-import ProcessInfoBussPanel from '../../../components/Buss/ProcessInfoPanel';
 import {PageModel,IPageDetailProps,IPageDetailState,PopPageModel} from '../../../services/Model/Models';
+import ProcessInfoBussPanel from '../../../components/Buss/ProcessInfoPanel';
 
 interface IOtherProps {
     
 } 
 
 interface IOtherState {
-  
+    
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
 type IPageState = IOtherState & IPageDetailState;
 
-class ProcessView extends React.Component<IPageProps,IPageState> {
-	
-	id:string='';
+class ManBussView extends React.Component<IPageProps,IPageState> {
+    
+    id:string='';
+
     state:IPageState={
-		isLoading:false,
+        isLoading:false,
         record:{},
     }
-	
-	isPage=()=>{
+    
+    isPage=()=>{
 
         return this.props.match&&this.props.history;
     }
     componentDidMount() {
-
-		if(this.isPage()){
+        if(this.isPage()){
 
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/prrocess-view/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/man-buss/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
+
+        if(this.id!='0'){
+
+            //this.loadData(this.id);
+        }
     }
-	goBack=()=>{
+    goBack=()=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
             this.props.handlerBack();
         }
     }
+
     render() {
-        return (<Panel>
+        return ( <Panel>
 			{
 				this.isPage()?<Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
 			    </Breadcrumb.Item>
                 <Breadcrumb.Item href="#">
-				  社戒管理
+				  档案库
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                   详细
+                   业务查看
 			    </Breadcrumb.Item>
                 <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
 			</Breadcrumb>
 			:null}
-			<ProcessInfoBussPanel processId={this.id} manId="" ></ProcessInfoBussPanel>
-		</Panel>  )
+			<ProcessInfoBussPanel manId={this.id}></ProcessInfoBussPanel>
+		</Panel> )
     }
 }
 
-export default ProcessView;
-
-
-	/** 
-export default function ProcessView(props:any) {
-
-
-    const [count, setCount] = useState(0);
-  
-    useEffect(() => {
-      // Update the document title using the browser API
-      document.title = `You clicked ${count} times`;
-    });
-  	
-    return (
-		<ProcessInfoBussPanel {...props}></ProcessInfoBussPanel>
-    );
-  }
-  ***/
+export default ManBussView;

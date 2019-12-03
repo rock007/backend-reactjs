@@ -512,7 +512,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                               this.setState({isAlterShow:false})
                            }}
             />
-            <ProcessViewPop isShow={this.state.isViewerShow} onCloseEdit={()=>{this.setState({isViewerShow:false})}}/>
             </Panel>
         )
     }
