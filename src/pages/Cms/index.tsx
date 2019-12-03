@@ -6,10 +6,9 @@ import Alert from '../../components/Alert';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
-import BussService from '../../services/BussService';
-import {PageModel, PopPageModel,IPageCommProps,IListPageCommState} from '../../services/Model/Models';
-import SelectDict from '../../components/SelectDict';
-import ManCateSelect from '../../components/ManCateSelect';
+import CmsService from '../../services/CmsService';
+import {PageModel, PopPageModel,IPageCommProps,IListPageState} from '../../services/Model/Models';
+
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import PageDlog from '../../components/PageDlg';
 import DatePicker from "bee-datepicker";
@@ -29,7 +28,7 @@ interface IOtherState {
 }
 
 type IPageProps = IOtherProps & IPageCommProps;
-type IPageState = IOtherState & IListPageCommState;
+type IPageState = IOtherState & IListPageState;
 
  class ArticlesPage extends React.Component<IPageProps,IPageState> {
 
@@ -72,7 +71,7 @@ type IPageState = IOtherState & IListPageCommState;
   loadData=async (args:any)=>{
       
       args['orderby']=this.orderBy;
-      let page = await BussService.searchArticle(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      let page = await CmsService.searchArticle(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
       this.setState({page:page,isLoading:false});
   }
@@ -117,7 +116,7 @@ handler_delete=async ()=>{
     this.state.checkedRows.map((item,index)=>{
         ids=ids+','+item.id;
     });
-   await BussService.deleteArticle(ids).then(()=>{
+   await CmsService.deleteArticleByIds(ids).then(()=>{
 
         Info('删除操作成功');
         this.search();
@@ -140,7 +139,7 @@ handler_delete=async ()=>{
             
           }
         },
-        { title: '类别', dataIndex: 'cateId', key: 'cateId', textAlign:'center',width: 80 ,sorter: (pre, after) => {return pre.c - after.c}},
+        { title: '类别', dataIndex: 'cateId', key: 'cateId', textAlign:'center',width: 150 ,sorter: (pre, after) => {return pre.c - after.c}},
       
         { title: '封面', dataIndex: 'logo', key: 'logo',textAlign:'center', width: 160 },
 
@@ -156,7 +155,10 @@ handler_delete=async ()=>{
           const toolBtns = [{
             value:'添加',
             bordered:false,
-            colors:'primary',              
+            colors:'primary',
+            onClick:()=>{
+                this.go2Page('/article-edit/0',"文章新增",false);
+            }              
           },{
             value:'修改',
             disabled:this.state.checkedRows.length>1?true:false,
@@ -168,7 +170,7 @@ handler_delete=async ()=>{
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/area-edit/'+this.state.checkedRows[0].id,"地区编辑",false);
+                    this.go2Page('/article-edit/'+this.state.checkedRows[0].id,"文章编辑",false);
 
                 }else{
                     Info('请选择要编辑的记录');
@@ -211,8 +213,6 @@ handler_delete=async ()=>{
                         label="标题">
                         <FormControl placeholder='文章标题' {...getFieldProps('title', {initialValue: ''})}/>
                     </FormItem>
-                   
-                  
                     <FormItem
                         label="类别"
                     >

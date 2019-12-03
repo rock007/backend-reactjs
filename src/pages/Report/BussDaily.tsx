@@ -10,7 +10,7 @@ import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import BussService from '../../services/BussService';
-import {PageModel, PopPageModel,IPageCommProps,IListPageCommState} from '../../services/Model/Models';
+import {PageModel, PopPageModel,IPageCommProps,IListPageState} from '../../services/Model/Models';
 
 import PageDlog from '../../components/PageDlg';
 import { getValidateFieldsTrim } from '../../utils/tools';
@@ -27,7 +27,7 @@ interface IOtherState {
 }
 
 type IPageProps = IOtherProps & IPageCommProps;
-type IPageState = IOtherState & IListPageCommState;
+type IPageState = IOtherState & IListPageState;
 
  class AreaPage extends React.Component<IPageProps,IPageState> {
 
@@ -164,16 +164,16 @@ type IPageState = IOtherState & IListPageCommState;
         return ( <Panel>
 
             <Breadcrumb>
-			    <Breadcrumb.Item href="#">
-			      工作台
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item>
-                 统计分析
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item active>
-                  业务日报（历史）
-			    </Breadcrumb.Item>
-			</Breadcrumb>
+			        <Breadcrumb.Item href="#">
+			          工作台
+			        </Breadcrumb.Item>
+			        <Breadcrumb.Item>
+                统计分析
+			        </Breadcrumb.Item>
+			        <Breadcrumb.Item active>
+                业务日报（历史）
+			        </Breadcrumb.Item>
+			      </Breadcrumb>
 
             <Row>
                

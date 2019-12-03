@@ -6,7 +6,7 @@ import SearchPanel from '../../components/SearchPanel';
 import Grid from '../../components/Grid';
 import SelectDict from '../../components/SelectDict';
 import ManCateSelect from '../../components/ManCateSelect';
-import {PageModel,IPageCommProps,IListPageCommState,PopPageModel} from '../../services/Model/Models';
+import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
 
@@ -28,7 +28,7 @@ interface IOtherState {
 }
 
 type IPageProps = IOtherProps & IPageCommProps;
-type IPageState = IOtherState & IListPageCommState;
+type IPageState = IOtherState & IListPageState;
 
 class NoticePage extends React.Component<IPageProps,IPageState> {
     

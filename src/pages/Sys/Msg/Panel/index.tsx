@@ -23,7 +23,9 @@ export  class MsgPanel extends React.Component<IPanelProps,IPanelState> {
     render() {
 
         return (  <React.Fragment>
-                    <Panel header="Panel 1" eventKey="1">Panel 1 content</Panel>
+                    <Panel header="Panel 1" eventKey="1">Panel 1 content
+                    222
+                    </Panel>
                     <Panel header="Panel 2" eventKey="2">Panel 2 content</Panel>
             </React.Fragment>)
     }

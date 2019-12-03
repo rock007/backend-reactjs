@@ -1,36 +1,39 @@
 import * as React from 'react';
 import {Panel, Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
+import DatePicker from "bee-datepicker";
+import {
+    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  } from 'recharts';
+import moment from 'moment'
+  
 import Grid from '../../components/Grid';
-import Alert from '../../components/Alert';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
-import BussService from '../../services/BussService';
-import {PageModel, PopPageModel} from '../../services/Model/Models';
+import ReportService from '../../services/ReportService';
+import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
+import {PageModel, PopPageModel,IPageCommProps,IListPageState} from '../../services/Model/Models';
 
 import PageDlog from '../../components/PageDlg';
 
 import { getValidateFieldsTrim } from '../../utils/tools';
 import { Info } from '../../utils';
 
+moment.locale('zh-cn')
+
 const FormItem = FormListItem;
 
-interface IPageProps {
-    form:any,
-    history:any,
+interface IOtherProps {
+    
+} 
+
+interface IOtherState {
+    displayType:number
 }
 
-interface IPageState {
-    page:PageModel<any>,
-    isLoading:boolean,
-    checkedRows:Array<any>,
+type IPageProps = IOtherProps & IPageCommProps;
+type IPageState = IOtherState & IListPageState;
 
-    pageModel: PopPageModel,
-    isPopPage:boolean,
-    isDeleteAlterShow:boolean
-}
-
- class AreaPage extends React.Component<IPageProps,IPageState> {
+ class BussMonthPage extends React.Component<IPageProps,IPageState> {
 
     pageIndex=1
     pageSize=10
@@ -42,7 +45,8 @@ interface IPageState {
         checkedRows:[],
         pageModel:new PopPageModel(),
         isPopPage:false,
-        isDeleteAlterShow:false
+        isDeleteAlterShow:false,
+        displayType:0
     }
 
     componentDidMount() {
@@ -70,7 +74,7 @@ interface IPageState {
   loadData=async (args:any)=>{
       
       args['orderby']=this.orderBy;
-      let page = await BussService.searchUnit(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      let page = await ReportService.searchReportDaily(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
       if(page!=null)
         this.setState({page:page,isLoading:false});
@@ -117,76 +121,51 @@ interface IPageState {
     }
  }
  
- handler_delete=async ()=>{
-
-    this.setState({isLoading:true,isDeleteAlterShow:false});
-
-    let ids:string='';
-    this.state.checkedRows.map((item,index)=>{
-        ids=ids+','+item.id;
-    });
-   await BussService.deleteUnit(ids).then(()=>{
-
-        Info('删除操作成功');
-        this.search();
-    })
-    .catch((err)=>{
-        Error('删除操作失败');
-    }).finally(()=>{
-        this.setState({isLoading:false});
-    });
+handleChange=(value)=>{
+    this.setState({displayType:value});
 }
 
-  render() {
+render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
+        const data = [
+            {
+              name: 'Page A', uv: 4000, pv: 2400, amt: 2400,
+            },
+            {
+              name: 'Page B', uv: 3000, pv: 1398, amt: 2210,
+            },
+            {
+              name: 'Page C', uv: 2000, pv: 9800, amt: 2290,
+            },
+            {
+              name: 'Page D', uv: 2780, pv: 3908, amt: 2000,
+            },
+            {
+              name: 'Page E', uv: 1890, pv: 4800, amt: 2181,
+            },
+            {
+              name: 'Page F', uv: 2390, pv: 3800, amt: 2500,
+            },
+            {
+              name: 'Page G', uv: 3490, pv: 4300, amt: 2100,
+            },
+          ];
+
         const columns = [
-            { title: '简称', dataIndex: 'shortName', key: 'shortName',textAlign:'center', width: 100 },
-            { title: '名称', dataIndex: 'unitName', key: 'unitName', textAlign:'center',width: 150 },
+             { title: '时间', dataIndex: 'shortName', key: 'shortName',textAlign:'center', width: 100 },
+            { title: '社区', dataIndex: 'unitName', key: 'unitName', textAlign:'center',width: 150 },
       
-            { title: '负责人', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
-            { title: '联系电话', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
-            { title: '地址', dataIndex: 'address', key: 'address',textAlign:'center', width: 180 },
-            { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 180 },
-            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 160 },
-            { title: '创建人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 160 }
+            { title: '建档(人)', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
+            { title: '社康(人)', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
+            { title: '社戒(人)', dataIndex: 'address', key: 'address',textAlign:'center', width: 100 },
+            { title: '走访(次)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
+            { title: '尿检(次)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
+            { title: '请假(条)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
+            { title: '求助(条)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 }
           ];
       
           const toolBtns = [{
-            value:'添加',
-            bordered:false,
-            colors:'primary',              
-          },{
-            value:'修改',
-            disabled:this.state.checkedRows.length>1?true:false,
-            onClick:() => {
-
-                if(this.state.checkedRows.length>1){
-
-                    Info('修改只能选择一条记录');
-
-                }else if(this.state.checkedRows.length==1){
-
-                    this.go2Page('/unit-edit/'+this.state.checkedRows[0].manId,"修改包办单位",false);
-
-                }else{
-                    Info('请选择要修改的记录');
-                }
-
-            }
-        },{
-            value:'删除',
-            onClick:()=>{
-
-                if(this.state.checkedRows.length==0){
-
-                    Info('请选择要删除的记录');
-                }else{
-
-                    this.setState({isDeleteAlterShow:true});
-                }
-            }
-        },{
             value:'导出',
             iconType:'uf-export',
             onClick:this.export
@@ -199,10 +178,10 @@ interface IPageState {
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item>
-			      系统管理
+                统计分析
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                  包办单位
+                业务月报（历史）
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -216,22 +195,31 @@ interface IPageState {
                 searchOpen={true}
               >
                 <FormList size="sm">
-                    <FormItem
-                        label="单位名称">
-                        <FormControl placeholder='单位名称' {...getFieldProps('unitName', {initialValue: ''})}/>
+                <FormItem
+                        label="社区">
+                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="负责人">
-                        <FormControl placeholder='负责人' {...getFieldProps('chargeMan', {initialValue: ''})}/>
+                        label="时间">
+                        <DatePicker  format='YYYY-MM' defaultValue={moment()}
+                           {...getFieldProps('createDate', {initialValue: ''})}
+                        />
                     </FormItem>
                     <FormItem
-                        label="联系电话">
-                        <FormControl placeholder='联系电话' {...getFieldProps('linkPhone', {initialValue: ''})}/>
+                        label="显示方式">
+                        <Radio.RadioGroup 
+                               defaultValue="0"
+                               onChange={this.handleChange}>
+                            <Radio value="0">表格</Radio>
+                            <Radio value="1">图表</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
                 </FormList>
                 </SearchPanel>
 
-                <Grid
+                {
+                   this.state.displayType==0?
+                   <Grid
                     isLoading={this.state.isLoading}
                     toolBtns={toolBtns}
                     columns={columns}
@@ -239,22 +227,31 @@ interface IPageState {
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     pageChange={this.onPageChange}
                 />
+                :
+                <BarChart
+                        width={500}
+                        height={430}
+                        data={data}
+                        margin={{
+                          top: 5, right: 30, left: 20, bottom: 5,
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="pv" fill="#8884d8" />
+                        <Bar dataKey="uv" fill="#82ca9d" />
+                      </BarChart>
+               }
                 </Col>
             </Row>    
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
           </PageDlog>
-          <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
-                           confirmFn={() => {
-                               this.handler_delete();
-                           }}
-                           cancelFn={() => {
-                              this.setState({isDeleteAlterShow:false})
-                           }}
-        />
-
-        </Panel >)
+        </Panel>)
     }
 }
 
-export default Form.createForm()(AreaPage);
+export default Form.createForm()(BussMonthPage);

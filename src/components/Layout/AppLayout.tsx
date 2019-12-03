@@ -83,7 +83,7 @@ initMenuChilds=(route:MenuModel)=>{
 
   return (
       <SubMenu key={route.name} 
-          title={<span> {route.icon==null?'': <Icon type={route.icon} />} <span>{route.name}</span> </span>}  >
+          title={<span> {route.icon==null||route.icon===''?'': <Icon type={route.icon} />} <span>{route.name}</span> </span>}  >
      
           {route.children
             .map((route: any, index: number) => {

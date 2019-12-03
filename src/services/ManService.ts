@@ -72,11 +72,11 @@ class ManService {
     return result;
   }
   public async find4HelpById(id:string): Promise<any> {
-    let result = await http.get('/rest/forhelp-get',{params:{id:id}});
+    let result = await http.get('/rest/help-get',{params:{id:id}});
     return result;
   }
   public async submit4HelpResp(args:any): Promise<any> {
-    let result = await http.post('/rest/forhelp-resp',args);
+    let result = await http.post('/rest/help-resp',args);
     return result;
   }
 

@@ -419,7 +419,7 @@ export const appRouters: any = [
     title: '信息发布-详细',
     name: 'article_detail',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Cms/article'))
+    component: LoadableComponent(() => import('../../pages/Cms/Article'))
   },{
     path: '/articles',
     title: '信息发布',
@@ -428,11 +428,17 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Cms/index'))
   },{
+    path: '/article-edit/:id',
+    title: '信息发布-编辑',
+    name: 'article_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Cms/Article/edit'))
+  },{
     path: '/article-cate',
     title: '信息发布-分类',
     name: 'article_cate',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Cms/cate'))
+    component: LoadableComponent(() => import('../../pages/Cms/Cate'))
   },
   {
     path: '/exception',

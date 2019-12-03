@@ -87,13 +87,18 @@ export interface LocationModel{
   createDate?:string
 }
 
-//page属性
+//列表页 page属性
 export  interface IPageCommProps {
   form:any,
   history:any,
 }
 
-export interface IListPageCommState {
+export interface IPageCommState {
+  isLoading:boolean
+}
+
+
+export interface IListPageState {
   page:PageModel<any>,
   isLoading:boolean,
   checkedRows:Array<any>,
@@ -103,3 +108,21 @@ export interface IListPageCommState {
 
   isDeleteAlterShow:boolean
 }
+
+//详细页
+export interface IPageDetailProps {
+  form:any,
+  //in page
+  history:any,
+  match:any,
+
+  //in pop
+  isPage?:boolean,
+  url?:string,
+  handlerBack?:()=>void
+}
+export interface IPageDetailState {
+  isLoading:boolean,
+  record:any,
+}
+

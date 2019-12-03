@@ -41,7 +41,6 @@ class ForHelpView extends React.Component<IPageProps,IPageState> {
 
     componentDidMount() {
     
-        debugger;
         if(this.isPage()){
             this.id=this.props.match.params.id;
         }else{
