@@ -9,7 +9,8 @@ import ManService from '../../services/ManService';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
-    
+	manId:string,
+	processId?:string
 } 
 
 interface IOtherState {

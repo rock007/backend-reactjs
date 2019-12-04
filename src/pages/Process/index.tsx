@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {Loading ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
+import {Tag ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
@@ -42,7 +42,9 @@ interface IPageState {
 
     isAlterShow:boolean,
     isPopPage:boolean,
-    pageModel: PopPageModel
+    pageModel: PopPageModel,
+
+    isDeleteAlterShow:boolean
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
@@ -61,10 +63,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         isAlterShow:false,
         isPopPage:false,
         pageModel:new PopPageModel(),
+        isDeleteAlterShow:false
     }
-    async componentDidMount() {
+    componentDidMount() {
         
-        this.validFormSubmit();
+        this.search();
     }
 
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
@@ -79,7 +82,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             this.setState({isPopPage:true,pageModel:model});
         }
     }
-    validFormSubmit=()=>{
+    search=()=>{
 
         this.props.form.validateFields((err, _values) => {
 
@@ -101,10 +104,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
            // let {pageParams} = queryParam;
            // pageParams.pageIndex = 0;
            
-           this.freshata(1);
+           this.loadata(1);
         });
       }
-      freshata= async (index)=>{
+
+      loadata= async (index)=>{
       
         this.pageIndex=index;
 
@@ -114,7 +118,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         this.setState({page:page,isLoading:false});
       }
 
-      resetSearch=()=>{
+    clear=()=>{
         this.props.form.resetFields();
 
         this.props.form.validateFields((err, _values) => {
@@ -134,81 +138,16 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         });
       }
 
-    handleClick = (e) => {
-        console.log(e);
-
-        this.setState({
-          //  current: e.key,
-        });
-    }
 
     getSelectedDataFunc = (selectData, record, index) => {
         
         this.setState({checkedRows:selectData});
-
-        //this.rowSelect=selectData;
-
-        /** 
-        let  tableData  = this.state.page.data;
-		let _tableData = deepClone(tableData);
-		if (index != undefined) {
-			_tableData[index]['_checked'] = !_tableData[index]['_checked'];
-		} else {//点击了全选
-			if (selectData.length > 0) {//全选
-				_tableData.map(item => {
-					if (!item['_disabled']) {
-						item['_checked'] = true
-					}
-				});
-			} else {//反选
-				_tableData.map(item => {
-					if (!item['_disabled']) {
-						item['_checked'] = false
-					}
-				});
-			}
-        }
-        ***/
-        //this.handler(selectData);
-    }
-    
-    handler=async (data)=>{
-       // this.setState({rowSelect:data});
-    }
-      
-
-    onDataNumSelect=(index)=>{
-        
-        this.setState({dataNumIndex:index});
-        this.pageSize=[10,20,50,100][index];
-        this.validFormSubmit();
     }
 
     export = ()=>{
         console.log('export=======');
     }
     
-
-    onDatePickChange=()=>{
-
-    }
-    onStartInputBlur = (e,startValue,array) => {
-        console.log('RangePicker面板 左输入框的失焦事件',startValue,array)
-    }
-    /**
-     *@param e 事件对象
-     *@param endValue 结束时间
-     *@param array 包含开始时间和结束时间的数组
-     */
-    onEndInputBlur = (e,endValue,array) => {
-        console.log('RangePicker面板 右输入框的失焦事件',endValue,array)
-    }
-    
-    sortFun = (sortParam)=>{
-        console.info(sortParam);
-        //将参数传递给后端排序
-    }
-
     gotoDetail=(id)=>{
         this.props.history.push('/process-view/'+id);
     }
@@ -220,58 +159,66 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
        // this.search();
     }
 
+    handler_delete=async ()=>{
+
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+
+        let ids:string='';
+        this.state.checkedRows.map((item,index)=>{
+            ids=ids+','+item.id;
+        });
+       await ManService.deleteNiaojian(ids).then(()=>{
+
+            Info('删除操作成功');
+            this.search();
+        })
+        .catch((err)=>{
+            Error('删除操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
+
     render() {
 
         let me=this;
         const { getFieldProps, getFieldError } = this.props.form;
 
         const {Option} = Select;
-        const format = "YYYY";
-
-        let isMultSelect=this.rowSelect.length>1?true:false;
-
-        console.log(' isMultSelect:'+isMultSelect);
 
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Link to={'/process-view/'+record.manId}>{text}</Link>;
+                return <Link to={'/process-view/'+record.processId}>{text}</Link>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-              
-                console.log("data",data);
-            }},
+               },
             { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-                
-                console.log("data",data);
-                }
+                sorter: (pre, after) => {return pre.c - after.c}
             },
-            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
-            { title: '民族', dataIndex: 'nation', key: 'nation',textAlign:'center', width: 100 },
-            { title: '婚姻状态', dataIndex: 'marriageStatus', key: 'marriageStatus',textAlign:'center', width: 150 },
-            { title: '户籍', dataIndex: 'birthplace', key: 'birthplace',textAlign:'center', width: 120 },
-            { title: '居住地 ', dataIndex: 'liveDistrict', key: 'liveDistrict',textAlign:'center', width: 200 },
-            { title: '查获时间', dataIndex: 'catchDate', key: 'catchDate',textAlign:'center', width: 120 },
-            { title: '查获单位', dataIndex: 'catchUnit', key: 'catchUnit',textAlign:'center', width: 200 },
+            { title: '应报到时间', dataIndex: 'registSetDate', key: 'registSetDate',textAlign:'center', width: 160 , sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '实际报到时间', dataIndex: 'registDate', key: 'registDate',textAlign:'center', width: 160 , sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '执行天数', dataIndex: 'dayCost', key: 'dayCost',textAlign:'center', width: 120 , sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '风险等级', dataIndex: 'level', key: 'level',textAlign:'center', width: 100 },
+            { title: '人员分类', dataIndex: 'cateTypeText', key: 'cateTypeText',textAlign:'center', width: 150 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 160 },
+            { title: '所属社工', dataIndex: 'linkSgName', key: 'linkSgName',textAlign:'center', width: 120 },
+            { title: '所属民警', dataIndex: 'linkMjName', key: 'linkMjName',textAlign:'center', width: 120 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 120 , render(text,record,index) {
+
+                return text==0?<Tag colors="danger">未报到</Tag>:(text==1?<Tag colors="success">执行中</Tag>:(text==100?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知状态</Tag>));
+
+                }},
             { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
-            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
-            { title: '创建人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 100 },
-            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-            sorter: (pre, after) => {return pre.c - after.c},
-            sorterClick:(data,type)=>{
-              //type value is up or down
-              console.log("data",data);
-            }}
+            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 }
+           
           ];
         
           const toolBtns = [{
             value:'社区报到',
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
                 //this.setState({isViewerShow:true});
 
@@ -289,9 +236,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'尿检计划',
+            disabled:this.state.checkedRows.length>1?true:false,
         },{
             value:'发告诫书',
             colors:'default',
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
                 if(this.state.checkedRows.length>1){
@@ -308,6 +257,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'发通知函',
+            disabled:this.state.checkedRows.length>1?true:false,
             colors:'default',
             onClick:() => {
 
@@ -325,8 +275,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'变更社区',
+            disabled:this.state.checkedRows.length>1?true:false,
             colors:'default',
-            disabled:isMultSelect,
             onClick:() => {
 
                 if(this.state.checkedRows.length>1){
@@ -345,7 +295,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         },{
             value:'解除戒毒',
             colors:'default',
-            disabled:isMultSelect,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
                 if(this.state.checkedRows.length>1){
@@ -363,7 +313,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         },{
             value:'执行强戒',
             colors:'default',
-            disabled:isMultSelect,
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
                 if(this.state.checkedRows.length>1){
@@ -402,16 +352,14 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 </Col>
                 <Col md="10">
                 <SearchPanel
-                reset={this.resetSearch}
-                onCallback={()=>{}}
-                search={this.validFormSubmit}
-                searchOpen={true}
-            >
+                    reset={this.clear}
+                    onCallback={()=>{}}
+                    search={this.search}
+                    searchOpen={true}>
 
                 <FormList size="sm">
                     <FormItem
-                        label="姓名"
-                    >
+                        label="姓名">
                         <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
@@ -446,7 +394,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="网格"
                     >
-                        <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
+                        <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
                         
                     </FormItem>
                     <FormItem
@@ -456,11 +404,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={this.onDatePickChange}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
-                            onStartInputBlur={this.onStartInputBlur}
-                            onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
 
@@ -471,17 +415,14 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={this.onDatePickChange}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
-                            onStartInputBlur={this.onStartInputBlur}
-                            onEndInputBlur={this.onEndInputBlur}
                         />
                     </FormItem>
                     <FormItem
                         label="状态">
                         <Radio.RadioGroup  {...getFieldProps('status', {initialValue: ''})}>
                             <Radio value="">全部</Radio>
+                            <Radio value="0">未报到</Radio>
                             <Radio value="1">执行中</Radio>
                             <Radio value="100">已完成</Radio>
                         </Radio.RadioGroup>
@@ -505,10 +446,9 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             </PageDlog>
             <Alert show={this.state.isAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
-                             //  this.confirmGoBack(1);
+                             this.handler_delete();
                            }}
                            cancelFn={() => {
-                              // this.confirmGoBack(2);
                               this.setState({isAlterShow:false})
                            }}
             />

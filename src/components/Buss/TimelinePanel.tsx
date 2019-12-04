@@ -1,40 +1,68 @@
 import * as React from 'react';
-import {Icon, Timeline} from 'tinper-bee';
+import moment from 'moment'
+
+import {Icon, Timeline,Loading} from 'tinper-bee';
+
+import ManService from '../../services/ManService';
 
 interface IPanelProps {
-   children?: React.ReactNode
+   manId:string
 }
 interface IPanelState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    isLoading:boolean,
+    record:Array<any>,
 }
 
+moment.locale('zh-cn');
 export default class TimelinePanel extends React.Component<IPanelProps,IPanelState> {
     
     state:IPanelState={
-        expanded:false,
-        current:null,
-        selectedkey:null
+        isLoading:false,
+        record:[]
     }
     componentDidMount() {
+        
 
+        if(this.props.manId!=null&&this.props.manId!=''){
+            this.loadData(this.props.manId);
+        }
+    }
+    componentWillReceiveProps(nextProps:IPanelProps) {
+      
+        if (nextProps.manId !== this.props.manId) {
+
+           
+			if(nextProps.manId!=null&&nextProps.manId!=''){
+				this.loadData(nextProps.manId);
+			}
+        }
+    }
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.getManLog(id);
+
+        this.setState({record:result,isLoading:false});
     }
     render() {
   
-        return (<React.Fragment>
+        return (<div>
+            <Loading show={this.state.isLoading} container={this} /> 
             {this.props.children} 
             <Timeline>
-                <Timeline.Item>建立档案 于2015-09-01</Timeline.Item>
-                <Timeline.Item>分配到中心戒毒社区 2015-09-01</Timeline.Item>
-                <Timeline.Item color="danger">
-                    <p>Solve initial network problems 1</p>
-                    <p>Solve initial network problems 2</p>
-                    <p>Solve initial network problems 3 2015-09-01</p>
-                </Timeline.Item>
-                <Timeline.Item dot={<Icon type="uf-time-c-o" style={{ fontSize: '16px' }} />} color="danger">Technical testing 2015-09-01</Timeline.Item>
-                <Timeline.Item>社区报到 2019-01-01</Timeline.Item>
+                {
+                    this.state.record.map((item,index)=>{
+
+                       return (<Timeline.Item >
+                             时间:{moment(item.createDate,'YYYY-MM-DD HH:mm:ss').fromNow()}, {item.title} :{item.content}
+                        </Timeline.Item>)
+                    })
+                }
+                {
+                    this.state.record.length==0?<span>暂无数据</span>:null
+                }
+
             </Timeline>
-            </React.Fragment>);
+            </div>);
     }
 }

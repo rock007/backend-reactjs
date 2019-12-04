@@ -149,20 +149,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         this.props.form.resetFields()
     }
     
-    onChange = () => {
-        this.setState({expanded: !this.state.expanded})
-    }
-
     getSelectedDataFunc = (selectData, record, index) => {
-        
-        //this.checkedRows=selectData;
-
-        /** 
-        this.props.manStore.selected(
-            _tableData,
-            selectData
-        )
-        ***/
+      
        this.setState({checkedRows:selectData});
     }
   
@@ -172,18 +160,26 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         this.pageSize=pageSize;
         this.search();
     }
-   
-    onClickShowModel = (btnFlag) => {
-        this.setState({editModelVisible: true});
+    handler_delete=async ()=>{
+
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+
+        let ids:string='';
+        this.state.checkedRows.map((item,index)=>{
+            ids=ids+','+item.id;
+        });
+       await ManService.deleteManByIds(ids).then(()=>{
+
+            Info('删除操作成功');
+            this.search();
+        })
+        .catch((err)=>{
+            Error('删除操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
     }
 
-    /**
-     * 关闭修改model
-     */
-    onCloseEdit = () => {
-        this.setState({editModelVisible: false});
-    }
-    
     render() {
 
         const { getFieldProps, getFieldError } = this.props.form;
@@ -200,33 +196,32 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-              
-                console.log("data",data);
-            }},
-            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-                sorterClick:(data,type)=>{
-                
-                console.log("data",data);
-                }
             },
-            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
+            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c}
+            },
+            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160,
+             sorter: (pre, after) => {return pre.c - after.c}},
             { title: '民族', dataIndex: 'nation', key: 'nation',textAlign:'center', width: 100 },
             { title: '婚姻状态', dataIndex: 'marriageStatus', key: 'marriageStatus',textAlign:'center', width: 150 },
             { title: '户籍', dataIndex: 'birthplace', key: 'birthplace',textAlign:'center', width: 120 },
             { title: '居住地 ', dataIndex: 'liveDistrict', key: 'liveDistrict',textAlign:'center', width: 200 },
             { title: '查获时间', dataIndex: 'catchDate', key: 'catchDate',textAlign:'center', width: 120 },
             { title: '查获单位', dataIndex: 'catchUnit', key: 'catchUnit',textAlign:'center', width: 200 },
+            { title: '风险等级', dataIndex: 'level', key: 'level',textAlign:'center', width: 100 },
+            { title: '人员分类', dataIndex: 'cateTypeText', key: 'cateTypeText',textAlign:'center', width: 150 ,
+                sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '所属社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 160 ,
+                sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '所属社工', dataIndex: 'linkSgName', key: 'linkSgName',textAlign:'center', width: 120 ,
+                sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '所属民警', dataIndex: 'linkMjName', key: 'linkMjName',textAlign:'center', width: 120 },
+         
             { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
-            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
+            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 ,
+                sorter: (pre, after) => {return pre.c - after.c}},
             { title: '创建人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 100 },
-            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-            sorter: (pre, after) => {return pre.c - after.c},
-            sorterClick:(data,type)=>{
-              //type value is up or down
-              console.log("data11111",data,type);
-            }}
+            
           ];
           
           const toolBtns = [{
@@ -277,7 +272,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
-                //this.setState({isPopContact:true})
+
                 if(this.state.checkedRows.length>1){
 
                     Info('只能选择一条记录');
@@ -314,7 +309,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
-                //this.setState({isPopWorkjob:true});
 
                 if(this.state.checkedRows.length>1){
 
@@ -398,7 +392,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                     <FormItem
                         label="风险等级">
-                        <SelectDict onChange={()=>{}} type={31} {...getFieldProps('level', {initialValue: ''})}/>
+                        <SelectDict  type={31} {...getFieldProps('level', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
@@ -414,8 +408,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={this.onChange}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                             {...getFieldProps('createDate', {initialValue: ''})}
                         />
@@ -455,10 +447,9 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             
             <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"
                            confirmFn={() => {
-                             //  this.confirmGoBack(1);
+                             this.handler_delete();
                            }}
                            cancelFn={() => {
-                              // this.confirmGoBack(2);
                               this.setState({isDeleteAlterShow:false})
                            }}
                     />

@@ -6,7 +6,8 @@ import Grid from '../../components/Grid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
-    
+  manId:string,
+	processId?:string
 } 
 
 interface IOtherState {
@@ -77,6 +78,7 @@ export default class DayoffPanel extends React.Component<IPanelProps,IPanelState
         return (<div>
              <Grid
              isLoading={this.state.isLoading}
+             multiSelect={{type:"none"}}
              columns={columns}
              page={this.state.page}
              pageChange={this.onPageChange}

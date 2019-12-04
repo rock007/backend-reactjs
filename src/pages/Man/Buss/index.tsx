@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select,Tile, PanelGroup,Tabs,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import {PageModel,IPageDetailProps,IPageDetailState,PopPageModel} from '../../../services/Model/Models';
-import ProcessInfoBussPanel from '../../../components/Buss/ProcessInfoPanel';
+import ManBussFullPanel from '../../../components/Buss/ManBussFullPanel';
 
 interface IOtherProps {
     
@@ -67,7 +67,7 @@ class ManBussView extends React.Component<IPageProps,IPageState> {
                 <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
 			</Breadcrumb>
 			:null}
-			<ProcessInfoBussPanel manId={this.id}></ProcessInfoBussPanel>
+			<ManBussFullPanel manId={this.id}></ManBussFullPanel>
 		</Panel> )
     }
 }

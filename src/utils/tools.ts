@@ -182,3 +182,12 @@ export function convertFiles(list):Array<any>{
 
     return files;
 }
+
+export function  convertLevelText(m):string{
+
+    if(m==1) return '低风险';
+    if(m==2) return '中风险';
+    if(m==3) return '高风险';
+    if(m==0) return '无风险';
+    return m;
+}

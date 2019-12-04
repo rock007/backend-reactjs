@@ -6,7 +6,8 @@ import Grid from '../../components/Grid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
-    
+  manId:string,
+	processId?:string
 } 
 
 interface IOtherState {
@@ -81,6 +82,7 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
         return (<div>
              <Grid
              isLoading={this.state.isLoading}
+             multiSelect={{type:"none"}}
              columns={columns}
              page={this.state.page}
              pageChange={this.onPageChange}

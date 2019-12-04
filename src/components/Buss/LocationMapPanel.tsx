@@ -4,7 +4,8 @@ import MapView from '../../components/MapView';
 import DatePicker from "bee-datepicker";
 
 interface IPanelProps {
-   children?: React.ReactNode
+   manId:string,
+   processId?:string
 }
 interface IPanelState {
     expanded:boolean,

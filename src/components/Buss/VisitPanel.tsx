@@ -6,7 +6,8 @@ import Grid from '../../components/Grid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
-    
+  manId:string,
+	processId?:string
 } 
 
 interface IOtherState {
@@ -74,6 +75,7 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
  
         return (<div>
              <Grid
+             multiSelect={{type:"none"}}
              isLoading={this.state.isLoading}
              columns={columns}
              page={this.state.page}

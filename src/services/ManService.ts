@@ -8,8 +8,18 @@ class ManService {
     let result = await http.post('/rest/man-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  //社戒情况
   public async searchProces(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/process-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async findProcessById(id:string): Promise<any> {
+    let result = await http.get('/rest/process-get',{params:{id:id}});
+    return result;
+  }
+  
+  public async deleteProcessByIds(ids:string): Promise<any> {
+    let result = await http.get('/rest/process-delete',{params:{ids:ids}});
     return result;
   }
 
@@ -109,6 +119,11 @@ class ManService {
     return result;
   }
 
+  //戒毒人员
+  public async getManLog(id:string): Promise<any> {
+    let result = await http.get('/rest/man-log',{params:{manId:id}});
+    return result;
+  }
   public async submitMan(args:any): Promise<any> {
     let result = await http.post('/rest/man-submit',args);
     return result;
@@ -163,6 +178,9 @@ class ManService {
     let result = await http.post('/rest/contact-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
     return result;
   }
+
+  //社区报到附件上传
+
 
 }
 

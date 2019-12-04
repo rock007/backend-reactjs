@@ -20,7 +20,8 @@ interface IComponentProps {
     pageChange?:(pageIndex:number,pageSize:number,orderBy?:Array<any>)=>void
     getSelectedDataFunc:(selectData, record, index)=>void,
    
-    beeGridStore:BeeGridStore
+    beeGridStore:BeeGridStore,
+    multiSelect?:any
 }
 interface IComponentState {
     dataNumIndex:number,
@@ -37,7 +38,8 @@ class Grid extends Component<IComponentProps,IComponentState> {
     
     static defaultProps: Partial<IComponentProps> = {
         pageChange: (index,size,orderBy)=>{console.log('pageChange>> index'+index+',size:'+size+',orderBy'+JSON.stringify(orderBy))},
-        isLoading:false
+        isLoading:false,
+        multiSelect:{type:"checkbox"}
     }
     state:IComponentState={
         dataNumIndex:0,
@@ -170,7 +172,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid.GridToolBar toolBtns={this.props.toolBtns} btnSize='sm' />
                 <BeeGrid
                     className="ucf-bs-grid"
-                    multiSelect={{type:"checkbox"}}
+                    multiSelect={this.props.multiSelect}
                     data={beeGridStore.page.data}
                     loading={this.props.isLoading}
                     columns={columns}
