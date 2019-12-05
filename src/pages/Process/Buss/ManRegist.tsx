@@ -1,106 +1,129 @@
 import * as React from 'react';
-import {Form,Label,Upload,Icon,Button} from 'tinper-bee';
+import {Form,Label,Breadcrumb,Icon,Button} from 'tinper-bee';
 
 import {getValidateFieldsTrim, Warning} from "../../../utils";
 
 import moment from "moment";
 import DatePicker from "bee-datepicker";
 import AppConsts from '../../../lib/appconst';
+import UploadFile from '../../../components/UploadFile';
+import { convertFiles } from '../../../utils/tools';
+import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
 
 /**
  * 社区报到
  */
-
 const FormItem = Form.FormItem;
 
 const format = "YYYY-MM-DD";
 
-interface ISceneProps {
-    form:any
-}
-interface ISceneState {
-
-}
-class ManRegistPage extends React.Component<ISceneProps,ISceneState> {
+interface IOtherProps {
     
-    state:ISceneState={
-       
+} 
+
+interface IOtherState {
+    fileIds0:Array<String>,
+    fileIds1:Array<String>,
+    fileIds2:Array<String>,
+    fileIds3:Array<String>,
+}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
+
+class ManRegistPage extends React.Component<IPageProps,IPageState> {
+    
+    id:string='';
+
+    state:IPageState={
+
+        isLoading:false,
+        record:{},
+
+        fileIds0:[],
+        fileIds1:[],
+        fileIds2:[],
+        fileIds3:[],
     }
 
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
+    }
     componentDidMount() {
 
+        if(this.isPage()){
+
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/prrocess-regist/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
     }
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
+    }
+
+    handler_uploadChange=(files:Array<any>,where:string)=>{
+
+        const m1=files.map((m,i)=>m.fileId);
+        const o1={};
+        o1[where]=m1;
+
+        this.setState(o1);
+    }
+
     submit=()=>{
 
     }
+
     render() {
         let {getFieldProps, getFieldError} = this.props.form;
 
-        const demo4props = {
-            action: AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload',
-            headers: {
-                Authorization: 'Bearer '+AppConsts.authorization.token,
-            },
-            name: 'files',
-            onChange(info) {
-                if (info.file.status !== 'uploading') {
-                  console.log(info.file, info.fileList);
-                }
-                if (info.file.status === 'done') {
-
-
-                  console.log(`${info.file.name} file uploaded successfully`);
-                } else if (info.file.status === 'error') {
-                  console.log(`${info.file.name} file upload failed.`);
-                }
-            },
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            }],
-          };
-
         return (<div>
-             
+             	{
+				this.isPage()?<Breadcrumb>
+			    <Breadcrumb.Item href="#">
+			      工作台
+			    </Breadcrumb.Item>
+                <Breadcrumb.Item href="#">
+				  社戒管理
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item active>
+                   社区报到
+			    </Breadcrumb.Item>
+                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+			</Breadcrumb>
+			:null}
                  <Form className='edit_form_pop'>
                      <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>社区戒毒协议书</Label></div>
                         <div>
-                            <Upload {...demo4props}>
-                                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传11</p>
-                            </Upload>
+                            <UploadFile from="0" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds0)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>担保书</Label></div>
                         <div>
-                            <Upload {...demo4props}>
-                                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传</p>
-                            </Upload>
+                            <UploadFile from="1" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds1)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>社区康复决定书</Label></div>
                         <div>
-                            <Upload {...demo4props}>
-                                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传</p>
-                            </Upload>
+                            <UploadFile from="2" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds2)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>人员分类审批表</Label></div>
                         <div>
-                            <Upload {...demo4props}>
-                                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传</p>
-                            </Upload>
+                            <UploadFile from="3" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds3)}/>
                         </div>
                     </FormItem>
                     <FormItem>
@@ -117,8 +140,8 @@ class ManRegistPage extends React.Component<ISceneProps,ISceneState> {
                         </span>
                     </FormItem>
                      <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
-                        <Button colors="primary" className="login" onClick={this.submit}>保存</Button>
+                        <Button shape="border"   onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
+                        <Button colors="primary"  onClick={this.submit}>保存</Button>
                     </FormItem>
                 </Form>
         </div >)

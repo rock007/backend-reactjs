@@ -18,19 +18,19 @@ type IPageState = IOtherState & IPageDetailState;
 
 class ProcessView extends React.Component<IPageProps,IPageState> {
 	
-	id:string='';
+	  id:string='';
     state:IPageState={
 		isLoading:false,
         record:{},
     }
 	
-	isPage=()=>{
+	  isPage=()=>{
 
         return this.props.match&&this.props.history;
     }
     componentDidMount() {
 
-		if(this.isPage()){
+		    if(this.isPage()){
 
             this.id=this.props.match.params.id;
         }else{

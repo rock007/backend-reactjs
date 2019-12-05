@@ -1,62 +1,142 @@
 import * as React from 'react';
 import moment from "moment";
 
-import {Panel,Form,FormControl,Label,Upload,InputNumber,Icon,Button,Radio} from 'tinper-bee';
+import {Panel,Breadcrumb,Form,FormControl,Label,LoadingState,Icon,Button,Radio} from 'tinper-bee';
 import RefManTreeTableSelect from '../../../components/RefViews/RefManTreeTableSelect';
 
 import DatePicker from "bee-datepicker";
+import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
+import BussService from '../../../services/BussService';
+import { getValidateFieldsTrim, Info, Warning } from '../../../utils';
+import ManService from '../../../services/ManService';
+
 /**
  * 发送通知函！！
  */
-
 const FormItem = Form.FormItem;
 
 const format = "YYYY-MM-DD";
 
-interface ISceneProps {
-    form:any
-}
-interface ISceneState {
-    selectedValue:string
+interface IOtherProps {
+    
+} 
+
+interface IOtherState {
+    selectedValue:any
 }
 
-class ManWarn extends React.Component<ISceneProps,ISceneState> {
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
+
+class ManWarn extends React.Component<IPageProps,IPageState> {
     
-    state:ISceneState={
+    id:string='';
+
+    state:IPageState={
+        isLoading:false,
+        record:{},
         selectedValue:''
     }
+    isPage=()=>{
 
+        return this.props.match&&this.props.history;
+    }
     componentDidMount() {
+        if(this.isPage()){
 
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/process-warn/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!=null&&this.id!==''){
+            this.loadData(this.id);
+        }
     }
 
-    submit=()=>{
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.findProcessById(id);
+
+        if(result!=null){
+
+            this.setState({record:result,isLoading:false});
+        }
 
     }
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
+    }
+    handler_submit=()=>{
 
+        this.props.form.validateFields((err, _values) => {
+            let values = getValidateFieldsTrim(_values);
+
+            if (!err) {
+
+                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+
+                values['processId']=this.id;
+                this.setState({isLoading:true});
+
+                BussService.submitNotice(values).then(()=>{
+
+                    Info('操作成功');
+                    this.goBack()
+                })
+                .catch((err)=>{
+                    Error('操作失败');
+                }).finally(()=>{
+                    this.setState({isLoading:false});
+                });
+
+            }else{
+                Warning('输入验证不通过，请检查');
+            }
+        } );
+    }
+    
     render() {
         let {getFieldProps, getFieldError} = this.props.form;
 
         const me=this;
-        const demo4props = {
-            action: '/upload.do',
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            }],
-          };
-
+       
         return ( <div>
+             {
+				this.isPage()?<Breadcrumb>
+			    <Breadcrumb.Item href="#">
+			      工作台
+			    </Breadcrumb.Item>
+                <Breadcrumb.Item href="#">
+				  社戒管理
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item active>
+                   发通知函
+			    </Breadcrumb.Item>
+                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+			</Breadcrumb>
+			:null}
                 <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>戒毒人员</Label>
-                        <RefManTreeTableSelect />
+                        <RefManTreeTableSelect disabled={!(this.state.record==null||this.state.record.manId==null)}  {
+                            ...getFieldProps('manId', {
+                                validateTrigger: 'onBlur',
+                                initialValue: JSON.stringify({refpk:this.state.record.manId,refname:this.state.record.realName}),
+                                rules: [{ required: true ,
+                                    pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/,
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
+                            })
+                    } />
                         <span className='error'>
-                            {getFieldError('username')}
+                            {getFieldError('manId')}
                         </span>
                     </FormItem>
                     <FormItem>
@@ -211,8 +291,9 @@ class ManWarn extends React.Component<ISceneProps,ISceneState> {
                     </FormItem>
                     
                     <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
-                        <Button colors="primary" className="login" onClick={this.submit}>保存</Button>
+                        <Button shape="border" onClick={this.goBack} className="reset" style={{"marginRight":"8px"}}>取消</Button>
+                        <LoadingState  colors="primary" show={ this.state.isLoading }  onClick={this.handler_submit}>保存</LoadingState>
+
                     </FormItem>
                 </Form>
         </div >)

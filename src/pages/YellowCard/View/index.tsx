@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Panel,  Form,Label } from 'tinper-bee';
+import {Panel,  Form,Label,Breadcrumb} from 'tinper-bee';
 
-import ManService from '../../../services/ManService';
+import BussService from '../../../services/BussService';
 
 const FormItem = Form.FormItem;;
 
@@ -21,7 +21,7 @@ interface IPageState {
     record:any,
 }
 
-class DayoffView extends React.Component<IPageProps,IPageState> {
+class YellowCardView extends React.Component<IPageProps,IPageState> {
     
     id:string='';
 
@@ -41,11 +41,11 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/dayoff-detail/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/yellowcard/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
-        if(this.id!='0'){
+        if(this.id!=null&&this.id!=''&&this.id!='0'){
 
             this.loadData(this.id);
         }
@@ -54,7 +54,7 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
+        let result = await BussService.findCardById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -68,48 +68,52 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
 
     render() {
 
-        return (<Panel >
+        return (<Panel>
+            {
+				this.isPage()?<Breadcrumb>
+			    <Breadcrumb.Item href="#">
+			      工作台
+			    </Breadcrumb.Item>
+                <Breadcrumb.Item href="#">
+				  业务查询
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item active>
+                   红黄牌
+			    </Breadcrumb.Item>
+                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+			</Breadcrumb>
+			:null}
                 <Form className='edit_form_pop'>
                 <FormItem>
-                    <Label>戒毒人员</Label>
-                    <strong>{this.state.record.realName}</strong>
-                    
+                    <Label>类型</Label>
+                    <strong>{this.state.record.cardType}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>请假类型</Label>
-                    <strong>{this.state.record.dayoffType}</strong>
-                </FormItem>
-                <FormItem  style={{display:'flex'}}>
-                    <Label>请假时间</Label>
-                    <strong>{this.state.record.startDate}~{this.state.record.endDate}</strong>
+                    <Label>发送时间</Label>
+                    <strong>{this.state.record.createDate}</strong>
                 </FormItem>
                 <FormItem>
-                    <Label>内容</Label>
+                    <Label>接收者</Label>
+                    <strong>{this.state.record.toUser}</strong>
+                </FormItem>
+                <FormItem>
+                    <Label>角色</Label>
+                    <strong>{this.state.record.toRole}</strong>
+                </FormItem>
+                <FormItem>
+                    <Label>原因</Label>
                     <strong>{this.state.record.content}</strong>
                 </FormItem>
 
                 <FormItem>
-                    <Label>审核</Label>
-                    <strong>{this.state.record.status==0?'未审核':(this.state.record.status==1?'同意':this.state.record.status==-1?'不同意':'错误状态')}</strong>
-                   
+                    <Label>关联戒毒人员</Label>
+                    <strong>{this.state.record.realName}</strong>
                 </FormItem>
-                
-                <FormItem>
-                    <Label>回复</Label>
-                    <p>{this.state.record.respContent}</p>
-                </FormItem>
-                <FormItem>
-                    <Label>回复人</Label>
-                    <strong>{this.state.record.respUser}</strong>
-                </FormItem>
-                <FormItem>
-                    <Label>回复时间</Label>
-                    <strong>{this.state.record.respDate}</strong>
-                </FormItem>
+              
                 </Form>
                
         </Panel>)
     }
 }
 
-export default Form.createForm()(DayoffView);
+export default Form.createForm()(YellowCardView);

@@ -14,7 +14,7 @@ class ManService {
     return result;
   }
   public async findProcessById(id:string): Promise<any> {
-    let result = await http.get('/rest/process-get',{params:{id:id}});
+    let result = await http.get('/rest/process-get',{params:{processId:id}});
     return result;
   }
   
@@ -40,8 +40,14 @@ class ManService {
     return result;
   }
   
+  //尿检计划
   public async searchNiaojianPlan(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
-    let result = await http.post('/rest/niaojianPlan-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    let result = await http.post('/rest/niaojian-plan-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+
+  public async submitNiaojianGenerate(args:any): Promise<any> {
+    let result = await http.post('/rest/niaojian-plan-generate',args);
     return result;
   }
 
@@ -179,8 +185,41 @@ class ManService {
     return result;
   }
 
-  //社区报到附件上传
+  //社区报到(附件)
+  public async submitRegist(args:any): Promise<any> {
+    let result = await http.post('/rest/process-regist',args);
+    return result;
+  }
 
+  public async getProcessFiles(id:string): Promise<any> {
+    let result = await http.get('/rest/process-files',{params:{processId:id}});
+    return result;
+  }
+  //社区转移
+  public async submitTran(args:any): Promise<any> {
+    let result = await http.post('/rest/process-tran',args);
+    return result;
+  }
+  //解除戒毒
+  public async submitRelease(args:any): Promise<any> {
+    let result = await http.post('/rest/process-release',args);
+    return result;
+  }
+  //执行强戒
+  public async submitBack(args:any): Promise<any> {
+    let result = await http.post('/rest/process-back',args);
+    return result;
+  }
+
+  //社戒修改 
+  public async submitBussUpdate(args:any): Promise<any> {
+    let result = await http.post('/rest/buss-update',args);
+    return result;
+  }
+  public async submitBussAudit(args:any): Promise<any> {
+    let result = await http.post('/rest/buss-audit',args);
+    return result;
+  }
 
 }
 

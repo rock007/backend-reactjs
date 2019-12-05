@@ -101,7 +101,6 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                 values.visitorDate = values.visitorDate!=null?values.visitorDate.format(format):"";
 
                 //戒毒人员
-
                 if(values.toUid&&values.toUid!=''){
 
                     let oo=JSON.parse(values.toUid);
@@ -116,7 +115,8 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                     values.visitorName=oo.refname.replace(/;/g,',');
                 }
                 values['fileIds']=this.state.fileIds;//.join(',');
-
+                values['id']=this.id;
+                
                 this.setState({isLoading:true});
 
                 ManService.submitVisit(values).then(()=>{

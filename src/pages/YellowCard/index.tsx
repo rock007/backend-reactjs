@@ -112,7 +112,7 @@ type IPageState = IOtherState & IListPageState;
             
             { title: '接收者', dataIndex: 'toUser', key: 'toUser',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label className='link-go' onClick={()=>{me.go2Page('/yellowcard/'+record.id,'红黄牌详细',false)}}>{text}</Label>;
+                return <Label className='link-go' onClick={()=>{me.go2Page('/yellowcard/'+record.cardId,'红黄牌详细',false)}}>{text}</Label>;
               }
             },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,

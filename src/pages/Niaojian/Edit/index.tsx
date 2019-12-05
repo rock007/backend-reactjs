@@ -104,6 +104,7 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 values['file2Ids']=this.state.file2Ids;
                 values['file3Ids']=this.state.file3Ids;
 
+                values['id']=this.id;
                 this.setState({isLoading:true});
 
                 ManService.submitNiaojian(values).then(()=>{

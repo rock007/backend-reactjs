@@ -15,7 +15,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageDetailProps;
 type IPageState = IOtherState & IPageDetailState;
 
-class ManBussView extends React.Component<IPageProps,IPageState> {
+class ManBussFullPage extends React.Component<IPageProps,IPageState> {
     
     id:string='';
 
@@ -72,4 +72,4 @@ class ManBussView extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default ManBussView;
+export default ManBussFullPage;

@@ -22,11 +22,6 @@ import Store from '../../stores/StoreIdentifier';
 
 import SelectDict from '../../components/SelectDict';
 import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
-import RelationShipPanel from '../../components/Buss/RelationShipPanel';
-import WorkJobPanel from '../../components/Buss/WorkJobPanel';
-import ManContactPanel from '../../components/Buss/ManContactPanel';
-import ManStatusModifyPanel from '../../components/Buss/ManStatusModifyPanel';
-//import TestDlog from './Edit/TestDlg';
 import PageDlog from '../../components/PageDlg';
 
 import './index.scss';
@@ -119,19 +114,18 @@ export  class Man extends React.Component<IPageProps,IPageState> {
     search= ()=>{
         this.props.form.validateFields((err, values) => {
 
-            /** 
-            if (err) {
-                console.log(err);
+            if(values.cellId&&values.cellId!=''){
 
-            } else {
-                console.log('提交成功', values);
-
-                this.loadData();
+                let oo=JSON.parse(values.cellId);
+                values.cellId=oo.refpk;
+                values.cellName=oo.refname;
             }
-            **/
 
+            if(values.createDate){
+                values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
+            }
+        
             values['orgId']=this.orgId;
-            //const search = loadsh.defaults(this.state.searchModel, values);
 
             this.setState({isLoading:true});
             this.loadData(values);
@@ -250,7 +244,6 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 }else{
                     Info('请选择要编辑的记录');
                 }
-
             }
         },{
             value:'删除',
@@ -266,7 +259,21 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             value:'社戒变更',
             iconType:'uf-personin-o',
             disabled:this.state.checkedRows.length>1?true:false,
-            onClick:()=>{ this.setState({isPopStatusModify:true})}
+            onClick:() => {
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('编辑只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/man-buss-modify/'+this.state.checkedRows[0].manId,"社戒修改",false);
+
+                }else{
+                    Info('请选择要编辑的记录');
+                }
+
+            }
         },{
             value:'六保一',
             colors:'default',
@@ -398,7 +405,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="网格"
                     >
-                        <RefGridTreeTableSelect {...getFieldProps('gridId', {initialValue: ''})}/>
+                        <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
                         
                     </FormItem>
                     <FormItem
@@ -426,20 +433,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 />
                 </Col>
             </Row>
-
-            <PopDialog title="亲属关系" size='xlg' show={this.state.isPopRelation} close={()=>this.setState({isPopRelation:false})}>
-                <RelationShipPanel/>
-            </PopDialog>
-            <PopDialog title="工作经历" size='xlg' show={this.state.isPopWorkjob} close={()=>this.setState({isPopWorkjob:false})}>
-                <WorkJobPanel/>
-            </PopDialog>    
-            <PopDialog title="六保一" size='xlg' show={this.state.isPopContact} close={()=>this.setState({isPopContact:false})}>
-                <ManContactPanel/>
-            </PopDialog>    
-
-            <PopDialog title="社戒变更" size='lg' show={this.state.isPopStatusModify} close={()=>this.setState({isPopStatusModify:false})}>
-                <ManStatusModifyPanel/>
-            </PopDialog>    
+ 
 
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >

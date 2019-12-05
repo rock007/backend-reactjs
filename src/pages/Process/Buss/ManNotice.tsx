@@ -1,8 +1,13 @@
 import * as React from 'react';
 
-import {Panel,Form,FormControl,Label,Upload,Icon,Button} from 'tinper-bee';
+import {Panel,Breadcrumb,Form,FormControl,Label,LoadingState,Icon,Button} from 'tinper-bee';
 import RefManTreeTableSelect from '../../../components/RefViews/RefManTreeTableSelect';
 import RefUserTreeTableSelect from '../../../components/RefViews/RefUserTreeTableSelect';
+import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
+import ManService from '../../../services/ManService';
+import { getValidateFieldsTrim, Warning, Info } from '../../../utils';
+import BussService from '../../../services/BussService';
+import UploadFile from '../../../components/UploadFile';
 
 /**
  * 发送告诫书
@@ -12,46 +17,131 @@ const FormItem = Form.FormItem;
 
 const format = "YYYY-MM-DD";
 
-interface ISceneProps {
-    form:any
-}
-interface ISceneState {
-
-}
-class ManNotice extends React.Component<ISceneProps,ISceneState> {
+interface IOtherProps {
     
-    state:ISceneState={
-       
+} 
+
+interface IOtherState {
+    fileIds:Array<String>,
+   
+}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
+
+
+class ManNotice extends React.Component<IPageProps,IPageState> {
+    
+    id:string='';
+
+    state:IPageState={
+        isLoading:false,
+        record:{},
+        fileIds:[]
     }
 
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
+    }
     componentDidMount() {
+        if(this.isPage()){
+
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/process-notice/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!=null&&this.id!==''){
+            this.loadData(this.id);
+        }
+    }
+    
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.findProcessById(id);
+
+        if(result!=null){
+
+            this.setState({record:result,isLoading:false});
+        }
 
     }
-
-    submit=()=>{
-
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
     }
+    handler_uploadChange=(files:Array<any>,where:string)=>{
 
+        let ids=files.map(m=>m.fileId);
+        this.setState({fileIds:ids});
+    }
+    handler_submit=()=>{
+
+        this.props.form.validateFields((err, _values) => {
+            let values = getValidateFieldsTrim(_values);
+
+            if (!err) {
+
+                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+
+                values['processId']=this.id;
+                values['fileIds']=this.state.fileIds.join(',');
+                this.setState({isLoading:true});
+
+                BussService.submitWarn(values).then(()=>{
+
+                    Info('操作成功');
+                    this.goBack()
+                })
+                .catch((err)=>{
+                    Error('操作失败');
+                }).finally(()=>{
+                    this.setState({isLoading:false});
+                });
+
+            }else{
+                Warning('输入验证不通过，请检查');
+            }
+        } );
+    }
+    
     render() {
         let {getFieldProps, getFieldError} = this.props.form;
 
-        const demo4props = {
-            action: '/upload.do',
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            }],
-          };
-
         return ( <div>
+             {
+				this.isPage()?<Breadcrumb>
+			    <Breadcrumb.Item href="#">
+			      工作台
+			    </Breadcrumb.Item>
+                <Breadcrumb.Item href="#">
+				  社戒管理
+			    </Breadcrumb.Item>
+			    <Breadcrumb.Item active>
+                   发告诫书
+			    </Breadcrumb.Item>
+                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+			</Breadcrumb>
+			:null}
             <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>戒毒人员</Label>
-                        <RefManTreeTableSelect />
+                        <RefManTreeTableSelect disabled={!(this.state.record==null||this.state.record.manId==null)}  {
+                            ...getFieldProps('manId', {
+                                validateTrigger: 'onBlur',
+                                initialValue: JSON.stringify({refpk:this.state.record.manId,refname:this.state.record.realName}),
+                                rules: [{ required: true ,
+                                    pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/,
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>请选择戒毒人员</span></span>}]
+                            })
+                        }/>
                         <span className='error'>
                             {getFieldError('manId')}
                         </span>
@@ -102,16 +192,13 @@ class ManNotice extends React.Component<ISceneProps,ISceneState> {
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>附件</Label></div>
                         <div>
-                            <Upload {...demo4props}>
-                                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                                <p>上传</p>
-                            </Upload>
+                            <UploadFile  uploadChange={this.handler_uploadChange} />
                         </div>
                     </FormItem>
                     
                     <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
-                        <Button colors="primary" className="login" onClick={this.submit}>保存</Button>
+                        <Button shape="border" onClick={this.goBack} className="reset" style={{"marginRight":"8px"}}>取消</Button>
+                        <LoadingState  colors="primary" show={ this.state.isLoading }  onClick={this.handler_submit}>保存</LoadingState>
                     </FormItem>
                 </Form>
         </div >)

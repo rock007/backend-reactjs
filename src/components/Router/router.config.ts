@@ -66,11 +66,19 @@ export const appRouters: any = [
   },
   {
     permission: '',
+    title: '档案-社戒修改',
+    path: '/man-buss-modify/:id',
+    name: 'man_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Man/Buss/ManBussModifyPage'))
+  },
+  {
+    permission: '',
     title: '戒毒人员>亲属关系',
     path: '/man-relate/:id',
     name: 'man_relate',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Man/Edit/RelationShipPage'))
+    component: LoadableComponent(() => import('../../pages/Man/Buss/RelationShipPage'))
   },
   {
     permission: '',
@@ -78,7 +86,7 @@ export const appRouters: any = [
     path: '/man-contact/:id',
     name: 'man_relate',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Man/Edit/ManContactPage'))
+    component: LoadableComponent(() => import('../../pages/Man/Buss/ManContactPage'))
   },
   {
     permission: '',
@@ -86,7 +94,7 @@ export const appRouters: any = [
     path: '/man-work/:id',
     name: 'man_relate',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Man/Edit/ManWorkPage'))
+    component: LoadableComponent(() => import('../../pages/Man/Buss/ManWorkPage'))
   },
   {
     permission: '',
@@ -94,7 +102,7 @@ export const appRouters: any = [
     path: '/man-buss/:id',
     name: 'man_buss_all',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Man/Buss'))
+    component: LoadableComponent(() => import('../../pages/Man/Buss/ManBussFullPage'))
   },
   {
     permission: '',
@@ -197,25 +205,25 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Niaojian/View'))
   },{
-    path: '/niaojian-schedule',
-    title: '尿检计划',
+    path: '/niaojian-schedule/:id',
+    title: '尿检计划-社戒过程',
     name: 'niaojian_schedule',
     icon: 'calendar',
-    showInMenu: true,
+    showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/index'))
   },{
     path: '/niaojian-generate/:id',
     title: '尿检计划-生成',
     name: 'niaojian_generate',
     icon: 'calendar',
-    showInMenu: true,
+    showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/Generate'))
   },{
     path: '/niaojian-schedule-detail/:id',
     title: '计划-详细',
     name: 'schedule_detail',
     icon: 'calendar',
-    showInMenu: true,
+    showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Schedule/Niaojian/View'))
   },{
     path: '/visit',

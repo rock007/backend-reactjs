@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Panel,Tag} from 'tinper-bee';
 
 import ManService from '../../services/ManService';
-import Grid from '../../components/Grid';
+import DataGrid from '../../components/DataGrid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
@@ -74,7 +74,7 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
       ];
  
         return (<div>
-             <Grid
+             <DataGrid
              multiSelect={{type:"none"}}
              isLoading={this.state.isLoading}
              columns={columns}

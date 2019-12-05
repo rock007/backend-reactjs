@@ -52,16 +52,7 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
       this.setState({fileList:nextProps.defaultFileList});
     }
   }
- /** 
-  shouldComponentUpdate(nextProps,nextState){
-    
-    if(nextState.defaultFileList!=this.state.defaultFileList){
-
-      return true;
-    }
-  }
-  ***/
-
+ 
   notifyFilesChange=(list)=>{
 
     const oo= list.map((m,i)=>{
@@ -78,8 +69,7 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
     console.log('upload status:'+info.file.status);
     if (info.file.status === 'uploading') {
       //console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
+    } else if (info.file.status === 'done') {
       console.log(`${info.file.name} file uploaded successfully`);
      
       if(this.props.uploadChange){
@@ -102,38 +92,6 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
 
   render() {
     
-const demo2props = {
-  action: '/upload.do',
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file);
-      console.log(info.fileList);
-    }
-  },
-  defaultFileList: [{
-    uid: -1,
-    name: 'xxx.png',
-    status: 'done',
-    url: 'http://www.baidu.com/xxx.png',
-  }, {
-    uid: -2,
-    name: 'yyy.png',
-    status: 'done',
-    url: 'http://www.baidu.com/yyy.png',
-  }],
-};
-
-const uploadProps={action: AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload',
-headers:{
-    Authorization: 'Bearer '+AppConsts.authorization.token
-  },
-disabled:this.props.disabled,
-name:'files',
-listType:'picture-card',
-defaultFileList: this.props.defaultFileList,//no defaultFileList see source fileList
-onChange:this.handler_onChange
-};
-
     return (
       <div>
         <Upload action= {AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload'}
@@ -155,7 +113,6 @@ onChange:this.handler_onChange
               </React.Fragment>
               )}
         </Upload>
-         {JSON.stringify(this.state.fileList)}
       </div>
     );
   }

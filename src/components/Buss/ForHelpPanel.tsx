@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Panel,Tag} from 'tinper-bee';
 
 import ManService from '../../services/ManService';
-import Grid from '../../components/Grid';
+import DataGrid from '../../components/DataGrid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
@@ -80,7 +80,7 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
       ];
  
         return (<div>
-             <Grid
+             <DataGrid
              isLoading={this.state.isLoading}
              multiSelect={{type:"none"}}
              columns={columns}

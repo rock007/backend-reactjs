@@ -48,6 +48,7 @@ interface IPageState {
 }
 export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
+    orgId='';
     pageIndex:number=1
     pageSize:number=10
     rowSelect=[]
@@ -87,15 +88,21 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         this.props.form.validateFields((err, _values) => {
 
             let values = getValidateFieldsTrim(_values);
-            // 年份特殊处理
-            if (values.year) {
-                values.year = values.year.format('YYYY');
+
+            values['orgId']=this.orgId;
+
+            if(values.cellId&&values.cellId!=''){
+
+                let oo=JSON.parse(values.cellId);
+                values.cellId=oo.refpk;
+                values.cellName=oo.refname;
             }
-            // 参照特殊处理
-            let {dept} = values;
-            if (dept) {
-                let {refpk} = JSON.parse(dept);
-                values.dept = refpk;
+
+            if(values.createDate){
+                values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
+            }
+            if(values.registDate){
+                values.registDate=values.registDate[0].format('YYYY-MM-DD')+'~'+values.registDate[1].format('YYYY-MM-DD');
             }
 
             console.log('Search:'+JSON.stringify(values));
@@ -104,16 +111,14 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
            // let {pageParams} = queryParam;
            // pageParams.pageIndex = 0;
            
-           this.loadata(1);
+           this.loadata(values);
         });
       }
 
-      loadata= async (index)=>{
+      loadata= async (arg:any)=>{
       
-        this.pageIndex=index;
-
         this.setState({isLoading:true});
-        let page = await ManService.searchProces({'uid':''},this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await ManService.searchProces(arg,this.pageIndex,this.pageSize) as PageModel<any>;
         
         this.setState({page:page,isLoading:false});
       }
@@ -128,6 +133,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             //!!let queryParam = deepClone(this.props.queryParam);
             //!!let {whereParams} = queryParam;
 
+            
             let arrayNew = [];
             for (let field in values) {
                 arrayNew.push({key: field});
@@ -156,7 +162,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
         this.pageIndex=pageIndex;
         this.pageSize=pageSize;
-       // this.search();
+        this.search();
     }
 
     handler_delete=async ()=>{
@@ -179,6 +185,14 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         });
     }
 
+    handler_org_selected=(rec)=>{
+
+        if(rec!=null&&rec.length>0){
+
+            this.orgId=rec[0];
+            this.search();
+        }
+    }
     render() {
 
         let me=this;
@@ -237,6 +251,20 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         },{
             value:'尿检计划',
             disabled:this.state.checkedRows.length>1?true:false,
+            onClick:() => {
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/niaojian-schedule/'+this.state.checkedRows[0].processId,"尿检计划",false);
+
+                }else{
+                    Info('请选择记录');
+                }
+            }
         },{
             value:'发告诫书',
             colors:'default',
@@ -348,7 +376,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
             <Row>
                 <Col md="2">
-                    <OrgPanel />
+                    <OrgPanel onClick={this.handler_org_selected}/>
                 </Col>
                 <Col md="10">
                 <SearchPanel
