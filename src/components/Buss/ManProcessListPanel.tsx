@@ -12,7 +12,8 @@ interface IPanelProps {
 
 interface IPanelState {
 	isLoading:boolean,
-	record:PageModel<any>
+	record:PageModel<any>,
+	id:string
 }
 
 //戒毒人员的社戒列表
@@ -20,13 +21,15 @@ export default class ManProcessListPanel extends React.Component<IPanelProps,IPa
     
     state:IPanelState={
 		isLoading:false,
-		record:new PageModel<any>()
+		record:new PageModel<any>(),
+		id:''
     }
 	componentWillReceiveProps(nextProps:IPanelProps) {
        
         if (nextProps.manId !== this.props.manId) {
 
 			if(nextProps.manId!=null&&nextProps.manId!=''){
+				this.setState({id:nextProps.manId})
 				this.loadData(nextProps.manId);
 			}
         }
@@ -129,7 +132,7 @@ export default class ManProcessListPanel extends React.Component<IPanelProps,IPa
 						)
 					})
 				}
-<Label className='btn-link'  onClick={()=>{this.go2BussDetail('0001')}}>查看全部业务</Label>
+<Label className='btn-link'  onClick={()=>{this.go2BussDetail(this.state.id)}}>查看全部业务</Label>
 </div>)
     }
 }

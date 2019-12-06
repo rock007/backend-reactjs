@@ -26,9 +26,11 @@ export default class ManBussFullPanel extends React.Component<IPanelProps,IPanel
     render() {
         
         return ( <Tabs defaultActiveKey="1">
+		
 		<Tabs.TabPane tab='社区报到' key="1">
-			<ManRegistPanel manId={this.props.manId} processId={this.props.processId}/>
-		</Tabs.TabPane>
+				<ManRegistPanel manId={this.props.manId} processId={this.props.processId}/>
+		</Tabs.TabPane>	
+
 		<Tabs.TabPane tab='尿检记录' key="2">
 			<NiaojianPanel  manId={this.props.manId} processId={this.props.processId}/>
 		</Tabs.TabPane>

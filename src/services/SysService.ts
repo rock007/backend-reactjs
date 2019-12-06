@@ -67,7 +67,7 @@ class SysService {
     return result;
   }
 
-  public async searchRole(): Promise<any> {
+  public async searchRole(args): Promise<any> {
    
     var mm=new Map([
       [ "apple", 10 ],

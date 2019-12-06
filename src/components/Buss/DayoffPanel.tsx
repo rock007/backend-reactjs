@@ -50,10 +50,6 @@ export default class DayoffPanel extends React.Component<IPanelProps,IPanelState
     render() {
         
       const columns = [
-        { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 
-        },
-        { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-        { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
         { title: '类别', dataIndex: 'dayoffType', key: 'dayoffType', textAlign:'center',width: 100 ,
            
          },

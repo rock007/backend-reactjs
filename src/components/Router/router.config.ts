@@ -181,7 +181,7 @@ export const appRouters: any = [
     path: '/process-view/:id',
     name: 'man_process_view',
     showInMenu: false,
-    component: LoadableComponent(() => import('../../pages/Process/View/ViewPage'))
+    component: LoadableComponent(() => import('../../pages/Process/View'))
   },
   {
     path: '/niaojian',
@@ -382,6 +382,20 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Report/BussMonth'))
   },
   {
+    path: '/manager/:id',
+    title: '社工管理-详细',
+    name: 'manager_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Manager/View'))
+  },
+  {
+    path: '/manager/',
+    title: '社工管理',
+    name: 'manager_list',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Manager'))
+  },
+  {
     path: '/org',
     title: '组织机构',
     name: 'sys_org',
@@ -395,6 +409,12 @@ export const appRouters: any = [
     icon: 'role',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Role'))
+  },{
+    path: '/user-edit/:id',
+    title: '用户管理-编辑',
+    name: 'sys_user_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/User/Edit'))
   },{
     path: '/users',
     title: '用户管理',
@@ -437,7 +457,7 @@ export const appRouters: any = [
     name: 'man6',
     icon: 'caven',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Grid-unit'))
+    component: LoadableComponent(() => import('../../pages/CellUnit'))
   },{
     path: '/articles/:id',
     title: '信息发布-详细',

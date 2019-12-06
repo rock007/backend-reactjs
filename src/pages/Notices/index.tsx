@@ -48,6 +48,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 
     componentDidMount() {
 
+        this.search();
     }
     search= ()=>{
         this.props.form.validateFields((err, _values) => {
@@ -114,7 +115,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label className='link-go' onClick={()=>{this.go2Page('/notice-detail/'+record.id,'走访详细',false)}}>{text}</Label>;
+                return <Label className='link-go' onClick={()=>{me.go2Page('/notice-detail/'+record.id,'走访详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },

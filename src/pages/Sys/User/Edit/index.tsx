@@ -1,59 +1,115 @@
 import * as React from 'react';
 
-import 'ac-multi-tabs/dist/index.css';
-
-import { Checkbox,Select, FormControl,Label,Form,Button,Icon ,Radio } from 'tinper-bee';
-
-import PopDialog from '../../../../components/Pop';
+import { Checkbox,Panel,Loading,Breadcrumb, FormControl,Label,Form,Button,Icon ,Radio } from 'tinper-bee';
 
 import FormError from '../../../../components/FormError';
 import {RefOrgTreeSelect} from '../../../../components/RefViews/RefOrgTreeSelect';
 
 import './index.scss';
+import { IPageDetailProps, IPageDetailState } from '../../../../services/Model/Models';
+import SysService from '../../../../services/SysService';
+import { Warning } from '../../../../utils';
 
 const FormItem = Form.FormItem;
 
-interface IPageProps {
-    form:any,
-    onCloseEdit:()=>void,
-    isShow:boolean,
-    record?:any
+interface IOtherProps {
+    
+} 
+
+interface IOtherState {
+    isEdit:boolean
+    selectedValue:string
 }
-interface IPageState {
-    record?:any,
-    selectedValue:any
-}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
+
+
 export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
+    id:string='0'
+
     state:IPageState={
-        selectedValue:''
+        selectedValue:'',
+        record:{},
+        isEdit:false,
+        isLoading:false,
+    }
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
     }
     componentDidMount() {
+        if(this.isPage()){
+
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/user-edit/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!=null&&this.id!='0'){
+
+            this.loadData(this.id);
+        }
+    }
+
+    loadData=async (id)=>{
+
+        const  data=await SysService.getPermissionById(id);
+      
+        this.setState({record:data,isLoading:false});
+    }
+
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
+    }
+
+    submit=(e)=>{
+
+        this.props.form.validateFields((err, values) => {
+
+            if (err) {
+                console.log('校验失败', values);
+                Warning("请检查输入数据，验证失败");
+            } else {
+                console.log('提交成功', values);
+
+                //this.doSave(values);
+            }
+        });
 
     }
-    onCloseEdit = () => {
-
-        this.props.onCloseEdit();
-    }
-
-    submit=()=>{
-
-    }
-
+    
     render() {
         
         const { getFieldProps, getFieldError } = this.props.form;
 
         let me=this;
-        return ( <PopDialog
-            show={this.props.isShow}
-            title="用户编辑"
-            size='lg'
-            autoFocus={false}
-            enforceFocus={false}
-            close={this.onCloseEdit}
-            className="process-all-view-pop"
-        >
+        return ( <Panel>
+            <Loading container={this} show={this.state.isLoading}/>
+              {
+                  this.isPage()?<Breadcrumb>
+                  <Breadcrumb.Item href="#">
+                    工作台
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item href="#">
+                    系统管理
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item href="#">
+                      用户管理
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item active>
+                    {this.id==='0'?"添加":"编辑"}
+                  </Breadcrumb.Item>
+                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+              </Breadcrumb>:null
+              }
             <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>用户名</Label>
@@ -134,7 +190,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         <Label>角色</Label>
                         <Checkbox.CheckboxGroup 
                                 {
-                                    ...getFieldProps('purchasingGroup',{
+                                    ...getFieldProps('roleIds',{
                                         initialValue:['2'],
                                         rules: [{ required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请选择角色</span></span> }]
                                     })
@@ -147,7 +203,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                                 <Checkbox value='5'>社区医生</Checkbox>
                         </Checkbox.CheckboxGroup>
                         <span className='error'>
-                            {getFieldError('purchasingGroup')}
+                            {getFieldError('roleIds')}
                         </span>
                     </FormItem>
                     <FormItem>
@@ -169,12 +225,12 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         </Radio.RadioGroup>
                     </FormItem>
                     <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
-                        <Button colors="primary" className="login" onClick={this.submit}>保存</Button>
+                        <Button shape="border"  onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
+                        <Button colors="primary"  onClick={this.submit}>保存</Button>
                     </FormItem>
                 </Form>
 
-        </PopDialog>)
+        </Panel>)
     }
 }
 

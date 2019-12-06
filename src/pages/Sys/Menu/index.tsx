@@ -1,5 +1,5 @@
 import * as React from 'react';
-//import { inject, observer } from 'mobx-react';
+
 import loadsh from  'lodash';
 
 import {Panel, Row, Col,FormControl,Tag,Form,Breadcrumb,Select } from 'tinper-bee';
@@ -10,49 +10,53 @@ import Grid from '../../../components/Grid';
 import SysService from '../../../services/SysService';
 import MenuPanel from './Panel';
 import { Info ,getValidateFieldsTrim} from '../../../utils';
-//import PermissionEditStore from '../../../stores/PermissionEditStore';
-//import Store from '../../../stores/StoreIdentifier';
-import { PageModel } from '../../../services/Model/Models';
+
+import { PageModel, IPageCommProps,IListPageState, PopPageModel } from '../../../services/Model/Models';
 import DelModal from '../../../components/DelModal';
-import { async } from 'q';
+import AppConsts from '../../../lib/appconst';
+import PageDlog from '../../../components/PageDlg';
 
 const FormItem = FormListItem;
 
-interface IPageProps {
-    form:any,
-    history:any,
-   // permissionEditStore?:PermissionEditStore
-}
-interface IPageState {
-    isEditPop:boolean,
-    page:PageModel<any>,
-    isLoading:boolean,
-    isShowDeleModal:boolean,
+interface IOtherProps {
+    
+} 
+
+interface IOtherState {
+
+
 }
 
-//@inject(Store.PermissionEditStore)
-//@observer
+type IPageProps = IOtherProps & IPageCommProps;
+type IPageState = IOtherState & IListPageState;
+
  class MenuPage extends React.Component<IPageProps,IPageState> {
 
-    selected:Array<any>=[]
+    //selected:Array<any>=[]
 
+    parentId=''
+    orderBy=[]
     pageIndex=1
     pageSize=10
 
-    searchArgs:any
-
     state:IPageState={
-        isEditPop:false,
+
         page:new PageModel<any>(),
         isLoading:false,
-        isShowDeleModal:false,
+        checkedRows:[],
+      
+        pageModel:new PopPageModel(),
+        isPopPage:false,
+      
+        isDeleteAlterShow:false
     }
 
     componentDidMount() {
-      this.validFormSubmit();
+      
+      this.search();
     }
 
-    validFormSubmit=()=>{
+    search=()=>{
 
       this.props.form.validateFields((err, _values) => {
 
@@ -64,31 +68,33 @@ interface IPageState {
 
           console.log('Search:'+JSON.stringify(values));
          
-          //values['parentId']=this.parentId;
+          values['parentId']=this.parentId;
 
           //this.setState({searchArgs:values});
           this.pageIndex=1;
-          this.searchArgs=loadsh.defaults(values,this.searchArgs) ;
-          this.freshata(1);
+          //const searchArgs=loadsh.defaults(values,this.searchArgs) ;
+          this.loadData(values);
       });
     }
 
-    freshata= async (index)=>{
+    loadData= async (args:any)=>{
     
       this.setState({isLoading:true});
-
-      this.pageIndex=index;
-      const page= await SysService.searchPermissionBy(this.searchArgs,this.pageIndex,this.pageSize);
+      args['orderby']=this.orderBy;
+      const page= await SysService.searchPermissionBy(args,this.pageIndex,this.pageSize);
 
       this.setState({page:page,isLoading:false});
     }
-    onPageChange=(pageIndex:number,pageSize:number)=>{
 
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
+
+      this.orderBy=orderBy;
       this.pageIndex=pageIndex;
       this.pageSize=pageSize;
-      this.freshata(this.pageIndex);
+      this.search();
    }
-    resetSearch=()=>{
+
+    clear=()=>{
       this.props.form.resetFields();
 
       this.props.form.validateFields((err, _values) => {
@@ -110,72 +116,36 @@ interface IPageState {
 
         if(m!=null&&m.length>0){
 
-          this.searchArgs.parentId=m[0];
-          this.validFormSubmit();
+          this.parentId=m[0];
+          this.search();
         }
     }
 
-    gotoEdit=(id)=>{
-      this.props.history.push('/permission-edit/'+id);
-     
-    }
-    getSelectedDataFunc = (selectData, record, index) => {
+    getSelectedDataFunc = (data, record, index) => {
 
-      //this.setState({selectRows:selectData });
-
-      /** 
-      let  tableData  = this.state.data;
-      let _tableData =loadsh.cloneDeep(tableData);
-
-      if (index != undefined) {
-        _tableData[index]['_checked'] = !_tableData[index]['_checked'];
-      } else {//点击了全选
-        if (selectData.length > 0) {//全选
-          _tableData.map(item => {
-            if (!item['_disabled']) {
-              item['_checked'] = true
-            }
-          });
-        } else {//反选
-          _tableData.map(item => {
-            if (!item['_disabled']) {
-              item['_checked'] = false
-            }
-          });
-        }
-      }
-      ***/
-      // 获取选中数据
-      let _selectData =loadsh.cloneDeep(selectData);
-
-      //console.log("selvalue",_selectData);
-
-      this.selected=_selectData;
-      //this.props.permissionEditStore.selectedRows=_selectData;//.updateSelectRows(_selectData);
-      
-      //this.setState({selectedIndex:index});
+      this.setState({checkedRows:data});
     }
     
     alertDel=()=>{
       
-      if(this.selected.length==0){
+      if(this.state.checkedRows.length==0){
 
-        Info('请选择要编辑的记录');
+        Info('请选择要删除的记录');
         return;
       }
-      this.setState({isShowDeleModal:true});
+      this.setState({isDeleteAlterShow:true});
 
     }
     handler_del=async()=>{
 
-      this.setState({isLoading:true,isShowDeleModal:false});
+      this.setState({isLoading:true,isDeleteAlterShow:false});
       let arr=[];
-      this.selected.map((v,i)=>arr.push(v.id));
+      this.state.checkedRows.map((v,i)=>arr.push(v.id));
       await SysService.delPermission({ids:arr})
         .then((resp)=>{
 
           Info(resp);
-          this.validFormSubmit();
+          this.search();
 
         }).catch((err)=>{
 
@@ -184,6 +154,19 @@ interface IPageState {
         }).finally(()=>{this.setState({isLoading:false})});
       
     }
+
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+      if(isPage){
+          this.props.history.push(url);
+      }else{
+          const model=new PopPageModel(title,url);
+
+          model.size=size;
+
+          this.setState({isPopPage:true,pageModel:model});
+      }
+  }
 
     render() {
         //const {permissionEditStore}=this.props;
@@ -215,25 +198,26 @@ interface IPageState {
           
           const toolBtns = [{
               value:'新增',
-              onClick:()=>this.gotoEdit(0),
+              onClick:()=>{this.go2Page('/permission-edit/0','新增权限',AppConsts.isOpenPageModel)},
               bordered:false,
               colors:'primary'
             },{
               value:'编辑',
-              disabled:this.selected.length>1?true:false ,//permissionEditStore.selectedRows!=null?permissionEditStore.selectedRows!.length==1?false:true:true,
+              disabled:this.state.checkedRows.length>1?true:false ,//permissionEditStore.selectedRows!=null?permissionEditStore.selectedRows!.length==1?false:true:true,
               onClick:()=>{
                
-                if(this.selected.length==0){
+                if(this.state.checkedRows.length==0){
 
                   Info('请选择要编辑的记录');
                   return;
                 }
-                if(this.selected.length>1){
+                if(this.state.checkedRows.length>1){
 
                   Info('编辑记录只能选择一条');
                   return;
                 }
-                this.gotoEdit(this.selected[0].id);
+                //this.gotoEdit(this.selected[0].id);
+                this.go2Page('/permission-edit/'+this.state.checkedRows[0].id,'编辑权限',AppConsts.isOpenPageModel)
                 //this.setState({isEditPop:true});
               },
             },
@@ -262,9 +246,9 @@ interface IPageState {
                 </Col>
                 <Col md="10">
                 <SearchPanel
-                  reset={this.resetSearch}
+                  reset={this.clear}
                   onCallback={()=>{}}
-                  search={this.validFormSubmit}
+                  search={this.search}
                   searchOpen={true}
                 >
 
@@ -300,9 +284,12 @@ interface IPageState {
                     isLoading={this.state.isLoading}
                     pageChange={this.onPageChange}
                   />
-                  <DelModal hide={!this.state.isShowDeleModal} confirmFn={this.handler_del} size="sm" modalContent={"确定要删除这个["+this.selected.length+"]条记录吗?"}></DelModal>
+                  <DelModal hide={!this.state.isDeleteAlterShow} confirmFn={this.handler_del} size="sm" modalContent={"确定要删除这个["+this.state.checkedRows.length+"]条记录吗?"}></DelModal>
               </Col>
             </Row>
+            <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+            </PageDlog>
         </Panel >)
     }
 }

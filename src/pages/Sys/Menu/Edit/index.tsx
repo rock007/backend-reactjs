@@ -6,46 +6,67 @@ import SysService from '../../..//../services/SysService';
 import MenuTreeSelect from '../Panel/MenuTreeSelect';
 
 import './index.scss';
+import { IPageDetailProps,IPageDetailState } from '../../../../services/Model/Models';
 
 const FormItem = Form.FormItem;
 
-interface IPageProps {
-    form:any,
-    history:any,
-    match:any,
+interface IOtherProps {
+    
+} 
 
-    onCloseEdit:()=>void,
-    isShow:boolean,
-    data?:any[]
+interface IOtherState {
+    isEdit:boolean
+    selectedValue:string
 }
-interface IPageState {
-    record:any,
-    selectedValue?:string,
-    isEdit:boolean,
-    isLoading:boolean
-}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
 
 export  class PermissionEditPage extends React.Component<IPageProps,IPageState> {
 
-    id:Number=0
+    id:string='0'
 
     state:IPageState={
         record:{},
         isEdit:false,
-        isLoading:false
+        isLoading:false,
+        selectedValue:''
     }
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
+    }
+
     componentDidMount() {
-        this.id=this.props.match.params.id;
-        if(this.id!=null&&this.id>0){
-            this.loadRecord(this.id);
+
+        if(this.isPage()){
+
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/permission-edit/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!=null&&this.id!='0'){
+
+            this.loadData(this.id);
         }
     }
 
-    async loadRecord(id){
+     loadData=async (id)=>{
 
         const  data=await SysService.getPermissionById(id);
       
         this.setState({record:data,isLoading:false});
+    }
+
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
     }
 
     submit=(e)=>{
@@ -61,7 +82,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                 }
 
                 values['parentId']=this.state.selectedValue;
-                values['id']=this.id>0?this.id:null;
+                values['id']=this.id!=='0'?this.id:null;
             }
 
             if (err) {
@@ -92,9 +113,6 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
             });
     }
 
-    goBack=()=>{
-       this.props.history.goBack();
-    }
     onMenuTreeClick=(value,label)=>{
 
         if(value!=null){
@@ -111,24 +129,27 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
         let me=this;
         return ( <Panel>
               <Loading container={this} show={this.state.isLoading}/>
-              <Breadcrumb>
-			    <Breadcrumb.Item href="#">
-			      工作台
-			    </Breadcrumb.Item>
-                <Breadcrumb.Item href="#">
-                  系统管理
-			    </Breadcrumb.Item>
-                <Breadcrumb.Item href="#">
-                    菜单权限
-			    </Breadcrumb.Item>
-			    <Breadcrumb.Item active>
-                  {this.id==0?"添加":"编辑"}
-			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
-			</Breadcrumb>
+              {
+                  this.isPage()?<Breadcrumb>
+                  <Breadcrumb.Item href="#">
+                    工作台
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item href="#">
+                    系统管理
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item href="#">
+                      菜单权限
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item active>
+                    {this.id==='0'?"添加":"编辑"}
+                  </Breadcrumb.Item>
+                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+              </Breadcrumb>:null
+              }
+              
             <Row>
-                <Col md="3"></Col>
-                <Col md="6">
+
+                <Col md="12">
                     <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>上一级</Label>

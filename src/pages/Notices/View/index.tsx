@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Panel,  Form,Label } from 'tinper-bee';
 
 import ManService from '../../../services/ManService';
+import { convertLevelText } from '../../../utils/tools';
 
 const FormItem = Form.FormItem;;
 
@@ -21,7 +22,7 @@ interface IPageState {
     record:any,
 }
 
-class DayoffView extends React.Component<IPageProps,IPageState> {
+class NoticeView extends React.Component<IPageProps,IPageState> {
     
     id:string='';
 
@@ -76,35 +77,25 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
                     
                 </FormItem>
                 <FormItem>
-                    <Label>请假类型</Label>
-                    <strong>{this.state.record.dayoffType}</strong>
+                    <Label>社区</Label>
+                    <strong>{this.state.record.orgName}</strong>
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
-                    <Label>请假时间</Label>
-                    <strong>{this.state.record.startDate}~{this.state.record.endDate}</strong>
+                    <Label>网险等级</Label>
+                    <strong>{convertLevelText(this.state.record.level)}</strong>
                 </FormItem>
                 <FormItem>
                     <Label>内容</Label>
                     <strong>{this.state.record.content}</strong>
                 </FormItem>
+                <FormItem>
+                    <Label>接收者</Label>
+                    <p>{this.state.record.receiveName}</p>
+                </FormItem>
 
                 <FormItem>
-                    <Label>审核</Label>
-                    <strong>{this.state.record.status==0?'未审核':(this.state.record.status==1?'同意':this.state.record.status==-1?'不同意':'错误状态')}</strong>
-                   
-                </FormItem>
-                
-                <FormItem>
-                    <Label>回复</Label>
-                    <p>{this.state.record.respContent}</p>
-                </FormItem>
-                <FormItem>
-                    <Label>回复人</Label>
-                    <strong>{this.state.record.respUser}</strong>
-                </FormItem>
-                <FormItem>
-                    <Label>回复时间</Label>
-                    <strong>{this.state.record.respDate}</strong>
+                    <Label>发送时间</Label>
+                    <strong>{this.state.record.createDate}</strong>
                 </FormItem>
                 </Form>
                
@@ -112,4 +103,4 @@ class DayoffView extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default Form.createForm()(DayoffView);
+export default Form.createForm()(NoticeView);

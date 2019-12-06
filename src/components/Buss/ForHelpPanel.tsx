@@ -50,16 +50,10 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
     render() {
         
       const columns = [
-        { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 
-        },
-        { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-        { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-          
-        },
 
-        { title: '求助类别', dataIndex: 'helpType', key: 'helpType', textAlign:'center',width: 80 },
-        { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 80 },
-        { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 80 , sorter: (pre, after) => {return pre.c - after.c}},
+        { title: '求助类别', dataIndex: 'helpType', key: 'helpType', textAlign:'center',width: 120 },
+        { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
+        { title: '创建时间', dataIndex: 'createDate', key: 'createDate', textAlign:'center',width: 150 },
         { title: '状态', dataIndex: 'status', key: 'status', textAlign:'center',width: 100 ,
             render(text,record,index) {
 
@@ -68,15 +62,10 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
             }
            
         },
-        { title: '回复', dataIndex: 'respContent', key: 'respContent', textAlign:'center',width: 120 },
+        { title: '回复', dataIndex: 'respContent', key: 'respContent', textAlign:'center',width: 150 },
         { title: '回复人', dataIndex: 'respUser', key: 'respUser', textAlign:'center',width: 100 },
-        { title: '回复时间', dataIndex: 'respDate', key: 'respDate', textAlign:'center',width: 120,sorter: (pre, after) => {return pre.c - after.c}},
+        { title: '回复时间', dataIndex: 'respDate', key: 'respDate', textAlign:'center',width: 120}
 
-        { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 },
-        { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
-        { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-            
-        }
       ];
  
         return (<div>

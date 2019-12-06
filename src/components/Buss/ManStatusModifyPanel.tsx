@@ -28,7 +28,7 @@ interface IPanelState {
 }
 
 /**
- * 戒毒人员状态信息修改（社区，人员分类，风险等级，网格）
+ * 戒毒人员状态信息修改（社区，人员分类，风险等级，网格），作废
  */
 class ManStatusModifyPanel extends React.Component<IFooBar,IPanelState> {
     

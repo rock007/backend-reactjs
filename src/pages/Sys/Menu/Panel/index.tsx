@@ -16,6 +16,8 @@ interface IPanelState {
 
  class MenuPanel extends React.Component<IPanelProps,IPanelState> {
    
+    defaultExpandedKeys=[]
+
     static defaultProps: IPanelProps = {
       isCheckbox:false,
       allowType:[1],
@@ -55,6 +57,9 @@ interface IPanelState {
         const icon=item.type==2?(<Icon type="uf-4square-3"  />):(item.type==3?(<Icon type="uf-pencil"  />):null);
         
           if (item.childs!=null&&item.childs.length>0) {
+
+            console.log('menu tree:'+item.id);
+            this.defaultExpandedKeys.push(item.id);
             return (
               <Tree.TreeNode key={item.id} title={item.name} isLeaf={item.isLeaf} ext={item} icon={icon|| <Icon type="uf-treefolder"  />}>
                 {loop(item.childs)}
@@ -81,11 +86,12 @@ interface IPanelState {
                 <Tree className="menuTree" 
                     showLine 
                     showIcon
-                    checkStrictly
+                    checkStrictly={true}
                     checkable={this.props.isCheckbox}
                     cancelUnSelect={true}
-                    defaultExpandAll
+                    
                     onSelect={this.onSelect}
+                    defaultExpandedKeys={this.defaultExpandedKeys}
                 >
                   { this.renderTreeNodes(this.state.data)}
               </Tree>

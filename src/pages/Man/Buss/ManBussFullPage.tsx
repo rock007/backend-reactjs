@@ -9,7 +9,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-    
+    id:string
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -22,6 +22,7 @@ class ManBussFullPage extends React.Component<IPageProps,IPageState> {
     state:IPageState={
         isLoading:false,
         record:{},
+        id:''
     }
     
     isPage=()=>{
@@ -38,11 +39,9 @@ class ManBussFullPage extends React.Component<IPageProps,IPageState> {
             this.id=this.props.url.replace(m1,'');
         }
 
-        if(this.id!='0'){
-
-            //this.loadData(this.id);
-        }
+        this.setState({id:this.id});
     }
+  
     goBack=()=>{
         if(this.isPage()){
             this.props.history.goBack();
@@ -64,10 +63,10 @@ class ManBussFullPage extends React.Component<IPageProps,IPageState> {
 			    <Breadcrumb.Item active>
                    业务查看
 			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
 			</Breadcrumb>
 			:null}
-			<ManBussFullPanel manId={this.id}></ManBussFullPanel>
+			<ManBussFullPanel manId={this.state.id}></ManBussFullPanel>
 		</Panel> )
     }
 }

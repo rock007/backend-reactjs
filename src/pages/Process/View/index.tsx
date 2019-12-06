@@ -10,7 +10,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-  
+  id:string
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -22,6 +22,7 @@ class ProcessView extends React.Component<IPageProps,IPageState> {
     state:IPageState={
 		isLoading:false,
         record:{},
+        id:''
     }
 	
 	  isPage=()=>{
@@ -35,10 +36,12 @@ class ProcessView extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/prrocess-view/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/process-view/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
-    }
+
+        this.setState({id:this.id});
+  }
 	goBack=()=>{
         if(this.isPage()){
             this.props.history.goBack();
@@ -53,16 +56,16 @@ class ProcessView extends React.Component<IPageProps,IPageState> {
 			    <Breadcrumb.Item href="#">
 			      工作台
 			    </Breadcrumb.Item>
-                <Breadcrumb.Item href="#">
-				  社戒管理
+          <Breadcrumb.Item href="#">
+				    社戒管理
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                   详细
+              详细
 			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
 			</Breadcrumb>
 			:null}
-			<ManBussFullPanel processId={this.id} manId="" ></ManBussFullPanel>
+			<ManBussFullPanel processId={this.state.id} manId="" ></ManBussFullPanel>
 		</Panel>  )
     }
 }

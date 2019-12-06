@@ -4,6 +4,7 @@ import {Panel,Tag} from 'tinper-bee';
 import ManService from '../../services/ManService';
 import DataGrid from '../../components/DataGrid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
+import { threadId } from 'worker_threads';
 
 interface IOtherProps {
   manId:string,
@@ -18,7 +19,6 @@ interface IOtherState {
 type IPanelProps = IOtherProps ;
 type IPanelState = IOtherState ;
 
-
 export default class VisitPanel extends React.Component<IPanelProps,IPanelState> {
     
     pageIndex=1
@@ -31,10 +31,11 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
     }
     componentDidMount() {
 
-      this.loadData({});
+      this.loadData();
     }
-    loadData=async (args:any)=>{
-        
+    loadData=async ()=>{
+      
+      let args={manId:this.props.manId,processId:this.props.processId};
       let page = await ManService.searchVisit(args,this.pageIndex,this.pageSize) as PageModel<any>;
       this.setState({page:page,isLoading:false});
     }
@@ -43,18 +44,12 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
 
       this.pageIndex=pageIndex;
       this.pageSize=pageSize;
-      //this.orderBy=orderBy;
-      //this.search();
+     
+      this.loadData();
     }
     render() {
         
       const columns = [
-        { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100  },
-        { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-        { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-            
-        },
-       
         { title: '被走访人', dataIndex: 'toVisitor', key: 'toVisitor',textAlign:'center', width: 160 },
         { title: '关系', dataIndex: 'toVisitorRelationship', key: 'toVisitorRelationship',textAlign:'center', width: 100 },
         { title: '走访地点', dataIndex: 'address', key: 'address',textAlign:'center', width: 150 },
@@ -64,13 +59,7 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
         { title: '走访人', dataIndex: 'visitorName', key: 'visitorName',textAlign:'center', width: 100 },
         
         { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
-        { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-           
-        },
-        { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
-        { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-           
-        },
+        
       ];
  
         return (<div>

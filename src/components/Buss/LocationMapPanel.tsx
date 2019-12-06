@@ -2,26 +2,40 @@ import * as React from 'react';
 import {Panel, Button,Icon} from 'tinper-bee';
 import MapView from '../../components/MapView';
 import DatePicker from "bee-datepicker";
+import ManService from '../../services/ManService';
+import { PageModel } from '../../services/Model/Models';
 
-interface IPanelProps {
-   manId:string,
-   processId?:string
-}
-interface IPanelState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
-}
+  interface IOtherProps {
+    manId:string,
+    processId?:string
+  } 
+  
+  interface IOtherState {
+    data:Array<any>,
+    isLoading:boolean,
+  }
+  
+  type IPanelProps = IOtherProps ;
+  type IPanelState = IOtherState ;
 
 export default class LocationMapPanel extends React.Component<IPanelProps,IPanelState> {
     
+    pageIndex=1
+    pageSize=30
+
     state:IPanelState={
-        expanded:false,
-        current:null,
-        selectedkey:null
+        data:[],
+        isLoading:false
     }
     componentDidMount() {
+        let args={manId:this.props.manId,processId:this.props.processId};
+        this.loadData(args);
+    }
+    loadData=async (args:any)=>{
 
+        //args['orderby']=this.orderBy;
+        let page = await ManService.searchLocation(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        this.setState({data:page.data,isLoading:false});
     }
     render() {
         

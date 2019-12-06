@@ -4,9 +4,10 @@ import {Panel,Tag} from 'tinper-bee';
 import Calendar from 'bee-calendar';
 import 'bee-calendar/build/Calendar.css';
 import zhCN from "rc-calendar/lib/locale/zh_CN";
+import moment from 'moment';
 
 import ManService from '../../services/ManService';
-import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
+import {PageModel} from '../../services/Model/Models';
 
 interface IOtherProps {
   manId:string,
@@ -14,7 +15,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-  page:PageModel<any>,
+  data:Array<any>,
   isLoading:boolean,
   type:string
 }
@@ -22,32 +23,37 @@ interface IOtherState {
 type IPanelProps = IOtherProps ;
 type IPanelState = IOtherState ;
 
-
 export default class CheckinPanel extends React.Component<IPanelProps,IPanelState> {
     
     pageIndex=1
-    pageSize=10
+    pageSize=31
 
     state:IPanelState={
-      page:new PageModel<any>(),
+      data:[],
       isLoading:false,
       type:'date'
     }
     componentDidMount() {
 
-      this.loadData({});
+      let args={manId:this.props.manId,processId:this.props.processId};
+      this.loadData(args);
     }
+
     loadData=async (args:any)=>{
-        
+
       //args['orderby']=this.orderBy;
-      let page = await ManService.searchDayoff(args,this.pageIndex,this.pageSize) as PageModel<any>;
-      this.setState({page:page,isLoading:false});
+      let page = await ManService.searchCheckin(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      this.setState({data:page.data,isLoading:false});
     }
     onTypeChange(type) {
       this.setState({
           type,
       });
     }
+    onDateSelect=(e)=>{
+
+    }
+
     render() {
         
         return (<div>
@@ -55,12 +61,35 @@ export default class CheckinPanel extends React.Component<IPanelProps,IPanelStat
 	   			style={{ margin: 10 }}
 	   			fullscreen={true}
 	   			locale={zhCN}
-	   			onSelect={()=>{}}
+	   			onSelect={this.onDateSelect}
 	   			type={this.state.type}
 	   			onTypeChange={this.onTypeChange.bind(this)}
-	   			//dateCellContentRender={(v)=>{	return <span>{v.format('YYYY-MM-DD')}</span>}}
+	   			dateCellContentRender={(v)=>{	return <CellItem  data={this.state.data} value={v.format('YYYY-MM-DD')}></CellItem>}}
 
    			/>
             </div>);
     }
+}
+
+
+  
+export  function CellItem(props:any) {
+  
+  let findOne=props.data.find((item,index)=>item.inDay===props.value);
+ 
+  let now= moment(new Date(),'YYYY-MM-DD')
+  let isOverToday= moment(props.value).isBefore(now);
+
+  return (
+
+      <div style={{padding:3}}>
+    <span>{props.value}</span>
+    {
+      isOverToday?
+      findOne==null?<Tag colors="danger">未签到</Tag>:<Tag colors="info">已签到</Tag>
+      :null
+    }
+
+  </div>
+  );
 }
