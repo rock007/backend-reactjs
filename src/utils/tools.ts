@@ -112,7 +112,7 @@ export function convertAreaTreeNode(item:any):ITreeNode{
     let obj={
         id:item.id,
         key:item.id,
-        title:item.disName,
+        title:item.areaName,
         disabled:false,
         selectable:true,
         //ext:item,

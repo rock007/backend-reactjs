@@ -182,6 +182,9 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
                   }
                 ]
             },
+            { title: '配比率', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
+                sorter: (pre, after) => {return pre.c - after.c}
+            },
             {
                 title: "风险等级",
                 width:300,

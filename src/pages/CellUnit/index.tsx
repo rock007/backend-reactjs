@@ -155,7 +155,10 @@ interface IPageState {
           const toolBtns = [{
             value:'添加',
             bordered:false,
-            colors:'primary',              
+            colors:'primary', 
+            onClick:()=>{
+                this.go2Page('/grid-unit/0',"新增包办单位",false);
+            }             
           },{
             value:'修改',
             disabled:this.state.checkedRows.length>1?true:false,
@@ -167,7 +170,7 @@ interface IPageState {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/unit-edit/'+this.state.checkedRows[0].manId,"修改包办单位",false);
+                    this.go2Page('/grid-unit/'+this.state.checkedRows[0].manId,"修改包办单位",false);
 
                 }else{
                     Info('请选择要修改的记录');

@@ -5,8 +5,6 @@ import 'ac-multi-tabs/dist/index.css';
 import { PageLayout,Navbar ,SearchPanel, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
 import Grid from "bee-complex-grid";
 
-import './index.scss';
-
 let HeadContainer = SearchPanel.HeadContainer;
 let AdvancedContainer = SearchPanel.AdvancedContainer;
 

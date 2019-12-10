@@ -52,7 +52,7 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
   loadData = async () => {
     let refModelUrl = {
       tableBodyUrl: '/rest/grid-search',//表体请求
-      areaTree: '/rest/getAreaTreeById',
+      areaTree: '/rest/getAreaTree',
     }
     let requestList = [
       request(refModelUrl.areaTree, { method: 'get' }),
@@ -115,7 +115,6 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
      
       onTreeChange = (record) => {
 
-        debugger;
        // this.tableData = this.originTableData.slice(Math.floor(Math.random() * 8), -1);
        // this.setState({
        //   mustRender: Math.random()

@@ -70,10 +70,10 @@ type IPageState = IOtherState & IListPageState;
     
       loadData= async (args)=>{
         this.setState({isLoading:true});
-        let list = await SysService.searchRole(args) ;
+        let page = await SysService.searchRole(args) ;
 
-        let page=new PageModel();
-        page.data=list;
+        //let page=new PageModel();
+        //page.data=list;
         this.setState({page:page,isLoading:false});
       }
 
@@ -97,7 +97,7 @@ type IPageState = IOtherState & IListPageState;
         });
       }
 
-      onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
 
         this.pageIndex=pageIndex;
         this.pageSize=pageSize;
@@ -125,7 +125,9 @@ type IPageState = IOtherState & IListPageState;
         this.setState({isLoading:true,isDeleteAlterShow:false});
         let arr=[];
         this.state.checkedRows.map((v,i)=>arr.push(v.id));
-        await SysService.delPermission({ids:arr})
+
+        let idstr=arr.join(',');
+        await SysService.deleteRole(idstr)
           .then((resp)=>{
   
             Info(resp);
@@ -137,7 +139,7 @@ type IPageState = IOtherState & IListPageState;
            
           }).finally(()=>{this.setState({isLoading:false})});
         
-      }
+    }
       
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -152,7 +154,6 @@ type IPageState = IOtherState & IListPageState;
                 value:'新增',
                 bordered:false,
                 colors:'primary',
-                disabled:this.state.checkedRows.length>1?true:false,
                 onClick:()=>{
                     this.go2Page('/role-edit/0',"角色新增",false);
                 }

@@ -39,11 +39,20 @@ class BussService {
     let result = await http.post('/rest/unit-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async submitUnit(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/unit-submit', args);
+    return result;
+  }
   public async deleteUnit(ids:string): Promise<any> {
     let result = await http.get('/rest/unit-delete',{params:{ids:ids}});
     return result;
   }
-
+  public async getUnitById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/unit-get', {params:{id:id}});
+    return result;
+  }
 
 }
 

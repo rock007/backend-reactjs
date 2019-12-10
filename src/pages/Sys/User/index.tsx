@@ -88,6 +88,8 @@ type IPageState = IOtherState & IListPageState;
       loadData= async (args)=>{
        
         args['orderby']=this.orderBy;
+        args['isMan']=0;
+
         this.setState({isLoading:true});
         let page = await SysService.searchAccount(args,this.pageIndex,this.pageSize) as PageModel<any>;
 
@@ -186,10 +188,10 @@ type IPageState = IOtherState & IListPageState;
 
                 if(m!=null&&m.length>0){
 
-                   var html=  m.map(element => {
+                   var html=  m.split(',').map(element => {
                         
                         return (
-                            <Tag colors={"success"}>{element.roleName}</Tag>
+                            <Tag colors={"success"}>{element}</Tag>
                             )
                     });
 
@@ -250,7 +252,6 @@ type IPageState = IOtherState & IListPageState;
 
        
         return ( <Panel>
-            <Loading container={this} show={this.state.isLoading}/>
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台

@@ -1,62 +1,84 @@
 import * as React from 'react';
 import {Panel, Button,ButtonGroup,Icon,Select, FormControl,Row, Col,Loading ,Form,Tag, Breadcrumb } from 'tinper-bee';
 
-import Grid from "bee-complex-grid";
-import 'bee-complex-grid/build/Grid.css';
+import Alert from '../../../components/Alert';
+import Grid from '../../../components/Grid';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 import OrgPanel from '../../../pages/Sys/Org/Panel';
 import { deepClone,getValidateFieldsTrim } from '../../../utils/tools';
 import SysService from '../../../services/SysService';
-import {PageModel} from '../../../services/Model/Models';
+import {PageModel, IPageCommProps, IListPageState, PopPageModel} from '../../../services/Model/Models';
+import PageDlog from '../../../components/PageDlg';
+import { Info } from '../../../utils';
 
 const FormItem = FormListItem;
-const {Option} = Select;
-const format = "YYYY";
 
-interface IPageProps {
-    form:any
+interface IOtherProps {
+    
+} 
+
+interface IOtherState {
+
 }
-interface IPageState {
-    page:PageModel<any>,
-    currentIndex?:number,
-    currentRecord?:any
-    pageIndex:number,
-    pageSize:number,
-    isLoading:boolean
-}
+
+type IPageProps = IOtherProps & IPageCommProps;
+type IPageState = IOtherState & IListPageState;
 
  class OrgPage extends React.Component<IPageProps,IPageState> {
+
+    pageIndex:number=1
+    pageSize:number=10
 
     orgId:string="0";
 
     state:IPageState={
         page:new PageModel<any>(),
-        pageIndex:1,
-        pageSize:20,
-        isLoading:false
+        isLoading:false,
+        checkedRows:[],
+      
+        pageModel:new PopPageModel(),
+        isPopPage:false,
+      
+        isDeleteAlterShow:false
     }
     componentDidMount() {
 
-        this.freshata();
+        this.search();
     }
+    go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
+        
+        if(isPage){
+            this.props.history.push(url);
+        }else{
+            const model=new PopPageModel(title,url);
+  
+            model.size=size;
+  
+            this.setState({isPopPage:true,pageModel:model});
+        }
+    }
+    onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
 
-    getSelectedDataFunc = data => {
-        console.log("data", data);
-    };
-    
+        this.pageIndex=pageIndex;
+        this.pageSize=pageSize;
+        this.search();
+     }
+     getSelectedDataFunc = (data, record, index) => {
+
+        this.setState({checkedRows:data});
+    }
     onOrgTreeClick=(records:any)=>{
 
         if(records!=null&&records.length>0){
 
             this.orgId=records[0];
-            this.validFormSubmit();
+            this.search();
         }
-
     }
 
-    validFormSubmit=()=>{
+    search=()=>{
 
         this.props.form.validateFields((err, _values) => {
 
@@ -74,14 +96,12 @@ interface IPageState {
 
             console.log('Search:'+JSON.stringify(values));
 
-            this.freshata();
+            this.loadData();
         });
 
     }
-     /**
-       * 请求页面数据
-       */
-      freshata= async ()=>{
+
+    loadData= async ()=>{
     
         this.setState({isLoading:true});
         let page = await SysService.searchOrg("",this.orgId,1,20) as PageModel<any>;
@@ -106,33 +126,47 @@ interface IPageState {
             console.log('resetSearch:'+JSON.stringify(arrayNew));
 
         });
-      }
-    onDataNumSelect=()=>{
-        console.log('选择每页多少条的回调函数');
     }
 
-    onDeleteClick=()=>{
+    clear=()=>{
+        this.props.form.resetFields();
 
-        console.log('删除'+JSON.stringify(this.state.currentRecord));
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
+
+            //!!let queryParam = deepClone(this.props.queryParam);
+            //!!let {whereParams} = queryParam;
+
+            let arrayNew = [];
+            for (let field in values) {
+                arrayNew.push({key: field});
+            }
+
+            console.log('resetSearch:'+JSON.stringify(arrayNew));
+
+        });
     }
-    onEditClick=()=>{
-        console.log('编辑'+JSON.stringify(this.state.currentRecord));
-    }
-    onPermissionClick=()=>{
-        console.log('权限查看'+JSON.stringify(this.state.currentRecord));
-    }
-    
-    onRowHover = (index,record) => {
-        this.setState({currentIndex:index,currentRecord:record});
-    }
-    getHoverContent=()=>{
-        return <div className="opt-btns">
-            <ButtonGroup style={{ margin: 10 }}>
-                <Button colors="info" size="sm"><Icon type='uf-file'  onClick={this.onPermissionClick} /></Button>
-                <Button colors="info" size="sm"><Icon type='uf-pencil'  onClick={this.onEditClick} /></Button>
-                <Button colors="info" size="sm"><Icon type='uf-del' onClick={this.onDeleteClick} /></Button>
-            </ButtonGroup>
-        </div>
+    handler_delete=async()=>{
+  
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+        let arr=[];
+        this.state.checkedRows.map((v,i)=>arr.push(v.id));
+
+        let idstr=arr.join(',');
+
+        await SysService.deleteOrg(idstr)
+          .then((resp)=>{
+  
+            Info(resp);
+            this.search();
+  
+          }).catch((err)=>{
+  
+            Error(err.msg||'删除操作失败！');
+           
+          }).finally(()=>{this.setState({isLoading:false})});
+        
     }
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -157,22 +191,44 @@ interface IPageState {
           const toolBtns = [{
             value:'新增',
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            onClick:()=>{
+                this.go2Page('/org-edit/0',"组织机构新增",false);
+            }
         },{
-            value:'修改'
+            value:'修改',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:()=>{
+                
+                if(this.state.checkedRows.length>1){
+
+                    Info('编辑只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/org-edit/'+this.state.checkedRows[0].id,"组织机构修改",false);
+
+                }else{
+                    Info('请选择要编辑的记录');
+                }
+            }
+
         },{
-            value:'删除'
+            value:'删除',
+            onClick:()=>{
+
+                if(this.state.checkedRows.length==0){
+
+                    Info('请选择要删除的记录');
+                }else{
+
+                    this.setState({isDeleteAlterShow:true});
+                }
+            }
         }];
 
-        let paginationObj = {
-            total:this.state.page.dataCount,
-            freshData:this.freshata,
-            onDataNumSelect:this.onDataNumSelect, 
-            showJump:false,
-            noBorder:true
-          }
+       
         return ( <Panel>
-            <Loading container={this} show={this.state.isLoading}/>
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台
@@ -192,11 +248,10 @@ interface IPageState {
                 </Col>
                 <Col md="9">
             <SearchPanel
-                reset={()=>{}}
+                reset={this.clear}
                 onCallback={()=>{}}
-                search={()=>{}}
-                searchOpen={true}
-            >
+                search={this.search}
+                searchOpen={true}>
                 <FormList size="sm">
                     <FormItem
                         label="部门 "
@@ -207,16 +262,25 @@ interface IPageState {
                 </FormList>
                 </SearchPanel>
 
-
-        <Grid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
-        <Grid
-          columns={columns}
-          data={this.state.page.data}
-          paginationObj={paginationObj}
-          hoverContent={this.getHoverContent}
-          onRowHover={this.onRowHover}
-        />
-
+                <Grid
+                    toolBtns={toolBtns}
+                    columns={columns}
+                    page={this.state.page}
+                    getSelectedDataFunc={this.getSelectedDataFunc}
+                    isLoading={this.state.isLoading}
+                    pageChange={this.onPageChange}
+                />
+            <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={()=>this.setState({isPopPage:false})} >
+            </PageDlog>
+            <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
+                           confirmFn={() => {
+                               this.handler_delete();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isDeleteAlterShow:false})
+                           }}
+            />
     </Col>
     </Row>
         </Panel >)

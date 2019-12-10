@@ -7,14 +7,14 @@ class SysService {
   public async getDetpTree(): Promise<any> {
    
     //let result = await http.get('/rest/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
-    let result = await http.get('/rest/getDeptTreeByUid');
+    let result = await http.get('/rest/getOrgTree');
     
     return result;
   }
 
   public async getAreaTree(areaId:string=''): Promise<any> {
    
-    let result = await http.get('/rest/getAreaTreeById',{params:{areaId:areaId}});
+    let result = await http.get('/rest/getAreaTree',{params:{areaId:areaId}});
     
     return result;
   }
@@ -23,8 +23,17 @@ class SysService {
     let result = await http.post('/rest/area-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
+  public async submitArea(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/area-submit', args);
+    return result;
+  }
   public async deleteAreaByIds(ids:string): Promise<any> {
     let result = await http.get('/rest/area-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async getAreaById(id:string): Promise<any> {
+    let result = await http.get('/rest/area-get',{params:{id:id}});
     return result;
   }
 
@@ -36,6 +45,16 @@ class SysService {
   }
   public async deleteGridByIds(ids:string): Promise<any> {
     let result = await http.get('/rest/grid-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async submitGrid(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/grid-submit', args);
+    return result;
+  }
+  public async getGridById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/grid-get', {params:{id:id}});
     return result;
   }
 
@@ -58,6 +77,21 @@ class SysService {
                         );
     return result;
   }
+  public async submitOrg(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/org-submit', args);
+    return result;
+  }
+  public async deleteOrg(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/org-delete', {params:{ids:ids}});
+    return result;
+  }
+  public async getOrgById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/org-get', {params:{id:id}});
+    return result;
+  }
 
   public async searchAccount(arg:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
@@ -75,6 +109,27 @@ class SysService {
       [ "carraot", 30 ]
   ]);
     let result = await http.post('/rest/role-search',{parameters:{"uid":"22222","sex":12}});
+    return result;
+  }
+
+  public async submitRole(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/role-submit', args);
+    return result;
+  }
+  public async deleteRole(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/role-delete', {params:{ids:ids}});
+    return result;
+  }
+  public async getRoleById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/role-get', {params:{id:id}});
+    return result;
+  }
+  public async submitRolePermisson(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/role-permission-submit', args);
     return result;
   }
 

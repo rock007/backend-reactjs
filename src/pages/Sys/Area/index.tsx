@@ -155,7 +155,11 @@ handler_delete=async ()=>{
           const toolBtns = [{
             value:'添加',
             bordered:false,
-            colors:'primary',              
+            colors:'primary',       
+            onClick:()=>{
+
+                this.go2Page('/sys/area-edit/0',"地区新增",false);
+            }
           },{
             value:'修改',
             disabled:this.state.checkedRows.length>1?true:false,
@@ -167,7 +171,7 @@ handler_delete=async ()=>{
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/area-edit/'+this.state.checkedRows[0].id,"地区编辑",false);
+                    this.go2Page('/sys/area-edit/'+this.state.checkedRows[0].id,"地区编辑",false);
 
                 }else{
                     Info('请选择要编辑的记录');

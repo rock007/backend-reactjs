@@ -402,6 +402,13 @@ export const appRouters: any = [
     icon: 'group-2',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Org'))
+  },
+  {
+    path: '/org-edit/:id',
+    title: '组织机构-编辑',
+    name: 'sys_org_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Org/edit'))
   },{
     path: '/roles',
     title: '角色管理',
@@ -409,6 +416,12 @@ export const appRouters: any = [
     icon: 'role',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Role'))
+  },{
+    path: '/role-edit/:id',
+    title: '角色管理-编辑',
+    name: 'sys_role_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Role/edit'))
   },{
     path: '/user-edit/:id',
     title: '用户管理-编辑',
@@ -445,6 +458,12 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Area'))
   },{
+    path: '/sys/area-edit/:id',
+    title: '地区管理-编辑',
+    name: 'area_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Area/edit'))
+  },{
     path: '/sys/grid',
     title: '网格管理',
     name: 'man5',
@@ -452,12 +471,24 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Grid'))
   },{
+    path: '/sys/grid-edit/:id',
+    title: '网格管理-编辑',
+    name: 'grid_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Grid/edit'))
+  },{
     path: '/grid-unit',
     title: '包办单位',
     name: 'man6',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/CellUnit'))
+  },{
+    path: '/grid-unit/:id',
+    title: '包办单位-编辑',
+    name: 'grid_unit_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/CellUnit/edit'))
   },{
     path: '/articles/:id',
     title: '信息发布-详细',
