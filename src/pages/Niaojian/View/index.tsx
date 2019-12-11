@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, Form,Label} from 'tinper-bee';
+import {Panel, Form,Label,Loading} from 'tinper-bee';
 
 import UploadFile from '../../../components/UploadFile';
 import ManService from '../../../services/ManService';
@@ -72,10 +72,9 @@ class NiaojianView extends React.Component<IPageProps,IPageState> {
    
 
     render() {
-        
-        const _this = this;
 
         return (<Panel >
+                <Loading container={this} show={this.state.isLoading}/>
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>

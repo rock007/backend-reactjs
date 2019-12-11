@@ -325,12 +325,12 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/ManTrans'))
   },{
-    path: '/audit-mancate',
-    title: '人员分类',
+    path: '/audit-buss-modify',
+    title: '社戒修改',
     name: 'audit_mancate',
     icon: 'caven',
     showInMenu: true,
-    component: LoadableComponent(() => import('../../pages/Audit/ManCate'))
+    component: LoadableComponent(() => import('../../pages/Audit/ManBuss'))
   },
   {
     path: '/notices',

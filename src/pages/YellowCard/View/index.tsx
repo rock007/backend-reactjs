@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Panel,  Form,Label,Breadcrumb} from 'tinper-bee';
+import {Panel,Loading,Form,Label,Breadcrumb} from 'tinper-bee';
 
 import BussService from '../../../services/BussService';
+import { convertCardTypeText } from '../../../utils/tools';
 
 const FormItem = Form.FormItem;;
 
@@ -68,7 +69,8 @@ class YellowCardView extends React.Component<IPageProps,IPageState> {
 
     render() {
 
-        return (<Panel>
+        return (<Panel> 
+            <Loading show={this.state.isLoading} container={this} />
             {
 				this.isPage()?<Breadcrumb>
 			    <Breadcrumb.Item href="#">
@@ -86,7 +88,7 @@ class YellowCardView extends React.Component<IPageProps,IPageState> {
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>类型</Label>
-                    <strong>{this.state.record.cardType}</strong>
+                    <strong>{convertCardTypeText(this.state.record.cardType)}</strong>
                 </FormItem>
                 <FormItem>
                     <Label>发送时间</Label>

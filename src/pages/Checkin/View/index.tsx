@@ -6,6 +6,8 @@ import ManService from '../../../services/ManService';
 import FormError from '../../../components/FormError';
 
 import MapView from '../../../components/MapView';
+import UploadFile from '../../../components/UploadFile';
+import AppConsts from '../../../lib/appconst';
 
 const FormItem = Form.FormItem;;
 
@@ -117,9 +119,11 @@ class CheckinView extends React.Component<IPageProps,IPageState> {
                     <Label>地点</Label>
                     <strong>{this.state.record.location}</strong>
                 </FormItem>
-                <FormItem>
+                <FormItem style={{display:'flex'}}>
                     <Label>图片</Label>
-                    <img id="image" width={60} height={60} src='http://design.yonyoucloud.com/static/bee.tinper.org-demo/swiper-demo-1-min.jpg' alt="Picture"/>
+                    <div style={{display:'inline-block',width:'auto'}}>
+                        <UploadFile disabled={true} defaultFileList={[{'uid':new Date().getTime(),'url':AppConsts.uploadUrl+ this.state.record.photo}]} ></UploadFile>
+                    </div>
                 </FormItem>
                 <FormItem>
                     <Label>是否有校</Label>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Select, FormControl,Label,Form,Breadcrumb } from 'tinper-bee';
+import {Panel,Select, FormControl,Label,Form,Tag,Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -108,6 +108,15 @@ type IPageState = IOtherState & IListPageState;
         const me=this;
 
         const columns = [
+            { title: '类型', dataIndex: 'cardType', key: 'cardType',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                if(text==1) return <Tag colors="warning">黄牌</Tag>;
+                if(text==0) return <Tag colors="success">预警</Tag>;
+                if(text==2) return <Tag colors="danger">红牌</Tag>;
+
+                return text;
+              }
+            },
             { title: '发送时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
             
             { title: '接收者', dataIndex: 'toUser', key: 'toUser',textAlign:'center', width: 100 ,render(text,record,index) {
@@ -122,7 +131,7 @@ type IPageState = IOtherState & IListPageState;
             
             { title: '原因', dataIndex: 'content', key: 'content',textAlign:'center', width: 200 },
             
-            { title: '戒毒人员', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 120 },
+            { title: '戒毒人员', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 120 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
                 sorter: (pre, after) => {return pre.c - after.c},
             },
@@ -191,6 +200,15 @@ type IPageState = IOtherState & IListPageState;
                             showClear={true}
                             showClose={true}
                         />
+                    </FormItem>
+                    <FormItem
+                        label="类型">
+                        <Select {...getFieldProps('cardType', {initialValue: ''})}>
+                            <Select.Option value="">(请选择)</Select.Option>
+                            <Select.Option value="0">预警</Select.Option>
+                            <Select.Option value="1">黄牌</Select.Option>
+                            <Select.Option value="2">红牌</Select.Option>
+                        </Select>
                     </FormItem>
                 </FormList>
                 </SearchPanel>

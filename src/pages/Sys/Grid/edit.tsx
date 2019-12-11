@@ -211,24 +211,6 @@ goBack=()=>{
                             }) 
                             }/>
                     </FormItem>
-
-                    <FormItem>
-                        <Label>包办单位</Label>
-                        <Select 
-                                {...getFieldProps('method', {
-                                    initialValue: this.state.record.method,
-                                    rules: [{
-                                        required: true, message: '请选择请求方法',
-                                    }],
-                                })}
-                        >
-                            <Select.Option value={"post"}>post</Select.Option>
-                            <Select.Option value={"get"}>get</Select.Option>
-                        </Select>
-                        <span className='error'>
-                            {getFieldError('method')}
-                        </span>
-                    </FormItem>
                    
                     <FormItem>
                         <Label>备注</Label>
@@ -251,5 +233,23 @@ goBack=()=>{
         </Panel >)
     }
 }
-
+/**
+                     <FormItem>
+                        <Label>包办单位</Label>
+                        <Select 
+                                {...getFieldProps('method', {
+                                    initialValue: this.state.record.method,
+                                    rules: [{
+                                        required: true, message: '请选择请求方法',
+                                    }],
+                                })}
+                        >
+                            <Select.Option value={"post"}>post</Select.Option>
+                            <Select.Option value={"get"}>get</Select.Option>
+                        </Select>
+                        <span className='error'>
+                            {getFieldError('method')}
+                        </span>
+                    </FormItem>
+ */
 export default Form.createForm()(GridEditPage);

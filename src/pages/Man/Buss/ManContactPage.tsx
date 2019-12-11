@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Checkbox,Breadcrumb,Loading,Select,Icon,FormControl,Form,Label, Button, ButtonGroup, Table} from 'tinper-bee';
+import {Panel,Checkbox,Breadcrumb,Select,Icon,FormControl,Form,Label, Button, ButtonGroup, Table} from 'tinper-bee';
 import loadsh from  'lodash';
 
 import multiSelect from "tinper-bee/lib/multiSelect.js";

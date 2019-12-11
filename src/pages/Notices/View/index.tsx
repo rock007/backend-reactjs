@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Panel,  Form,Label } from 'tinper-bee';
+import {Panel,  Form,Label,Loading } from 'tinper-bee';
 
-import ManService from '../../../services/ManService';
+import BussService from '../../../services/BussService';
 import { convertLevelText } from '../../../utils/tools';
 
 const FormItem = Form.FormItem;;
@@ -42,7 +42,7 @@ class NoticeView extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/dayoff-detail/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/notice-detail/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -55,7 +55,7 @@ class NoticeView extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
+        let result = await BussService.findNoticeById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -70,6 +70,7 @@ class NoticeView extends React.Component<IPageProps,IPageState> {
     render() {
 
         return (<Panel >
+                 <Loading show={this.state.isLoading} container={this} />
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>
@@ -90,7 +91,7 @@ class NoticeView extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem>
                     <Label>接收者</Label>
-                    <p>{this.state.record.receiveName}</p>
+                    <strong>{this.state.record.receiveName}</strong>
                 </FormItem>
 
                 <FormItem>

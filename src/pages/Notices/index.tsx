@@ -37,7 +37,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
     orderBy=[]
 
     state:IPageState={
-          page:new PageModel<any>(),
+        page:new PageModel<any>(),
         isLoading:false,
         checkedRows:[],
         pageModel:new PopPageModel(),
@@ -115,7 +115,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label className='link-go' onClick={()=>{me.go2Page('/notice-detail/'+record.id,'走访详细',false)}}>{text}</Label>;
+                return <Label className='link-go' onClick={()=>{me.go2Page('/notice-detail/'+record.id,'告诫书详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
@@ -125,7 +125,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
            
             { title: '次数', dataIndex: 'toVisitor', key: 'toVisitor',textAlign:'center', width: 160 },
             { title: '地点', dataIndex: 'address', key: 'address',textAlign:'center', width: 150 },
-            { title: '接收人', dataIndex: 'result', key: 'result',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '接收人', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
          
             { title: '图片 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
             
@@ -138,12 +138,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
                 sorter: (pre, after) => {return pre.c - after.c},
             },
           ];
-          
-          const data = [
-            { a: '令狐冲', b: '男', c: 41, key: '1' },
-            { a: '杨过', b: '男', c: 67, key: '2' },
-            { a: '郭靖', b: '男', c: 25, key: '3' },
-          ];
+         
 
           const toolBtns = [{
             value:'导出',

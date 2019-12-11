@@ -232,10 +232,8 @@ interface IPageState {
                     </FormItem>
 
                     <FormItem
-                        label="社区"
-                    >
-                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>
-                        
+                        label="社区">
+                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>      
                     </FormItem>
                     <FormItem
                         label="创建时间"
@@ -249,8 +247,8 @@ interface IPageState {
                     </FormItem>
 
                     <FormItem
-                        label="状态"  {...getFieldProps('status', {initialValue: ''})}>
-                        <Radio.RadioGroup>
+                        label="状态"  >
+                        <Radio.RadioGroup {...getFieldProps('status', {initialValue: ''})}>
                             <Radio value="">全部</Radio>
                             <Radio value="0">未处理</Radio>
                             <Radio value="1">已回复</Radio>

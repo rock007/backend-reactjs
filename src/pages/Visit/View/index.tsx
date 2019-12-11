@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,  FormControl, Form, Icon,Button, Upload ,LoadingState, Col,Label,Radio } from 'tinper-bee';
+import {Panel,  Loading, Form, Label,Radio } from 'tinper-bee';
 
 import UploadFile from '../../../components/UploadFile';
 import './index.scss';
@@ -83,6 +83,7 @@ class VisitView extends React.Component<IPageProps,IPageState> {
     render() {
         
         return (<Panel>
+                <Loading container={this} show={this.state.isLoading}/>
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>

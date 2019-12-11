@@ -93,11 +93,33 @@ class SysService {
     return result;
   }
 
+  //帐号
   public async searchAccount(arg:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
     let result = await http.post('/rest/account-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
                                 arg
                         );
+    return result;
+  }
+  public async submitAccount(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/account-submit', args);
+    return result;
+  }
+  public async deleteAccount(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/account-delete', {params:{ids:ids}});
+    return result;
+  }
+  public async getAccountById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/account-get', {params:{id:id}});
+    return result;
+  }
+  //密码重置
+  public async resetAccountPwd(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/account-reset', {params:{ids:ids}});
     return result;
   }
 
@@ -176,6 +198,33 @@ class SysService {
   public async download(fileId:string): Promise<any> {
    
     let result = await http.get('/web/rest/file/download',{params:{id:fileId}});
+    return result;
+  }
+
+  //消息
+  public async searchMessage(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+   
+    let result = await http.post('/rest/msg-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async getMessageById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/msg-get',{params:{"id":id}});
+    return result;
+  }
+  public async sendMessage(body:any): Promise<any> {
+   
+    let result = await http.post('/rest/msg-send',body);
+    return result;
+  }
+  public async deleteMessage(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/msg-delete',{params:{ids:ids}});
+    return result;
+  }
+  public async readMessage(ids:string): Promise<any> {
+   
+    let result = await http.get('/rest/msg-read',{params:{ids:ids}});
     return result;
   }
 

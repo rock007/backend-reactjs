@@ -80,7 +80,7 @@ class ForHelpEdit extends React.Component<IPageProps,IPageState> {
                 //values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
 
                 this.setState({isLoading:true});
-
+                values['id']=this.id=='0'?'':this.id;    
                 ManService.submit4HelpResp(values).then(()=>{
 
                     Info('操作成功');

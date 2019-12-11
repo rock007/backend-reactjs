@@ -5,6 +5,7 @@ import BussService from '../../services/BussService';
 import { IPageDetailProps, IPageDetailState} from '../../services/Model/Models';
 
 import { Info, Warning } from '../../utils';
+import { RefGridTreeTableSelect } from '../../components/RefViews/RefGridTreeTableSelect';
 
 const FormItem = Form.FormItem;
 
@@ -198,7 +199,18 @@ goBack=()=>{
                             {getFieldError('address')}
                         </span>
                     </FormItem>
-                   
+                    <FormItem>
+                        <Label>所属网格</Label>
+                        <RefGridTreeTableSelect {...getFieldProps('cellId', {
+                                initialValue: this.state.record.cellId,
+                                rules: [{
+                                    required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入所属网格</span></span>,
+                                }],
+                            }) }/>
+                        <span className='error'>
+                            {getFieldError('cellId')}
+                        </span>
+                    </FormItem>
                     <FormItem>
                         <Label>备注</Label>
                         <FormControl placeholder="请输入备注"

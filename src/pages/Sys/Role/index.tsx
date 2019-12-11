@@ -210,7 +210,7 @@ type IPageState = IOtherState & IListPageState;
         ];
 
         return ( <Panel>
-            <Loading container={this} show={this.state.isLoading}/>
+
             <Breadcrumb>
 			    <Breadcrumb.Item href="#">
 			      工作台

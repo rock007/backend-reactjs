@@ -296,14 +296,12 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
                     </FormItem>
 
                     <FormItem
-                        label="网格"
-                    >
+                        label="网格" >
                         <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
                         
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
+                        label="创建时间">
                         <DatePicker.RangePicker
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}

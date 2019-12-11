@@ -191,3 +191,12 @@ export function  convertLevelText(m):string{
     if(m==0) return '无风险';
     return m;
 }
+
+export function  convertCardTypeText(m):string{
+    if(m==null) return '';
+    if(m==1) return '黄牌';
+    if(m==2) return '红牌';
+
+    if(m==0) return '预警';
+    return m;
+}

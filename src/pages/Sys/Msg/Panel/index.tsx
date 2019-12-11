@@ -1,34 +1,118 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import 'ac-multi-tabs/dist/index.css';
 
-import { Panel,Navbar ,SearchPanel, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
+import { Panel,Navbar ,SearchPanel, FormControl,Row, Col,Label,Loading,Form,Radio,Menu  } from 'tinper-bee';
 
 import './index.scss';
+import SysService from '../../../../services/SysService';
+import { PageModel } from '../../../../services/Model/Models';
+import { Info } from '../../../../utils';
 
 interface IPanelProps {
     unReadNum:number
 }
 interface IPanelState {
-    records: Array<any>
+    records: Array<any>,
+    isLoading:boolean,
+    page:PageModel<any>,
 }
 export  class MsgPanel extends React.Component<IPanelProps,IPanelState> {
 
     state:IPanelState={
-        records:[]
+        records:[],
+        isLoading:false,
+        page:new PageModel()
     }
     componentDidMount() {
-
+        this.loadData()
     }
+    loadData= async ()=>{
+        this.setState({isLoading:true});
+        let page = await SysService.searchMessage({state:0},1,20) ;
+        this.setState({page:page,isLoading:false});
+    }
+
+    handler_read=async (ids)=>{
+
+        this.setState({isLoading:true});
+
+        SysService.readMessage(ids).then(()=>{
+
+            Info('已读操作成功');
+            this.loadData();
+        })
+        .catch((err)=>{
+            Error('已读操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
+    handler_delete=async (ids)=>{
+
+        debugger;
+        this.setState({isLoading:true});
+
+        SysService.deleteMessage(ids).then(()=>{
+
+            Info('删除操作成功');
+            this.loadData();
+        })
+        .catch((err)=>{
+            Error('删除操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
+  
     render() {
 
-        return (  <React.Fragment>
-                    <Panel header="Panel 1" eventKey="1">Panel 1 content
-                    222
-                    </Panel>
-                    <Panel header="Panel 2" eventKey="2">Panel 2 content</Panel>
-            </React.Fragment>)
+        return (  <div>
+                    <Loading container={this} show={this.state.isLoading}/>
+                    
+                    {
+                        this.state.page.data.map((item,index)=>{
+
+                            return(<MsgItem item={item} onRead={this.handler_read} onDelete={this.handler_delete}></MsgItem>)
+                        })
+                    }
+
+            </div>)
     }
 }
-
 export default MsgPanel;
+
+
+function MsgItem(param){
+
+    const {item,onRead,onDelete}=param;
+
+    const [isShowAct, setIsShowAct] = useState(false);
+/** 
+
+  
+    // Similar to componentDidMount and componentDidUpdate:
+    useEffect(() => {
+      // Update the document title using the browser API
+     //!! document.title = `You clicked ${count} times`;
+    });
+  ***/
+    const handler_mouseEnter=()=>{
+        console.log('mouseEnter');
+        setIsShowAct(true);
+    }
+    const handler_mouseLeave=()=>{
+        console.log('mouseLeave');
+        setIsShowAct(false);
+    }
+
+    return (
+        <Panel header={item.createDate+','+'尿检'} onMouseEnter ={handler_mouseEnter}  onMouseLeave={handler_mouseLeave} >
+                                {item.content}
+                                {isShowAct?(<p >
+                                    <Label className='link-go' onClick={onRead.bind(this,item.id)}>已读</Label>
+                                    <Label className='link-go' onClick={onDelete.bind(this,item.id)}>删除</Label>
+                                </p>):null}
+                            </Panel>
+    );
+}

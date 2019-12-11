@@ -161,7 +161,7 @@ render() {
         </PageLayout.Content>
     </PageLayout>
     <Footer/>
-    <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={false} width={'450px'} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
+    <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={true} width={'450px'} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
           <MsgPanel unReadNum={this.props.systemStore.unReadNum}></MsgPanel>
     </Drawer>
 

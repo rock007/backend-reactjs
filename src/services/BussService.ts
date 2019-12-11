@@ -23,6 +23,10 @@ class BussService {
     let result = await http.post('/rest/notice-submit',args);
     return result;
   }
+  public async findNoticeById(id:string): Promise<any> {
+    let result = await http.get('/rest/notice-get',{params:{id:id}});
+    return result;
+  }
 
   //告诫书
   public async searchWarn(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {

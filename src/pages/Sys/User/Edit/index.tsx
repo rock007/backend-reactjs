@@ -8,7 +8,7 @@ import {RefOrgTreeSelect} from '../../../../components/RefViews/RefOrgTreeSelect
 import './index.scss';
 import { IPageDetailProps, IPageDetailState } from '../../../../services/Model/Models';
 import SysService from '../../../../services/SysService';
-import { Warning } from '../../../../utils';
+import { Warning, getValidateFieldsTrim, Info } from '../../../../utils';
 
 const FormItem = Form.FormItem;
 
@@ -57,7 +57,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
     loadData=async (id)=>{
 
-        const  data=await SysService.getPermissionById(id);
+        const  data=await SysService.getAccountById(id);
       
         this.setState({record:data,isLoading:false});
     }
@@ -72,15 +72,28 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
     submit=(e)=>{
 
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields((err, _values) => {
+
+            let values = getValidateFieldsTrim(_values);
 
             if (err) {
                 console.log('校验失败', values);
                 Warning("请检查输入数据，验证失败");
             } else {
-                console.log('提交成功', values);
 
-                //this.doSave(values);
+                values['id']=this.id!=='0'?this.id:null;
+                this.setState({isLoading:true});
+                SysService.submitAccount(values)
+                    .then((resp)=>{
+    
+                        Info(resp);
+                        this.goBack();
+                    })
+                    .catch((resp)=>{
+    
+                        this.setState({isLoading:false});
+                        Warning(resp.data);
+                });
             }
         });
 

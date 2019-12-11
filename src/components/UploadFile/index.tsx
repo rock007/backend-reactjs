@@ -32,9 +32,9 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
     defaultFileList:[]
   }
 
-  //state:IPanelSate={
-  //  fileList:[]
-  //}
+  state:IPanelSate={
+    fileList:[]
+  }
 
   constructor(props) {
     super(props);
@@ -44,15 +44,16 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
     };
   }
 
- 
+ /*** 
   componentWillReceiveProps(nextProps:IPanelProps) {
 
-    if(nextProps.defaultFileList!=this.props.defaultFileList){
+    if(nextProps.defaultFileList.length!=this.props.defaultFileList.length){
 
       this.setState({fileList:nextProps.defaultFileList});
     }
   }
- 
+***/ 
+
   notifyFilesChange=(list)=>{
 
     const oo= list.map((m,i)=>{
@@ -91,7 +92,8 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
   }
 
   render() {
-    
+    console.log('defaultFileList:'+JSON.stringify( this.props.defaultFileList));
+
     return (
       <div>
         <Upload action= {AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload'}
@@ -103,6 +105,7 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
               name='files'
               listType='picture-card'
               defaultFileList= {this.props.defaultFileList||[]}
+              //defaultFileList= {this.state.fileList||[]}
               onChange={this.handler_onChange}
               onRemove={this.handler_onRemove}>
 
