@@ -200,3 +200,15 @@ export function  convertCardTypeText(m):string{
     if(m==0) return '预警';
     return m;
 }
+
+export function  convertWarnTypeText(m):string{
+    if(m==null) return '';
+    if(m==0) return '未知';
+    if(m==1) return '社区未报到';
+    if(m==2) return '尿检阳性';
+    if(m==3) return '拒绝检查';
+    if(m==4) return '失联';
+    if(m==5) return '其它';
+    
+    return m;
+}

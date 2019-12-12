@@ -39,13 +39,13 @@ http.interceptors.response.use(
 
       if(resp.result==-401){
         console.log('请重新登录');
-
-        Message.destroy();
-        Message.create({content: resp.msg, color: 'warn'});
         
         AppConsts.authorization.token='';
         window.location.href='/#/account/login';
       }
+      
+      Message.destroy();
+      Message.create({content: resp.msg, color: 'warn'});
       return Promise.reject(resp);
     }
     return resp.data;

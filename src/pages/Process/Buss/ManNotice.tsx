@@ -89,13 +89,25 @@ class ManNotice extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+                if(values.manId!=null){
+
+                    var obj=JSON.parse(values.manId);
+                    values.manId=obj.refpk;
+                    values.manName=obj.refname;
+                }
+
+                //多个
+                if(values.receiveUid&&values.receiveUid!=''){
+                    let oo=JSON.parse(values.receiveUid);
+                    values.receiveUid=oo.refpk.replace(/;/g,',');
+                    values.receiveName=oo.refname.replace(/;/g,',');
+                }
 
                 values['processId']=this.id;
                 values['fileIds']=this.state.fileIds.join(',');
                 this.setState({isLoading:true});
 
-                BussService.submitWarn(values).then(()=>{
+                BussService.submitNotice(values).then(()=>{
 
                     Info('操作成功');
                     this.goBack()
@@ -178,7 +190,7 @@ class ManNotice extends React.Component<IPageProps,IPageState> {
                         <Label>接收人</Label>
                         <RefUserTreeTableSelect
                             placeholder="请输入告诫书接收人（最多三个）"
-                            {...getFieldProps('receiveName', {
+                            {...getFieldProps('receiveUid', {
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入接收人</span></span>,
@@ -186,7 +198,7 @@ class ManNotice extends React.Component<IPageProps,IPageState> {
                             })} >
                         </RefUserTreeTableSelect>
                         <span className='error'>
-                            {getFieldError('receiveName')}
+                            {getFieldError('receiveUid')}
                         </span>
                     </FormItem>
                     <FormItem>

@@ -84,7 +84,21 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+                values.registDate = values.registDate!=null?values.registDate.format('YYYY-MM-DD'):"";
+
+                if(values.cellId!=null){
+
+                    var obj=JSON.parse(values.cellId);
+                    values.cellId=obj.refpk;
+                    values.cellName=obj.refname;
+                }
+
+                if(values.orgId!=null){
+
+                    var obj=JSON.parse(values.orgId);
+                    values.orgId=obj.refpk;
+                    values.orgName=obj.refname;
+                }
 
                 values['manId']=this.id;
                 this.setState({isLoading:true});
@@ -131,7 +145,7 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                     <Label>业务操作</Label>
                     <Radio.RadioGroup
                             {
-                            ...getFieldProps('testType', {
+                            ...getFieldProps('modifyType', {
                                 initialValue: '',
                                 onChange(value) {
                                     me.setState({ selectedValue: value });
@@ -225,7 +239,7 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                
                 <FormItem>
                     <Label>原因</Label>
-                    <Select
+                    <Select {...getFieldProps('reason')}
           showSearch={true}
           allowClear={true}
         >

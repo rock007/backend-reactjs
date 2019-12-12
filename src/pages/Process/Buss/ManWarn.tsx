@@ -81,12 +81,25 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+                values.registSetDate = values.registSetDate!=null?values.registSetDate.format('YYYY-MM-DD'):"";
+
+                values.niaojianDate = values.niaojianDate!=null?values.niaojianDate.format('YYYY-MM-DD'):"";
+                
+                values.examineDate = values.examineDate!=null?values.examineDate.format('YYYY-MM-DD'):"";
+
+                values.lostDate = values.lostDate!=null?values.lostDate.format('YYYY-MM-DD'):"";
+
+                if(values.manId!=null){
+
+                    var obj=JSON.parse(values.manId);
+                    values.manId=obj.refpk;
+                    values.manName=obj.refname;
+                }
 
                 values['processId']=this.id;
                 this.setState({isLoading:true});
 
-                BussService.submitNotice(values).then(()=>{
+                BussService.submitWarn(values).then(()=>{
 
                     Info('操作成功');
                     this.goBack()
@@ -143,7 +156,7 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
                         <Label>类别</Label>
                         <Radio.RadioGroup
                             {
-                            ...getFieldProps('testType', {
+                            ...getFieldProps('warnType', {
                                 initialValue: '',
                                 onChange(value) {
                                     me.setState({ selectedValue: value });
@@ -166,7 +179,7 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
                         <FormItem>
                         <Label>应报到时间</Label>
                         <DatePicker  format={format} 
-                                    {...getFieldProps('birthday', {
+                                    {...getFieldProps('registSetDate', {
                                         initialValue:  moment(),
                                         validateTrigger: 'onBlur',
                                         rules: [{required: true, message: '请选择应报到时间'}],

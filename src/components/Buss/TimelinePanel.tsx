@@ -22,7 +22,6 @@ export default class TimelinePanel extends React.Component<IPanelProps,IPanelSta
     }
     componentDidMount() {
         
-
         if(this.props.manId!=null&&this.props.manId!=''){
             this.loadData(this.props.manId);
         }
@@ -30,7 +29,6 @@ export default class TimelinePanel extends React.Component<IPanelProps,IPanelSta
     componentWillReceiveProps(nextProps:IPanelProps) {
       
         if (nextProps.manId !== this.props.manId) {
-
            
 			if(nextProps.manId!=null&&nextProps.manId!=''){
 				this.loadData(nextProps.manId);
@@ -42,6 +40,8 @@ export default class TimelinePanel extends React.Component<IPanelProps,IPanelSta
         this.setState({isLoading:true});
         let result = await ManService.getManLog(id);
 
+        if(result==null) result=[];
+        
         this.setState({record:result,isLoading:false});
     }
     render() {
@@ -54,15 +54,14 @@ export default class TimelinePanel extends React.Component<IPanelProps,IPanelSta
                     this.state.record.map((item,index)=>{
 
                        return (<Timeline.Item >
-                             时间:{moment(item.createDate,'YYYY-MM-DD HH:mm:ss').fromNow()}, {item.title} :{item.content}
+                             时间:{item.createDate}, {item.actType} :{item.content}
                         </Timeline.Item>)
                     })
                 }
-                {
-                    this.state.record.length==0?<span>暂无数据</span>:null
-                }
-
             </Timeline>
+            {
+                    this.state.record==null||this.state.record.length==0?<span>暂无数据</span>:null
+                }
             </div>);
     }
 }

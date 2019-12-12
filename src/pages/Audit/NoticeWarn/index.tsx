@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Loading,Tabs ,Button,Icon,Radio,Select,Form,FormControl, Breadcrumb } from 'tinper-bee';
+import {Panel,Loading,Tag ,Button,Icon,Radio,Select,Form,FormControl, Breadcrumb } from 'tinper-bee';
 import DatePicker from "bee-datepicker";
 
 import {FormList ,FormListItem}from '../../../components/FormList';
@@ -8,7 +8,7 @@ import Grid from '../../../components/Grid';
 import SelectDict from '../../../components/SelectDict';
 import ManCateSelect from '../../../components/ManCateSelect';
 
-import {getValidateFieldsTrim} from '../../../utils/tools';
+import {getValidateFieldsTrim, convertWarnTypeText} from '../../../utils/tools';
 import BussService from '../../../services/BussService';
 import {PageModel, IPageCommProps, IListPageState, PopPageModel} from '../../../services/Model/Models';
 import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
@@ -74,7 +74,6 @@ type IPageState = IOtherState & IListPageState;
       loadData= async (args)=>{
       
         this.setState({isLoading:true});
-        //let page = await BussService.searchWarn({orgId:'0001001',status:0},this.pageIndex,this.pageSize) as PageModel<any>;
         let page = await BussService.searchWarn(args,this.pageIndex,this.pageSize) as PageModel<any>;
 
         this.setState({page:page,isLoading:false});
@@ -136,8 +135,17 @@ type IPageState = IOtherState & IListPageState;
             { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
             { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
-            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 },
+            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 ,
+                render(text,record,index) {
+
+                return convertWarnTypeText(text);
+              }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+                  
+                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
+
+            } },
             { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
             { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
             { title: '处理结果', dataIndex: 'mjResp', key: 'mjResp',textAlign:'center', width: 200 },
@@ -260,10 +268,10 @@ type IPageState = IOtherState & IListPageState;
                     </FormItem>
                     <FormItem
                         label="状态"  >
-                        <Radio.RadioGroup {...getFieldProps('status', {initialValue: '1'})}>
-                           <Radio value="1">待接收</Radio>
-                            <Radio value="2">处理中</Radio>
-                            <Radio value="3">已完成</Radio>
+                        <Radio.RadioGroup {...getFieldProps('status', {initialValue: '0'})}>
+                           <Radio value="0">待接收</Radio>
+                            <Radio value="1">处理中</Radio>
+                            <Radio value="2">已完成</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                 </FormList>

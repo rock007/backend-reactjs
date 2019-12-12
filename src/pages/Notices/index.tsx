@@ -122,9 +122,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c}
             },
-           
-            { title: '次数', dataIndex: 'toVisitor', key: 'toVisitor',textAlign:'center', width: 160 },
-            { title: '地点', dataIndex: 'address', key: 'address',textAlign:'center', width: 150 },
+            { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 200 },
             { title: '接收人', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
          
             { title: '图片 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
@@ -133,7 +131,6 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
             { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
                 sorter: (pre, after) => {return pre.c - after.c}
             },
-            { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
                 sorter: (pre, after) => {return pre.c - after.c},
             },
