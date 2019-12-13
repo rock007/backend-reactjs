@@ -118,7 +118,7 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
         this.state.checkedRows.map((item,index)=>{
             ids=ids+','+item.id;
         });
-       await ManService.submitCheckinInvalid(ids).then(()=>{
+       await ManService.submitCheckinAudit(ids).then(()=>{
     
             Info('操作成功');
             this.search();

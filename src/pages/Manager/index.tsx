@@ -12,7 +12,7 @@ import DatePicker from "bee-datepicker";
 
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import ManCateSelect from '../../components/ManCateSelect';
-import ManService from '../../services/ManService';
+import ReportService from '../../services/ReportService';
 import {PageModel,SearchModel,PopPageModel} from '../../services/Model/Models';
 
 import SelectDict from '../../components/SelectDict';
@@ -116,9 +116,9 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
 
     loadData=async (arg)=>{
 
-        //let page = await ManService.search(arg,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await ReportService.searchWorkDesc(arg,this.pageIndex,this.pageSize) as PageModel<any>;
 
-        this.setState({page:new PageModel<any>(),isLoading:false});
+        this.setState({page:page,isLoading:false});
     }
 
     clear=()=>{

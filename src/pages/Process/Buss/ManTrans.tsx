@@ -91,6 +91,7 @@ class ManTrans extends React.Component<IPageProps,IPageState> {
                     values['finishDate']=values.createDate[1].format('YYYY-MM-DD');
                 }
 
+                values['manId']=this.state.record.manId;
                 values['processId']=this.id;
                 values['fileIds']=this.state.fileIds.join(',');
                 this.setState({isLoading:true});

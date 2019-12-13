@@ -9,7 +9,7 @@ import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
-import BussService from '../../services/BussService';
+import ReportService from '../../services/ReportService';
 import {PageModel, PopPageModel,IPageCommProps,IListPageState} from '../../services/Model/Models';
 
 import PageDlog from '../../components/PageDlg';
@@ -58,9 +58,7 @@ type IPageState = IOtherState & IListPageState;
               values.orgId=JSON.parse(values.orgId).refpk;
           }
 
-          if(values.locationUpdateDate){
-              values.locationUpdateDate=values.locationUpdateDate[0].format('YYYY-MM-DD')+'~'+values.locationUpdateDate[1].format('YYYY-MM-DD');
-          }
+          values.yyyymmdd = values.yyyymmdd!=null?values.yyyymmdd.format('YYYYMMDD'):"";
 
           this.setState({isLoading:true});
           this.loadData(values);
@@ -70,7 +68,7 @@ type IPageState = IOtherState & IListPageState;
   loadData=async (args:any)=>{
       
       args['orderby']=this.orderBy;
-      let page = await BussService.searchUnit(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      let page = await ReportService.searchReportDaily(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
       if(page!=null){
         this.setState({page:page,isLoading:false});
@@ -143,16 +141,18 @@ type IPageState = IOtherState & IListPageState;
           ];
 
         const columns = [
-            { title: '时间', dataIndex: 'shortName', key: 'shortName',textAlign:'center', width: 100 },
-            { title: '社区', dataIndex: 'unitName', key: 'unitName', textAlign:'center',width: 150 },
+            { title: '时间', dataIndex: 'yyyymmdd', key: 'yyyymmdd',textAlign:'center', width: 100 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName', textAlign:'center',width: 150 },
       
             { title: '建档(人)', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
-            { title: '社康(人)', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
-            { title: '社戒(人)', dataIndex: 'address', key: 'address',textAlign:'center', width: 100 },
-            { title: '走访(次)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
-            { title: '尿检(次)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
-            { title: '请假(条)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 },
-            { title: '求助(条)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 }
+            { title: '社戒(人)', dataIndex: 'manShejieAdd', key: 'manShejieAdd',textAlign:'center', width: 100 },
+            { title: '社康(人)', dataIndex: 'manShekanAdd', key: 'manShekanAdd',textAlign:'center', width: 120 },
+            { title: '其他(人)', dataIndex: 'manOtherAdd', key: 'manOtherAdd',textAlign:'center', width: 120 },
+
+            { title: '走访(次)', dataIndex: 'visit', key: 'visit',textAlign:'center', width: 100 },
+            { title: '尿检(次)', dataIndex: 'niaojian', key: 'niaojian',textAlign:'center', width: 100 },
+            { title: '请假(条)', dataIndex: 'dayoff', key: 'dayoff',textAlign:'center', width: 100 },
+            { title: '求助(条)', dataIndex: 'checkin', key: 'checkin',textAlign:'center', width: 100 }
           ];
       
         const toolBtns = [{
@@ -191,7 +191,7 @@ type IPageState = IOtherState & IListPageState;
                     </FormItem>
                     <FormItem
                         label="时间">
-                        <DatePicker {...getFieldProps('createDate', {initialValue: ''})}
+                        <DatePicker {...getFieldProps('yyyymmdd', {initialValue: ''})}
                         />
                     </FormItem>
                     <FormItem

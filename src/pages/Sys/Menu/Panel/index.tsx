@@ -5,13 +5,16 @@ import SysService from '../../../../services/SysService';
 
 interface IPanelProps {
     onSelected?:(rec:any,e:any)=>void,
+    onChecked?:(rec:any,e:any)=>void,
     isCheckbox:boolean,
     allowType:number[],
     showRoot:boolean,
+    defaultCheckedKeys:string[]
 }
 interface IPanelState {
     value?:string,
     data:any[],
+    defaultCheckedKeys:any[]
 }
 
  class MenuPanel extends React.Component<IPanelProps,IPanelState> {
@@ -22,11 +25,13 @@ interface IPanelState {
       isCheckbox:false,
       allowType:[1],
       showRoot:false,
+      defaultCheckedKeys:[]
     }
 
     state:IPanelState={
         value:'',
         data:[],
+        defaultCheckedKeys:[]
     }
     async componentDidMount() {
         let data = await SysService.getAllMenu();
@@ -34,19 +39,19 @@ interface IPanelState {
         this.setState({data:this.props.showRoot?[data]: data.childs});
     }
 
-/** 
-    componentWillReceiveProps(nextProps) {
+/*** 
+    componentWillReceiveProps(nextProps:IPanelProps) {
       let _this = this;
-      let { selectKey} = this.props;
-      let {selectKey: nextSelectKey} = nextProps;
+      let { defaultCheckedKeys} = this.props;
+      
+      if(nextProps.defaultCheckedKeys!=defaultCheckedKeys){
 
-      if (selectKey !== nextSelectKey) {
-
-          this.setState({selectKey: nextSelectKey}); 
-          
+        //this.setState({defaultCheckedKeys:nextProps.defaultCheckedKeys});
+        this.forceUpdate();
       }
+
   }
-  ***/
+  ****/
 
     renderTreeNodes = (data) => {
     
@@ -74,9 +79,16 @@ interface IPanelState {
   }
 
   onSelect=(selectedKeys, info) =>{
-    console.log('onSelect', selectedKeys);
+
     if(this.props.onSelected!=null){
       this.props.onSelected.call(this,selectedKeys,info)
+    }
+  }
+  onCheck=(keys, info) =>{
+    console.log('onCheck', keys);
+  
+    if(this.props.onChecked!=null){
+      this.props.onChecked.call(this,keys,info)
     }
   }
     render() {
@@ -91,8 +103,9 @@ interface IPanelState {
                     cancelUnSelect={true}
                     
                     onSelect={this.onSelect}
+                    onCheck={this.onCheck}
                     defaultExpandedKeys={this.defaultExpandedKeys}
-                >
+                    defaultCheckedKeys = {this.props.defaultCheckedKeys}>
                   { this.renderTreeNodes(this.state.data)}
               </Tree>
               </div>

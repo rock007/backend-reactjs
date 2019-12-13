@@ -1,76 +1,120 @@
 import * as React from 'react';
 
-import 'ac-multi-tabs/dist/index.css';
+import { Row,Col, Panel,Loading,Form,Button,Icon ,Radio } from 'tinper-bee';
 
-import { Row,Col, FormControl,Label,Form,Button,Icon ,Radio } from 'tinper-bee';
-
-import PopDialog from '../../../../components/Pop';
 import MenuPanel from '../../Menu/Panel';
 
 import './index.scss';
+import { IPageDetailProps, IPageDetailState } from '../../../../services/Model/Models';
+import SysService from '../../../../services/SysService';
+import { getValidateFieldsTrim, Warning, Info } from '../../../../utils';
 
 const FormItem = Form.FormItem;
 
-interface IPageProps {
+
+interface IOtherProps {
     
-    onCloseEdit:()=>void,
-    isShow:boolean,
-    record?:any
+} 
+
+interface IOtherState {
+ isLoaded:boolean  
 }
-interface IPageState {
-    //record?:any,
-    selectedValue?:any,
-    typeSelected:any
-}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
 
 export  class RolePermissionPage extends React.Component<IPageProps,IPageState> {
 
+    id:string=''
+
     state:IPageState={
-        typeSelected:''
+        isLoading:false,
+        record:[],
+        isLoaded:false
     }
+    isPage=()=>{
+
+        return this.props.match&&this.props.history;
+    }
+
     componentDidMount() {
+ 
+        if(this.isPage()){
 
+            this.id=this.props.match.params.id;
+        }else{
+            //in dailog
+            const m1=new RegExp('/role-permission/:id'.replace(':id','\w?'));
+            this.id=this.props.url.replace(m1,'');
+        }
+
+        if(this.id!=null&&this.id!='0'){
+
+            this.loadData(this.id);
+        }
     }
-    onCloseEdit = () => {
-
-        this.props.onCloseEdit();
-    }
-
-    submit=(e)=>{
-
+    loadData=async (id)=>{
+        
+        this.setState({isLoading:true});
+        const  data=await SysService.getPermissionByRoleId(id);
       
-
+        this.setState({record:data,isLoading:false,isLoaded:true});
     }
+    goBack=()=>{
+        if(this.isPage()){
+            this.props.history.goBack();
+        }else{
+            this.props.handlerBack();
+        }
+    }
+   
     onMenuTreeClick=(selects,e)=>{
 
-        if(selects!=null&&selects.length>0){
-            this.setState({selectedValue:e.selectedNodes[0].props.ext,typeSelected:''});
-        }
+        const node=e.node.props.ext;
+        const isChecked=e.checked;
+
+        this.setState({isLoading:true});
+            const values={
+                roleId:this.id,
+                permissionId:node.id,
+                act:isChecked?1:0
+            };
+            SysService.submitRolePermisson(values)
+                .then((resp)=>{
+
+                    Info("操作成功");
+                })
+                .catch((resp)=>{
+                    Warning("操作失败");
+            }).finally(()=>{
+                this.setState({isLoading:false});
+            });
+
+        
 
     }
 
     render() {
         
         let me=this;
-        return ( <PopDialog
-            show={this.props.isShow}
-            title="角色权限"
-            size='sm'
-            autoFocus={false}
-            enforceFocus={false}
-            close={this.onCloseEdit}>
+
+        const roleIds=this.state.record.map((m,i)=>m.id+'')
+
+        return ( <Panel>
             <Row>
                 <Col md="12">
-                    <MenuPanel  onSelected={this.onMenuTreeClick}  isCheckbox={true} allowType={[1,2,3]}></MenuPanel>
-                    
-                    <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border" style={{"marginRight":"8px"}} onClick={this.onCloseEdit} >取消</Button>
-                        <Button colors="primary"  onClick={this.submit}>保存</Button>
-                    </FormItem>
+                    <Loading container={this} show={this.state.isLoading}/>:
+                    {
+                        this.state.isLoaded?
+                        <MenuPanel  onChecked={this.onMenuTreeClick}  
+                        isCheckbox={true} 
+                        defaultCheckedKeys={roleIds}
+                        allowType={[1,2,3]}></MenuPanel>:null
+                    }
 
                 </Col>
             </Row>
-        </PopDialog>)
+        </Panel>)
     }
 }
 

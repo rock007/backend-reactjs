@@ -58,6 +58,11 @@ class BussService {
     return result;
   }
 
+  public async searchSms(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/sms-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+
 }
 
 export default new BussService();

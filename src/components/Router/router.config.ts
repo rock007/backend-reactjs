@@ -353,6 +353,12 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/YellowCard/View'))
   },{
+    path: '/sms',
+    title: '短信查询',
+    name: 'sms',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Sms'))
+  },{
     path: '/yellowcard',
     title: '红黄牌',
     name: 'yellowcard',
@@ -423,6 +429,12 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Sys/Role/edit'))
   },{
+    path: '/role-permission/:id',
+    title: '角色管理-权限',
+    name: 'sys_role_permission',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Role/Permission'))
+  },{
     path: '/user-edit/:id',
     title: '用户管理-编辑',
     name: 'sys_user_detail',
@@ -477,6 +489,12 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Sys/Grid/edit'))
   },{
+    path: '/sys/logs',
+    title: '日志查询',
+    name: 'sys_logs',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Sys/Logs'))
+  },{
     path: '/grid-unit',
     title: '包办单位',
     name: 'man6',
@@ -514,6 +532,18 @@ export const appRouters: any = [
     name: 'article_cate',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Cms/Cate'))
+  },{
+    path: '/my-profile',
+    title: '个人信息',
+    name: 'my_profile',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/My/Profile'))
+  },{
+    path: '/change-pwd',
+    title: '修改密码',
+    name: 'change_pwd',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/My/ChangePwd'))
   },
   {
     path: '/exception',

@@ -8,6 +8,7 @@ import DocumentTitle from 'react-document-title';
 
 import { PageLayout,Icon,Menu ,Drawer } from 'tinper-bee';
 
+import Alert from '../../components/Alert';
 import ProtectedRoute from '../../components/Router/ProtectedRoute';
 
 import { appRouters } from '../Router/router.config';
@@ -17,7 +18,7 @@ import Footer from '../Footer';
 import Header from '../Header';
 import MsgPanel from '../../pages/Sys/Msg/Panel';
 
-import { getCookie} from '../../utils/index';
+import { getCookie, setCookie} from '../../utils/index';
 import SystemStore from '../../stores/SystemStore';
 import Store from '../../stores/StoreIdentifier';
 import { MenuModel } from '../../services/dto/SystemModel';
@@ -33,7 +34,8 @@ interface IPageProps {
 interface IPageState {
   collapsed:boolean,
   showRightDrawer:boolean,
-  data:any
+  data:any,
+  isLogoffAlert:boolean
 }
 
 @inject(Store.SystemStore)
@@ -43,7 +45,8 @@ class AppLayout extends React.Component<IPageProps,IPageState> {
   state:IPageState={
     collapsed: false,
     showRightDrawer:false,
-    data:{}
+    data:{},
+    isLogoffAlert:false
 }
 
 closeRightDrawer=()=>{
@@ -79,6 +82,10 @@ go2Page=async (item)=>{
  
 }
 
+pushPage=(url:string)=>{
+  this.props.history.push(url);
+}
+
 initMenuChilds=(route:MenuModel)=>{
 
   return (
@@ -109,7 +116,17 @@ initMenuItem=(route:MenuModel)=>{
   );
 
 }
+handlerLogoff=()=>{
 
+  this.setState({isLogoffAlert:false});
+
+  //setCookie('login_name','');
+  //setCookie('login_pwd','');
+
+  setCookie('login_token','');
+  AppConsts.authorization.token='';
+  window.location.href='/#/account/login';
+}
 render() {
  
   const {
@@ -119,7 +136,9 @@ render() {
 
   const layout = (
     <div  className="main">
-      <Header handler_msg={()=>this.setState({showRightDrawer:true})} 
+      <Header handler_msg={()=>this.setState({showRightDrawer:true})}
+              handler_logoff={()=>this.setState({isLogoffAlert:true})} 
+              go2page={this.pushPage}
               title={this.props.systemStore.title}
               orgName={this.props.systemStore.orgName}
               realName={this.props.systemStore.realName}
@@ -164,7 +183,14 @@ render() {
     <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={true} width={'450px'} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
           <MsgPanel unReadNum={this.props.systemStore.unReadNum}></MsgPanel>
     </Drawer>
-
+    <Alert show={this.state.isLogoffAlert} context="确定要退出登录?"
+                           confirmFn={() => {
+                               this.handlerLogoff();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isLogoffAlert:false})
+                           }}
+    />
   </div>);
 
   return <DocumentTitle title={utils.getPageTitle(pathname)}>{layout}</DocumentTitle>;

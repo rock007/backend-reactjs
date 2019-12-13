@@ -1,21 +1,20 @@
 import * as React from 'react';
 import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
-import {FormList ,FormListItem}from '../../components/FormList';
-import SearchPanel from '../../components/SearchPanel';
-import Grid from '../../components/Grid';
-import SelectDict from '../../components/SelectDict';
-import ManCateSelect from '../../components/ManCateSelect';
-import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
-import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
-import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
+import {FormList ,FormListItem}from '../../../components/FormList';
+import SearchPanel from '../../../components/SearchPanel';
+import Grid from '../../../components/Grid';
 
-import PageDlog from '../../components/PageDlg';
-import { getValidateFieldsTrim } from '../../utils/tools';
+import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../../services/Model/Models';
+import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
 
-import BussService from '../../services/BussService';
+import PageDlog from '../../../components/PageDlg';
+import { getValidateFieldsTrim } from '../../../utils/tools';
+
+import SysService from '../../../services/SysService';
 
 import DatePicker from "bee-datepicker";
+import RefUserTreeTableSelect from '../../../components/RefViews/RefUserTreeTableSelect';
 
 const FormItem = FormListItem;
 
@@ -30,7 +29,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageCommProps;
 type IPageState = IOtherState & IListPageState;
 
-class NoticePage extends React.Component<IPageProps,IPageState> {
+class LogsPage extends React.Component<IPageProps,IPageState> {
     
     pageIndex=1
     pageSize=10
@@ -73,7 +72,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 
     loadData=async (args:any)=>{
         args['orderby']=this.orderBy;
-        let page = await BussService.searchNotice(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await SysService.searchLog(args,this.pageIndex,this.pageSize) as PageModel<any>;
         this.setState({page:page,isLoading:false});
     }
 
@@ -113,29 +112,17 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
         const { getFieldProps, getFieldError } = this.props.form;
         const me=this;
         const columns = [
-            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
-
-                return <Label className='link-go' onClick={()=>{me.go2Page('/notice-detail/'+record.id,'告诫书详细',false)}}>{text}</Label>;
-              }
-            },
-            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-                sorter: (pre, after) => {return pre.c - after.c}
-            },
+            { title: '标题', dataIndex: 'title', key: 'title',textAlign:'center', width: 150 },
+            
             { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 200 },
-            { title: '接收人', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
+            { title: '操作者', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 },
          
-            { title: '图片 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
+            { title: '角色', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 120},
             
             { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
-            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c}
-            },
-            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-                sorter: (pre, after) => {return pre.c - after.c},
-            },
+            
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 150 }
           ];
-         
 
           const toolBtns = [{
             value:'导出',
@@ -150,10 +137,10 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item>
-			      业务查询
+			      系统管理
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      告诫书
+			      日志查询
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -164,45 +151,27 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
                 searchOpen={true} >
                 <FormList size="sm">
                 <FormItem
-                        label="姓名"
-                    >
-                        <FormControl placeholder='请输入戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
+                        label="标题">
+                        <FormControl placeholder='请输入标题' {...getFieldProps('title', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="联系方式"
-                    >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})} />
+                        label="操作者">
+                        <RefUserTreeTableSelect  {
+                            ...getFieldProps('createUid', {
+                                validateTrigger: 'onBlur',
+                                initialValue: '',
+                                rules: [{ required: false }],message: <span><Icon type="uf-exc-t"></Icon><span>请选择操作者</span></span>
+                            }
+                    )}/>
                     </FormItem>
-                    <FormItem
-                        label="身份证号"
-                    >
-                        <FormControl placeholder='请输入身份证号'  {...getFieldProps('idsNo', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Select.Option value="">(请选择)</Select.Option>
-                            <Select.Option value="男">男</Select.Option>
-                            <Select.Option value="女">女</Select.Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="人员分类">
-                            <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级">
-                        <SelectDict  {...getFieldProps('level', {initialValue: ''})} type={31} />
-                    </FormItem>
+                   
                     <FormItem
                         label="社区">
                         <RefOrgTreeSelect  {...getFieldProps('orgId', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
+                        label="创建时间">
                         <DatePicker.RangePicker  {...getFieldProps('createDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
@@ -230,4 +199,4 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default Form.createForm()(NoticePage);
+export default Form.createForm()(LogsPage);

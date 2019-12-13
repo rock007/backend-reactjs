@@ -4,7 +4,7 @@ import {Panel, Loading,Icon,Select, FormControl,Row, Col,Label,Form,LoadingState
 import BussService from '../../services/BussService';
 import { IPageDetailProps, IPageDetailState} from '../../services/Model/Models';
 
-import { Info, Warning } from '../../utils';
+import { Info, Warning, getValidateFieldsTrim } from '../../utils';
 import { RefGridTreeTableSelect } from '../../components/RefViews/RefGridTreeTableSelect';
 
 const FormItem = Form.FormItem;
@@ -57,20 +57,10 @@ type IPageState = IOtherState & IPageDetailState;
     }
     submit=(e)=>{
 
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields((err, _values) => {
 
-        if(this.state.record==null||this.state.record["id"]==null){
-            //编辑状态
-            if(this.state.selectedValue==null){
-
-                Warning("请选择权限上一级");
-                return;
-            }
-
-            values['parentId']=this.state.selectedValue;
-            values['id']=this.id!=='0'?this.id:null;
-        }
-
+            let values = getValidateFieldsTrim(_values);
+       
         if (err) {
             console.log('校验失败', values);
             Warning("请检查输入数据，验证失败");
@@ -78,6 +68,15 @@ type IPageState = IOtherState & IPageDetailState;
             console.log('提交成功', values);
 
             this.setState({isLoading:true});
+
+            if(values.cellId&&values.cellId!=''){
+
+                let oo=JSON.parse(values.cellId);
+                values.cellId=oo.refpk;
+                values.cellName=oo.refname;
+            }
+
+            values['id']=this.id;
             BussService.submitUnit(values)
                 .then((resp)=>{
     

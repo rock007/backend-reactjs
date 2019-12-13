@@ -228,8 +228,8 @@ type IPageState = IOtherState & IListPageState;
                         label="性别">
                         <Select  {...getFieldProps('sex', {initialValue: ''})}>
                             <Select.Option value="">(请选择)</Select.Option>
-                            <Select.Option value="1">男</Select.Option>
-                            <Select.Option value="0">女</Select.Option>
+                            <Select.Option value="男">男</Select.Option>
+                            <Select.Option value="女">女</Select.Option>
                         </Select>
                     </FormItem>
                     <FormItem

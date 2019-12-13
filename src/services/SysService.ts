@@ -122,6 +122,12 @@ class SysService {
     let result = await http.get('/rest/account-reset', {params:{ids:ids}});
     return result;
   }
+  //修改密码
+  public async changePwd(args:any): Promise<any> {
+   
+    let result = await http.post('/rest/account-changpwd', args);
+    return result;
+  }
 
   public async searchRole(args): Promise<any> {
    
@@ -180,7 +186,11 @@ class SysService {
     let result = await http.post('/rest/deletePermissionById',body);
     return result;
   }
-
+  public async getPermissionByRoleId(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/getPermissionByRoleId',{params:{roleId:id}});
+    return result;
+  }
   //上传文件
   public async upload(files:any): Promise<any> {
    
@@ -225,6 +235,13 @@ class SysService {
   public async readMessage(ids:string): Promise<any> {
    
     let result = await http.get('/rest/msg-read',{params:{ids:ids}});
+    return result;
+  }
+
+  //系统日志
+  public async searchLog(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+   
+    let result = await http.post('/rest/logs-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
 

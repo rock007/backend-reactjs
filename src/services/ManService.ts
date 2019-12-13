@@ -100,17 +100,14 @@ class ManService {
     let result = await http.post('/rest/checkin-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
-  public async submitCheckinInvalid(ids:string): Promise<any> {
-    let result = await http.get('/rest/checkin-invalid-set',{params:{ids:ids}});
-    return result;
-  }
+ 
 
   public async findCheckinById(id:string): Promise<any> {
     let result = await http.get('/rest/checkin-get',{params:{id:id}});
     return result;
   }
-  public async submitCheckinAudit(args:any): Promise<any> {
-    let result = await http.post('/rest/checkin-audit',args);
+  public async submitCheckinAudit(ids): Promise<any> {
+    let result = await http.get('/rest/checkin-audit',{params:{ids:ids}});
     return result;
   }
   

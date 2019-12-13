@@ -20,7 +20,9 @@ export interface IHeaderProps {
   orgName?:string,
   realName?:string,
   unReadNum:number,
-  handler_msg:()=>void
+  handler_msg:()=>void,
+  handler_logoff:()=>void,
+  go2page:(url:string)=>void,
 }
 
 const userDropdownMenu = (
@@ -62,9 +64,17 @@ handleSelect = (index) => {
 
 }
 
- onSelect({ key }) {
-  console.log(`${key} selected`);
+onSelect=( {key} )=> {
 
+  if(key==1){
+    this.props.go2page('/my-profile');
+  }else if(key==2){
+    this.props.go2page('/change-pwd');
+  }else if(key==3){
+    this.props.handler_logoff()
+  }else if(key==4){
+    //window.open('http://www.baidu.com','_black');
+  }
 }
 
   render() {
@@ -73,14 +83,13 @@ handleSelect = (index) => {
       <Menu
         onSelect={this.onSelect}>
             <Menu.Item key="1"><Icon type='uf-userset' />个人信息</Menu.Item>
-            <Menu.Item key="2"><Icon type='uf-close-c-o' />退出登录</Menu.Item>
-            <Menu.Item key="3"><Icon type='uf-uf-bulb-2' />在线帮助</Menu.Item>
+            <Menu.Item key="2"><Icon type='uf-pencil-s' />修改密码</Menu.Item>
+            <Menu.Item key="3"><Icon type='uf-close-c-o' />退出登录</Menu.Item>
+            <Menu.Item key="4"><Icon type='uf-uf-bulb-2' />在线帮助</Menu.Item>
       </Menu>
   );
 
-
     return (
-     
     <Navbar
       expanded={this.state.expanded}
       onToggle={this.onToggle}>

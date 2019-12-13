@@ -198,7 +198,7 @@ type IPageState = IOtherState & IListPageState;
     
                     }else if(this.state.checkedRows.length==1){
     
-                        this.go2Page('/role-permission/'+this.state.checkedRows[0].id,"角色修改",false);
+                        this.go2Page('/role-permission/'+this.state.checkedRows[0].id,"角色权限",false);
     
                     }else{
                         Info('请选择要设置角色权限的记录');

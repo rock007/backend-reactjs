@@ -30,7 +30,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageCommProps;
 type IPageState = IOtherState & IListPageState;
 
-class NoticePage extends React.Component<IPageProps,IPageState> {
+class SmsListPage extends React.Component<IPageProps,IPageState> {
     
     pageIndex=1
     pageSize=10
@@ -73,7 +73,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 
     loadData=async (args:any)=>{
         args['orderby']=this.orderBy;
-        let page = await BussService.searchNotice(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await BussService.searchSms(args,this.pageIndex,this.pageSize) as PageModel<any>;
         this.setState({page:page,isLoading:false});
     }
 
@@ -113,24 +113,12 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
         const { getFieldProps, getFieldError } = this.props.form;
         const me=this;
         const columns = [
-            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+            { title: '手机号', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 120},
+            { title: '接收者', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 120 },
+            { title: '角色', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 150 },
 
-                return <Label className='link-go' onClick={()=>{me.go2Page('/notice-detail/'+record.id,'告诫书详细',false)}}>{text}</Label>;
-              }
-            },
-            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-                sorter: (pre, after) => {return pre.c - after.c}
-            },
-            { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 200 },
-            { title: '接收人', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 ,sorter: (pre, after) => {return pre.c - after.c}},
-         
-            { title: '图片 ', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 150,sorter: (pre, after) => {return pre.c - after.c} },
-            
-            { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
-            { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c}
-            },
+            { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 300 },
+            { title: '发送时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
                 sorter: (pre, after) => {return pre.c - after.c},
             },
@@ -153,7 +141,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 			      业务查询
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      告诫书
+			      短信
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -163,46 +151,21 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
                 search={this.search}
                 searchOpen={true} >
                 <FormList size="sm">
-                <FormItem
-                        label="姓名"
-                    >
-                        <FormControl placeholder='请输入戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
-                    </FormItem>
 
                     <FormItem
-                        label="联系方式"
-                    >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})} />
+                        label="手机号">
+                        <FormControl placeholder='请输入手机号' {...getFieldProps('mobile', {initialValue: ''})} />
                     </FormItem>
                     <FormItem
-                        label="身份证号"
-                    >
+                        label="接收者">
                         <FormControl placeholder='请输入身份证号'  {...getFieldProps('idsNo', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Select.Option value="">(请选择)</Select.Option>
-                            <Select.Option value="男">男</Select.Option>
-                            <Select.Option value="女">女</Select.Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="人员分类">
-                            <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级">
-                        <SelectDict  {...getFieldProps('level', {initialValue: ''})} type={31} />
                     </FormItem>
                     <FormItem
                         label="社区">
                         <RefOrgTreeSelect  {...getFieldProps('orgId', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
+                        label="发送时间">
                         <DatePicker.RangePicker  {...getFieldProps('createDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
@@ -230,4 +193,4 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
     }
 }
 
-export default Form.createForm()(NoticePage);
+export default Form.createForm()(SmsListPage);

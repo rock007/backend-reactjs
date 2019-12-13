@@ -92,6 +92,7 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
 
                 values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
 
+                debugger;
                 //戒毒人员
                 if(values.toUid&&values.toUid!=''){
 
@@ -160,7 +161,7 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                     <Radio.RadioGroup
                             {
                             ...getFieldProps('testType', {
-                                initialValue: this.state.record.testType,
+                                initialValue: this.state.record.testType+'',
                                 rules: [{ required: true ,message: '请选择尿检类型',}]
                             })}>
                         <Radio value="0" >常规</Radio>
@@ -197,13 +198,13 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem>
                     <Label>是否本地</Label>
                     <Radio.RadioGroup {...getFieldProps('isLocal', {
-                                initialValue: this.state.record.isLocal,
+                                initialValue: this.state.record.isLocal+"",
                                 rules: [{
                                     required: true, message: '请选择是否本地',
                                 }],
                             })}>
-                            <Radio value="0">是</Radio>
-                            <Radio value="1">否</Radio>
+                            <Radio value="1">是</Radio>
+                            <Radio value="0">否</Radio>
                         </Radio.RadioGroup>
                     <FormError errorMsg={getFieldError('isLocal')}/>
                 </FormItem>

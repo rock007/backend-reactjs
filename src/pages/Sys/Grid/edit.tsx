@@ -60,20 +60,10 @@ type IPageState = IOtherState & IPageDetailState;
 
     submit=(e)=>{
 
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields((err, _values) => {
 
-        if(this.state.record==null||this.state.record["id"]==null){
-            //编辑状态
-            if(this.state.selectedValue==null){
-
-                Warning("请选择权限上一级");
-                return;
-            }
-
-            values['parentId']=this.state.selectedValue;
-            values['id']=this.id!=='0'?this.id:null;
-        }
-
+        let values = getValidateFieldsTrim(_values);
+       
         if (err) {
             console.log('校验失败', values);
             Warning("请检查输入数据，验证失败");
@@ -82,6 +72,22 @@ type IPageState = IOtherState & IPageDetailState;
 
             //this.doSave(values);
             this.setState({isLoading:true});
+
+            if(values.areaId&&values.areaId!=''){
+
+                let oo=JSON.parse(values.cellId);
+                values.areaId=oo.refpk;
+                values.areaName=oo.refname;
+            }
+            if(values.linkUid&&values.linkUid!=''){
+
+                let oo=JSON.parse(values.linkUid);
+                values.linkUid=oo.refpk;
+                values.linkUserName=oo.refname;
+            }
+            
+            values['id']=this.id;
+
             SysService.submitGrid(values)
                 .then((resp)=>{
     
@@ -145,7 +151,7 @@ goBack=()=>{
                             })}
                         />
                         <span className='error'>
-                            {getFieldError('parentId')}
+                            {getFieldError('areaId')}
                         </span>
                     </FormItem>
                     <FormItem>

@@ -6,9 +6,10 @@ import FormError from '../../../../components/FormError';
 import {RefOrgTreeSelect} from '../../../../components/RefViews/RefOrgTreeSelect';
 
 import './index.scss';
-import { IPageDetailProps, IPageDetailState } from '../../../../services/Model/Models';
+import { IPageDetailProps, IPageDetailState, PageModel } from '../../../../services/Model/Models';
 import SysService from '../../../../services/SysService';
 import { Warning, getValidateFieldsTrim, Info } from '../../../../utils';
+import UploadFile from '../../../../components/UploadFile';
 
 const FormItem = Form.FormItem;
 
@@ -18,7 +19,8 @@ interface IOtherProps {
 
 interface IOtherState {
     isEdit:boolean
-    selectedValue:string
+    selectedValue:string,
+    roles:Array<any>
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -34,6 +36,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
         record:{},
         isEdit:false,
         isLoading:false,
+        roles:[]
     }
     isPage=()=>{
 
@@ -49,17 +52,19 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
             this.id=this.props.url.replace(m1,'');
         }
 
-        if(this.id!=null&&this.id!='0'){
-
-            this.loadData(this.id);
-        }
+        this.loadData(this.id);
     }
 
     loadData=async (id)=>{
 
-        const  data=await SysService.getAccountById(id);
+        let  data=[];
+        if(this.id!=null&&this.id!='0'){
+              data=await SysService.getAccountById(id);
+        }
+       
+        const  rolePage=await SysService.searchRole({}) as PageModel<any>;
       
-        this.setState({record:data,isLoading:false});
+        this.setState({record:data,roles:rolePage.data,isLoading:false});
     }
 
     goBack=()=>{
@@ -69,7 +74,11 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
             this.props.handlerBack();
         }
     }
+    handler_uploadChange=(files:Array<any>,where:string)=>{
 
+        let ids=files.map(m=>m.fileId);
+        //this.setState({fileIds:ids});
+    }
     submit=(e)=>{
 
         this.props.form.validateFields((err, _values) => {
@@ -81,7 +90,16 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                 Warning("请检查输入数据，验证失败");
             } else {
 
+                if(values.orgId&&values.orgId!=''){
+
+                    let oo=JSON.parse(values.orgId);
+                    values.orgId=oo.refpk;
+                    values.orgName=oo.refname;
+                }
+
                 values['id']=this.id!=='0'?this.id:null;
+                values['avatar']='';
+
                 this.setState({isLoading:true});
                 SysService.submitAccount(values)
                     .then((resp)=>{
@@ -125,20 +143,24 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
               }
             <Form className='edit_form_pop'>
                     <FormItem>
+                        <div style={{ width: '100px', float: 'left'}}><Label>头像</Label></div>
+                        <div>
+                            <UploadFile  uploadChange={this.handler_uploadChange} />
+                        </div>
+                    </FormItem>
+                    <FormItem>
                         <Label>用户名</Label>
                         <FormControl placeholder="请输入用户名(包含数字和字母，8-15位)"
-                            {...getFieldProps('username', {
+                            {...getFieldProps('userName', {
                                 validateTrigger: 'onBlur',
+                                initialValue: this.state.record.userName,
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入用户名</span></span>,
-                                }, {
-                                    pattern: /^(?!\d+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{8,15}$/, 
-                                    message: <span><Icon type="uf-exc-t"></Icon><span>用户名格式错误</span></span>,
                                 }],
                             }) }
                         />
                         <span className='error'>
-                            {getFieldError('username')}
+                            {getFieldError('userName')}
                         </span>
                     </FormItem>
                     <FormItem>
@@ -146,11 +168,9 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         <FormControl placeholder="请输入姓名(不超过20个汉字)"
                             {...getFieldProps('realName', {
                                 validateTrigger: 'onBlur',
+                                initialValue: this.state.record.trueName,
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入姓名</span></span>,
-                                }, {
-                                    pattern: /^(?!\d+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{8,15}$/, 
-                                    message: <span><Icon type="uf-exc-t"></Icon><span>姓名输入错误</span></span>,
                                 }],
                             }) }
                         />
@@ -161,13 +181,9 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     <FormItem>
                         <Label>性别</Label>
                         <Radio.RadioGroup
-                            selectedValue={this.state.selectedValue}
                             {
                             ...getFieldProps('sex', {
-                                initialValue: '',
-                                onChange(value) {
-                                    me.setState({ selectedValue: value });
-                                },
+                                initialValue: this.state.record.sex+'',
                                 rules: [{ required: true }]
                             }
                             ) }
@@ -181,39 +197,44 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         <FormControl placeholder="请输入手机号(仅数字11位)"
                             {...getFieldProps('mobile', {
                                 validateTrigger: 'onBlur',
+                                initialValue: this.state.record.mobile,
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入手机号</span></span>,
-                                }, {
-                                    pattern: /^(?!\d+$)[0-9]{11}$/, 
-                                    message: <span><Icon type="uf-exc-t"></Icon><span>手机号格式错误</span></span>,
                                 }],
                             }) }
                         />
                         <span className='error'>
-                            {getFieldError('username')}
+                            {getFieldError('mobile')}
                         </span>
                     </FormItem>
                     <FormItem>
                         <Label>组织部门</Label>
-                        <RefOrgTreeSelect />
+                        <RefOrgTreeSelect  {
+                            ...getFieldProps('orgId', {
+                                initialValue: JSON.stringify({refpk:this.state.record.orgId,refname:this.state.record.orgName}),
+                                rules: [{ required: true ,
+                                    pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/,
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>请选择组织部门</span></span>}]
+                            })
+                    }/>
                         
-                        <FormError errorMsg={getFieldError('dept')}/>
+                        <FormError errorMsg={getFieldError('orgId')}/>
                     </FormItem>
                     <FormItem>
                         <Label>角色</Label>
                         <Checkbox.CheckboxGroup 
                                 {
                                     ...getFieldProps('roleIds',{
-                                        initialValue:['2'],
+                                        initialValue:this.state.record.roleIds!=null?this.state.record.roleIds:'',
                                         rules: [{ required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请选择角色</span></span> }]
                                     })
+                                }>
+                           
+                                {
+                                    this.state.roles.map((item,index)=>
+                                        <Checkbox value={item.id}>{item.roleName}</Checkbox>
+                                    )
                                 }
-                            >
-                                <Checkbox value='1'>系统管理员</Checkbox>
-                                <Checkbox value='2'>社区管理员</Checkbox>
-                                <Checkbox value='3'>专职社工</Checkbox>
-                                <Checkbox value='4'>社区民警</Checkbox>
-                                <Checkbox value='5'>社区医生</Checkbox>
                         </Checkbox.CheckboxGroup>
                         <span className='error'>
                             {getFieldError('roleIds')}
@@ -222,13 +243,11 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     <FormItem>
                         <Label>状态</Label>
                         <Radio.RadioGroup
-                            selectedValue={this.state.selectedValue}
+
                             {
-                            ...getFieldProps('importance', {
-                                initialValue: '',
-                                onChange(value) {
-                                    me.setState({ selectedValue: value });
-                                },
+                            ...getFieldProps('status', {
+                                initialValue: this.state.record.status,
+                             
                                 rules: [{ required: true }]
                             }
                             ) }
