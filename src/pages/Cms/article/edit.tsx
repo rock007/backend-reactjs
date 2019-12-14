@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Breadcrumb,FormControl,Row,Col,Form, Select,Icon,LoadingState, Button ,Label,Radio } from 'tinper-bee';
+import {Panel,Breadcrumb,FormControl,Loading,Col,Form, Select,Icon,LoadingState, Button ,Label,Radio } from 'tinper-bee';
 
 import {getValidateFieldsTrim,Warning,Info} from "../../../utils";
 import {PageModel, PopPageModel, IPageDetailProps, IPageDetailState} from '../../../services/Model/Models';
@@ -8,6 +8,8 @@ import UploadFile from '../../../components/UploadFile';
 import FormError from '../../../components/FormError';
 import CmsService from '../../../services/CmsService';
 import Editor from '../../../components/Editor';
+import RefArticleCateTreeSelect from '../../../components/RefViews/RefArticleCateTreeSelect';
+import AppConsts from '../../../lib/appconst';
 
 const FormItem = Form.FormItem;;
 
@@ -17,7 +19,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-
+    id:string
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -25,11 +27,15 @@ type IPageState = IOtherState & IPageDetailState;
 
 class ArticleEdit extends React.Component<IPageProps,IPageState> {
     
-    id:string='';
+    id:string=''
+    logo:string=''
+
+    editor:any;
 
     state:IPageState={
         isLoading:false,
         record:{},
+        id:''
     }
     
     isPage=()=>{
@@ -50,6 +56,8 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
         if(this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate();
         }
     }
 
@@ -58,8 +66,10 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
         this.setState({isLoading:true});
         let result = await CmsService.findArticleById(id);
 
+        this.logo=result.logo||'';
         this.setState({record:result,isLoading:false});
     }
+
     goBack=()=>{
         if(this.isPage()){
             this.props.history.goBack();
@@ -67,7 +77,16 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
             this.props.handlerBack();
         }
     }
+    handler_uploadChange=(files:Array<any>)=>{
 
+        if(files.length>0){
+
+            this.logo= files[0].url.replace(AppConsts.uploadUrl,'');
+        }else{
+            this.logo='';
+        }
+
+    }
     handler_submit=()=>{
 
         this.props.form.validateFields((err, _values) => {
@@ -75,7 +94,15 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                //values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+                if(values.cateId!=null){
+
+                    var obj=JSON.parse(values.cateId);
+                    values.cateId=obj.refpk;
+                    values.cateName=obj.refname;
+                }
+
+                values['logo']=this.logo;
+                values['contentHtml']=this.editor.getEditorContent();
 
                 values['id']=this.id;
                 this.setState({isLoading:true});
@@ -97,10 +124,37 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
         } );
     }
 
+    renderUploadFile=()=>{
+
+        if(this.id==='0'){
+
+            return (  <UploadFile   from='fileIds' uploadChange={this.handler_uploadChange} />)
+
+        }else {
+            if(this.state.record.id!=null){
+           return  (<UploadFile   from='fileIds' uploadChange={this.handler_uploadChange} 
+                defaultFileList={[{
+                    uid:this.state.record.id+'',
+                    url:AppConsts.uploadUrl +this.state.record.logo
+                }]}/>)
+            }else{
+
+                return (<span>加载中...</span>)
+            }
+
+        }
+
+    }
+
     render() {
         
         const _this = this;
         let {getFieldProps, getFieldError} = this.props.form;
+
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
 
         return (<Panel >
             {this.isPage()?(
@@ -122,33 +176,40 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
                 <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>类别</Label>
-                        <Select
-                            defaultValue="all"
-                            style={{ width: 200, marginRight: 6 }}
-                            showSearch={true}
-                            allowClear={true}>
-                            <Select.Option value="all">全部</Select.Option>
-                            <Select.Option value="confirming">待确认</Select.Option>
-                            <Select.Option value="executing">执行中</Select.Option>
-                            <Select.Option value="termination">终止</Select.Option>
-                        </Select>
+                        <RefArticleCateTreeSelect {...getFieldProps('cateId', {
+                            initialValue: JSON.stringify({refpk:this.state.record.cateId,refname:this.state.record.cateName}),
+                            rules: [{
+                                required: true, message: <span><span>请选择类别</span></span>,
+                            }]
+                        })}/>
+                        <FormError errorMsg={getFieldError('cateId')}/>
                     </FormItem>
                     <FormItem>
                         <Label>标题</Label>
                         <FormControl 
                             {...getFieldProps('title', {
-                                    initialValue: this.state.record.title 
+                                    initialValue: this.state.record.title ,
+                                    rules: [{
+                                        required: true, message: <span>请输入标题</span>,
+                                    }]
                                 }
                             )}
                         />
+                        <FormError errorMsg={getFieldError('title')}/>
                     </FormItem>
                     <FormItem>
-                        <Editor></Editor>
+                        <Editor  ref={el => this.editor = el} defaultHtml={this.state.record.contentHtml}></Editor>
+
                     </FormItem>
                     <FormItem style={{display:'flex'}}>
                     <Label>封面</Label>
                         <div style={{display:'inline-block',width:'auto'}}>
-                            <UploadFile    from='file1Ids'/>
+                            <UploadFile   from='fileIds' uploadChange={this.handler_uploadChange} 
+                                defaultFileList={this.state.record.id!=null?[{
+                                    uid:this.state.record.id,
+                                    name:'封面',
+                                    url:AppConsts.uploadUrl +this.state.record.logo
+                                }]:null}/>
                         </div>
                     </FormItem>
                     <FormItem>
@@ -156,7 +217,7 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
                         <FormControl 
                                  {...getFieldProps('index', {
                                      validateTrigger: 'onBlur',
-                                     initialValue: '0',
+                                     initialValue: this.state.record.index,
                                      rules: [{
                                          type: 'string',
                                          required: true,
@@ -165,12 +226,12 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
                                      }],
                                  })}
                         />
-                        <FormError errorMsg={getFieldError('respContent')}/>
+                        <FormError errorMsg={getFieldError('index')}/>
                     </FormItem>
                 <FormItem>
                     <Label>是否置顶</Label>
                     <Radio.RadioGroup {...getFieldProps('isTop', {
-                                initialValue: '0',
+                                initialValue: this.state.record.isTop+'',
                                 rules: [{
                                     required: false, message: '是否置顶',
                                 }],
@@ -178,12 +239,12 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
                             <Radio value="0">否</Radio>
                             <Radio value="1">是</Radio>
                         </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('status')}/>
+                    <FormError errorMsg={getFieldError('isTop')}/>
                 </FormItem>
                 <FormItem>
                     <Label>状态</Label>
                     <Radio.RadioGroup {...getFieldProps('status', {
-                                initialValue: '',
+                                initialValue:this.state.record.status+'',
                                 rules: [{
                                     required: true, message: '请选择审核结果',
                                 }],

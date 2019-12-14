@@ -11,6 +11,7 @@ import AccountStore from '../../../stores/AccountStore';
 import Store from '../../../stores/StoreIdentifier';
 import { Error, Warning,Info ,setCookie,getCookie} from '../../../utils';
 import AppConsts from '../../../lib/appconst';
+import { JsonBody } from '../../../services/Model/Models';
 
 interface IPageProps {
     form:any,
@@ -74,18 +75,30 @@ export class Login extends React.Component<IPageProps,IPageState> {
         }).then(function(res:any) {
           
             console.log(res);  
-            Info("用户登录验证成功");
+            debugger;
+            const response=res.data;
 
-            setCookie('login_name',username);
-            setCookie('login_pwd',password);
+            if( response['msg']!=null ){
 
-            setCookie('login_token',res.data.access_token);
-            AppConsts.authorization.token=res.data.access_token;
+                Warning((response as JsonBody<any>).msg);
+                
+            }else if(response.access_token!=null){
 
-            console.log('in :'+AppConsts.authorization.token);
-            console.log('out :'+getCookie('login_token'));
+                Info("用户登录验证成功");
 
-            window.location.href='/#/';
+                setCookie('login_name',username);
+                setCookie('login_pwd',password);
+    
+                setCookie('login_token',response.access_token);
+                AppConsts.authorization.token=response.access_token;
+    
+                console.log('in :'+AppConsts.authorization.token);
+                console.log('out :'+getCookie('login_token'));
+    
+                window.location.href='/#/';
+            }else{
+                Error("请求失败，出现异常");
+            }
 
         }).catch(function (error) {
             // handle error

@@ -42,7 +42,12 @@ class CmsService {
     let result = await http.get('/rest/cms/cate-delete',{params:{ids:ids}});
     return result;
   }
-  
+  public async getArticleCateTree(): Promise<any> {
+   
+    let result = await http.get('/rest/cms/getArticeCateTree');
+    return result;
+  }
+
 }
 
 export default new CmsService();

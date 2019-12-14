@@ -2,6 +2,7 @@ import axios from 'axios';
 import AppConsts from './../lib/appconst';
 import { Modal ,Message} from 'tinper-bee';
 import {JsonBody} from './Model/Models';
+import { Warning } from '../utils';
 
 const qs = require('qs');
 
@@ -48,6 +49,12 @@ http.interceptors.response.use(
       Message.create({content: resp.msg, color: 'warn'});
       return Promise.reject(resp);
     }
+
+    if(resp.result!=1){
+      Warning(resp.msg);
+      return resp.data||resp.msg;
+    }
+
     return resp.data;
   },
   error => {

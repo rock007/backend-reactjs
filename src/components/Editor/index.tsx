@@ -3,18 +3,39 @@ import AcEditor, { EditorState } from 'ac-editor';
 // 引入编辑器样式
 import 'ac-editor/dist/index.css';
 
-export default class Editor extends React.Component {
+interface IEditorProps {
+    defaultHtml?:string
+} 
 
-  state = {
-      editorState: null
+interface IEditorState {
+  editorState:any
+}
+
+export default class Editor extends React.Component<IEditorProps,IEditorState> {
+
+  state:IEditorState = {
+      editorState: EditorState.createFrom("")
   }
 
-  async componentDidMount () {
-    const htmlContent = '<h1>fuck the world</h1>';//await fetchEditorContent()
+  componentDidMount () {
+   
+    const htmlContent = this.props.defaultHtml;//'<h1>fuck the world</h1>';//await fetchEditorContent()
     this.setState({
       editorState: EditorState.createFrom(htmlContent)
     })
   }
+
+  componentWillReceiveProps(nextProps:IEditorProps) {
+       
+    if (nextProps.defaultHtml !== this.props.defaultHtml) {
+
+        console.log('editor componentWillReceiveProps set html');
+        this.setState({
+          editorState: EditorState.createFrom(nextProps.defaultHtml||'')
+        })
+    }
+
+}
 
   submitContent = async () => {
     // 在编辑器获得焦点时按下ctrl+s会执行此方法
@@ -25,6 +46,11 @@ export default class Editor extends React.Component {
 
   saveEditorContent=async (html)=>{
 
+  }
+
+  getEditorContent=()=>{
+    const htmlContent = this.state.editorState.toHTML();
+    return htmlContent;
   }
 
   handleEditorChange = (editorState) => {

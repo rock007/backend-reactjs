@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,  FormControl, Form, Icon,Select, Button ,LoadingState, Col,Label,Radio } from 'tinper-bee';
+import {Panel,  FormControl, Form, Icon,Loading, Button ,LoadingState, Col,Label,Radio } from 'tinper-bee';
 
 import {getValidateFieldsTrim, Warning,Info} from "../../../utils";
 
@@ -64,6 +64,8 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
         if(this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate();
         }
     }
 
@@ -127,7 +129,7 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
 
     handler_uploadChange=(files:Array<any>,where:string)=>{
 
-        const m1=files.map((m,i)=>m.fileId);
+        const m1=files.map((m,i)=>m.uid);
         const o1={};
         o1[where]=m1;
 
@@ -139,6 +141,10 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
         const _this = this;
         let {getFieldProps, getFieldError} = this.props.form;
 
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
         return (<Panel >
                 <Form className='edit_form_pop'>
                 <FormItem>
@@ -243,21 +249,21 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>尿检人</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files1)}  uploadChange={this.handler_uploadChange} from='file1Ids'/>
+                        <UploadFile  maxSize={3}  defaultFileList={ convertFiles(this.state.record.files1)}  uploadChange={this.handler_uploadChange} from='file1Ids'/>
                     </div>
                 </FormItem>
                 
                 <FormItem  style={{display:'flex'}}>
                     <Label>尿检报告</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files2)}  uploadChange={this.handler_uploadChange}  from='file2Ids'/>
+                        <UploadFile  maxSize={3}  defaultFileList={ convertFiles(this.state.record.files2)}  uploadChange={this.handler_uploadChange}  from='file2Ids'/>
                     </div>
 
                 </FormItem>
                 <FormItem  style={{display:'flex'}}>
                     <Label>谈话记录</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile  defaultFileList={ convertFiles(this.state.record.files3)}  uploadChange={this.handler_uploadChange}  from='file3Ids'/>
+                        <UploadFile maxSize={3}  defaultFileList={ convertFiles(this.state.record.files3)}  uploadChange={this.handler_uploadChange}  from='file3Ids'/>
                     </div>
 
                 </FormItem>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,  FormControl, Form, Icon,Button, Upload ,LoadingState, Col,Label,Radio } from 'tinper-bee';
+import {Panel,  FormControl, Form, Icon,Button, Loading ,LoadingState, Col,Label,Radio } from 'tinper-bee';
 
 import {getValidateFieldsTrim, Warning,Info} from "../../../utils";
 
@@ -34,7 +34,7 @@ interface IPageProps {
 interface IPageState {
 
     isLoading:boolean,
-    fileIds:Array<String>,
+    fileIds:String[],
     record:any
 }
 type IFooBar = IPageProps & any;
@@ -72,6 +72,8 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
         if(this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate()
         }
     }
 
@@ -138,14 +140,20 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
 
     handler_uploadChange=(files:Array<any>)=>{
 
-        const m1=files.map((m,i)=>m.fileId);
+        const m1=files.map((m,i)=>m.uid);
         
-        this.setState({fileIds:files.map((m,i)=>m.fileId)});
+        this.setState({fileIds:files.map((m,i)=>m.uid)});
+        //this.setState({fileIds:files.map((m,i)=>m.fileId)});
     }
     render() {
         
         let {getFieldProps, getFieldError} = this.props.form;
    
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
         return (<Panel>
                 <Form className='edit_form_pop'>
                 <FormItem>
@@ -325,7 +333,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
                 <FormItem style={{display:'flex'}}>
                     <Label>附件</Label>
                     <div style={{display:'inline-block',width:'auto'}}>
-                        <UploadFile uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files)}/>
+                        <UploadFile maxSize={3} uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files)}/>
                     </div>
                 </FormItem>
                 <FormItem>

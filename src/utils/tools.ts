@@ -162,6 +162,30 @@ export function convertMenuTreeNode(item:any):ITreeNode{
 }
 
 
+export function convertArticleCateTreeNode(item:any):ITreeNode{
+
+    let obj={
+        id:item.cateId,
+        key:item.cateId,
+        title:item.title,
+        disabled:false,
+        selectable:true
+    };
+    
+    if(item['childs']!=null&&item['childs'].length>0){
+
+        obj['children']=[];
+        for (const element of item['childs']) {
+            
+           let one=  convertArticleCateTreeNode(element);
+
+           obj['children'].push(one);
+        }
+    }
+
+    return obj;
+}
+
 
 export function convertFiles(list):Array<any>{
 
@@ -173,10 +197,11 @@ export function convertFiles(list):Array<any>{
             uid:  item.fileId,
             name: item.fileName,
             //status: 'done',
-            //url:  AppConsts.uploadUrl+item.fileUrl,
+            url:  AppConsts.uploadUrl+item.fileUrl,
+            thumbUrl:AppConsts.uploadUrl+item.fileUrl
             //response:item,
-            url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+            //url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+            //thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
         }
     });
 

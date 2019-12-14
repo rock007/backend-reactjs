@@ -46,7 +46,6 @@ type IPageState = IOtherState & IPageDetailState;
 
         this.setState({isLoading:true});
         let result = await CmsService.findArticleById(id);
-
         this.setState({record:result,isLoading:false});
     }
     goBack=()=>{
@@ -80,9 +79,8 @@ type IPageState = IOtherState & IPageDetailState;
                 :null
             }
             
-            <div>
-
-                this is a 内容
+            <div dangerouslySetInnerHTML={{__html: this.state.record.contentHtml}} >
+               
             </div>
 
         </Panel >)

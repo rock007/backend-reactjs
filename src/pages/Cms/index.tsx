@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {Panel, Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Tag,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
 import Alert from '../../components/Alert';
+import ArticleCatePanel from '../../pages/Cms/Cate/Panel';
 
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -15,6 +16,7 @@ import DatePicker from "bee-datepicker";
 
 import { getValidateFieldsTrim } from '../../utils/tools';
 import { Info } from '../../utils';
+import AppConsts from '../../lib/appconst';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -32,6 +34,7 @@ type IPageState = IOtherState & IListPageState;
 
  class ArticlesPage extends React.Component<IPageProps,IPageState> {
 
+    cateId=''
     pageIndex=1
     pageSize=10
     orderBy=[]
@@ -62,6 +65,8 @@ type IPageState = IOtherState & IListPageState;
           if(values.createDate){
               values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
           }
+
+          values['cateId']=this.cateId;
 
           this.setState({isLoading:true});
           this.loadData(values);
@@ -107,6 +112,15 @@ type IPageState = IOtherState & IListPageState;
   export = ()=>{
       console.log('export=======');
   }
+
+  handler_tree_selected=(rec)=>{
+
+    if(rec!=null&&rec.length>0){
+
+        this.cateId=rec[0];
+        this.search();
+    }
+}
   
 handler_delete=async ()=>{
 
@@ -139,13 +153,25 @@ handler_delete=async ()=>{
             
           }
         },
-        { title: '类别', dataIndex: 'cateId', key: 'cateId', textAlign:'center',width: 150 ,sorter: (pre, after) => {return pre.c - after.c}},
+        { title: '类别', dataIndex: 'cateName', key: 'cateName', textAlign:'center',width: 150 ,sorter: (pre, after) => {return pre.c - after.c}},
       
-        { title: '封面', dataIndex: 'logo', key: 'logo',textAlign:'center', width: 160 },
+        { title: '封面', dataIndex: 'logo', key: 'logo',textAlign:'center', width: 160 ,render(text,record,index) {
+                  
+            return (
+                <img id="image" width={60} height={60} src={AppConsts.uploadUrl+text} alt="Picture"/>
+            );
+        }},
 
-        { title: '置顶', dataIndex: 'isTop', key: 'isTop',textAlign:'center', width: 100 },
-        { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 100 },
+        { title: '置顶', dataIndex: 'isTop', key: 'isTop',textAlign:'center', width: 100 ,render(text,record,inex){
 
+            return text==1?"是":'否'
+        }},
+        { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 100 ,
+            render(text,record,index) {
+
+            return text==0?<Tag colors="warning">草稿</Tag>:(text==1?<Tag colors="success">发布</Tag>:<Tag colors="warning">下线</Tag>);
+
+        }},
         { title: '所属社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
         { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 ,sorter: (pre, after) => {return pre.c - after.c},},
         { title: '发布者', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 100 },
@@ -202,7 +228,12 @@ handler_delete=async ()=>{
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
-            <SearchPanel
+            <Row>
+                <Col md="2">
+                    <ArticleCatePanel onClick={this.handler_tree_selected}/>
+                </Col>
+                <Col md="10">
+                <SearchPanel
                 reset={this.clear}
                 onCallback={()=>{}}
                 search={this.search}
@@ -212,15 +243,6 @@ handler_delete=async ()=>{
                     <FormItem
                         label="标题">
                         <FormControl placeholder='文章标题' {...getFieldProps('title', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="类别"
-                    >
-                        <Select {...getFieldProps('cateId', {initialValue: ''})}>
-                            <Option value="">(请选择)</Option>
-                            <Option value="0">戒毒宣传</Option>
-                            <Option value="1">法律法规</Option>
-                        </Select>
                     </FormItem>
                    
                     <FormItem
@@ -265,9 +287,16 @@ handler_delete=async ()=>{
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     pageChange={this.onPageChange}
                 />
+                </Col>
+            </Row>        
+
+            
         
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={()=>{
+                        this.setState({isPopPage:false});
+                        this.search();
+                    }} >
           </PageDlog>
           <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {

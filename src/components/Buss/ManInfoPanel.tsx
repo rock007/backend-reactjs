@@ -2,6 +2,8 @@ import * as React from 'react';
 import {Panel, Loading } from 'tinper-bee';
 import ManService from '../../services/ManService';
 import { PageModel } from '../../services/Model/Models';
+import UploadFile from '../UploadFile';
+import AppConsts from '../../lib/appconst';
 
 interface IPanelProps {
     manId:string
@@ -45,7 +47,7 @@ export default class ManInfoPanel extends React.Component<IPanelProps,IPanelStat
         this.setState({record:result,relatesPage:relatesPage,worksPage:worksPage,isLoading:false});
     }
     render() {
-        
+		
         return ( <div className="form-view">
             	<Loading show={this.state.isLoading} container={this} /> 
                <table>
@@ -58,7 +60,8 @@ export default class ManInfoPanel extends React.Component<IPanelProps,IPanelStat
 			<th rowSpan={4} style={{width:"20%"}}>照片</th>
 			<td rowSpan={4} style={{width:"30%"}}>
 			<div style={{textAlign:'center'}}>
-            	<img id="image" width={80} height={80} src='http://design.yonyoucloud.com/static/bee.tinper.org-demo/swiper-demo-1-min.jpg' alt="Picture"/>
+				<img id="image" width={80} height={80} 
+					src={AppConsts.uploadUrl +this.state.record.avatar} alt={this.state.record.realName}/>
         	</div>
 
 			</td>

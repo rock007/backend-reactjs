@@ -11,14 +11,15 @@ interface IUploadInfo{
   status?: 'uploading'| 'done'| 'error'| 'removed',  // 参数：uploading, done, error, removed
   response?: any, 
   url?:string,
-  thumbUrl?:string
+  thumbUrl?:string//图片
 }
 
 interface IPanelProps {
   uploadChange?:(list:Array<any>,from:string)=>void
   defaultFileList:Array<any>,
   from?:string,
-  disabled:boolean
+  disabled:boolean,
+  maxSize:number
 }
 
 interface IPanelSate {
@@ -29,7 +30,9 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
 
   static defaultProps = {
     disabled: false,
-    defaultFileList:[]
+    defaultFileList:[],
+    isLoaded:false,
+    maxSize:1
   }
 
   state:IPanelSate={
@@ -40,25 +43,42 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
     super(props);
 
     this.state = {
-      fileList: this.props.defaultFileList 
+      fileList: this.props.defaultFileList ||[]
     };
   }
 
- /*** 
+  /** 
   componentWillReceiveProps(nextProps:IPanelProps) {
 
-    if(nextProps.defaultFileList.length!=this.props.defaultFileList.length){
+    if(nextProps.defaultFileList!=this.props.defaultFileList){
 
       this.setState({fileList:nextProps.defaultFileList});
+    
+      //this.forceUpdate();
     }
   }
-***/ 
+  ***/
 
   notifyFilesChange=(list)=>{
 
     const oo= list.map((m,i)=>{
 
-      return m.response.result==1? m.response.data[0]:m.response.msg;
+      if(m.response==null) return m;
+
+      if(m.response.result==1){
+        let obj=  m.response.data[0];
+
+        return {
+          uid:obj.fileId,
+          name:obj.fileName,
+          url:AppConsts.uploadUrl+obj.fileUrl,
+          thumbUrl:AppConsts.uploadUrl+obj.fileUrl
+        }
+
+      }else{
+        console.log('notifyFilesChange：'+m.response.msg)
+      }
+      
     });
 
     if(this.props.uploadChange){
@@ -68,6 +88,8 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
   handler_onChange=(info)=>{
    
     console.log('upload status:'+info.file.status);
+    this.setState({fileList:info.fileList});
+
     if (info.file.status === 'uploading') {
       //console.log(info.file, info.fileList);
     } else if (info.file.status === 'done') {
@@ -81,7 +103,8 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
       Error('${info.file.name}图片上传失败了');
     } else if(info.file.status==='removed'){
       console.log(`${info.file.name} file is removed.`);
-        this.notifyFilesChange(info.fileList);
+    
+      this.notifyFilesChange(info.fileList);
     }
 
   }
@@ -97,25 +120,26 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
     return (
       <div>
         <Upload action= {AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload'}
-              headers= {{
-                  Authorization: 'Bearer '+AppConsts.authorization.token
-                }
-              }
-              disabled={this.props.disabled}
-              name='files'
-              listType='picture-card'
-              defaultFileList= {this.props.defaultFileList||[]}
-              //defaultFileList= {this.state.fileList||[]}
-              onChange={this.handler_onChange}
-              onRemove={this.handler_onRemove}>
+        headers= {{
+            Authorization: 'Bearer '+AppConsts.authorization.token
+          }
+        }
+        disabled={this.props.disabled}
+        name='files'
+        listType='picture-card'
+        defaultFileList= {this.props.defaultFileList||[]}
+        //fileList= {this.state.fileList||[]}
+        onChange={this.handler_onChange}
+        onRemove={this.handler_onRemove}>
 
-              {this.props.disabled?null:(
-              <React.Fragment>
-                <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                <p>上传</p>
-              </React.Fragment>
-              )}
-        </Upload>
+        {this.props.disabled||this.props.maxSize<=this.state.fileList.length?null:(
+        <React.Fragment>
+          <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
+          <p>上传</p>
+        </React.Fragment>
+        )}
+  </Upload>
+        
       </div>
     );
   }
