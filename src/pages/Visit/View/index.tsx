@@ -56,6 +56,8 @@ class VisitView extends React.Component<IPageProps,IPageState> {
         if(this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate();
         }
     }
 
@@ -81,9 +83,12 @@ class VisitView extends React.Component<IPageProps,IPageState> {
     }
 
     render() {
-        
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
         return (<Panel>
-                <Loading container={this} show={this.state.isLoading}/>
+                
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>

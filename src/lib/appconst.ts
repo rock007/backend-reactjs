@@ -15,7 +15,7 @@ const AppConsts = {
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
   //remoteServiceBaseUrl: 'http://localhost:10000',
   remoteServiceBaseUrl: 'http://219.138.150.225:10000',
-  uploadUrl: 'http://219.138.150.225:10002/upload',
+  uploadUrl: 'http://219.138.150.225:10002/',
   session:{
     userId:'402881f73e1c4ba4013e1c4c08470001',
   },

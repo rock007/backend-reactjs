@@ -1333,20 +1333,6 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/jest-diff@*":
-  version "24.3.0"
-  resolved "https://registry.npm.taobao.org/@types/jest-diff/download/@types/jest-diff-24.3.0.tgz#29e237a3d954babfe6e23cc59b57ecd8ca8d858d"
-  integrity sha1-KeI3o9lUur/m4jzFm1fs2MqNhY0=
-  dependencies:
-    jest-diff "*"
-
-"@types/jest@24.0.18":
-  version "24.0.18"
-  resolved "https://registry.npm.taobao.org/@types/jest/download/@types/jest-24.0.18.tgz?cache=0&sync_timestamp=1573592350097&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fjest%2Fdownload%2F%40types%2Fjest-24.0.18.tgz#9c7858d450c59e2164a8a9df0905fc5091944498"
-  integrity sha1-nHhY1FDFniFkqKnfCQX8UJGURJg=
-  dependencies:
-    "@types/jest-diff" "*"
-
 "@types/json-schema@^7.0.3":
   version "7.0.3"
   resolved "https://registry.npm.taobao.org/@types/json-schema/download/@types/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
@@ -1356,20 +1342,6 @@
   version "4.14.149"
   resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.149.tgz#1342d63d948c6062838fbf961012f74d4e638440"
   integrity sha1-E0LWPZSMYGKDj7+WEBL3TU5jhEA=
-
-"@types/moment-timezone@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.npm.taobao.org/@types/moment-timezone/download/@types/moment-timezone-0.5.12.tgz#0fb680c03db194fe8ff4551eaeb1eec8d3d80e9f"
-  integrity sha1-D7aAwD2xlP6P9FUerrHuyNPYDp8=
-  dependencies:
-    moment ">=2.14.0"
-
-"@types/moment@^2.13.0":
-  version "2.13.0"
-  resolved "https://registry.npm.taobao.org/@types/moment/download/@types/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
-  integrity sha1-YE69GJvDvDShVIaJQE5hoqSqyJY=
-  dependencies:
-    moment "*"
 
 "@types/node@*":
   version "12.12.14"
@@ -3263,6 +3235,16 @@ bee-upload@2.0.5:
     classnames "^2.2.5"
     tinper-bee-core latest
     warning "2.x"
+
+bee-viewer@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.npm.taobao.org/bee-viewer/download/bee-viewer-0.1.6.tgz#d4336f75a3e45b1920ba5a944891b56ed82773b2"
+  integrity sha1-1DNvdaPkWxkgulqUSJG1btgnc7I=
+  dependencies:
+    babel-runtime "^6.23.0"
+    classnames "^2.2.5"
+    tinper-bee-core latest
+    viewerjs "^1.2.1"
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -7064,7 +7046,7 @@ jest-config@^24.9.0:
     pretty-format "^24.9.0"
     realpath-native "^1.1.0"
 
-jest-diff@*, jest-diff@^24.9.0:
+jest-diff@^24.9.0:
   version "24.9.0"
   resolved "https://registry.npm.taobao.org/jest-diff/download/jest-diff-24.9.0.tgz?cache=0&sync_timestamp=1566444269285&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjest-diff%2Fdownload%2Fjest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
   integrity sha1-kxt9DVd4obr3RSy4FuMl43JAVdo=
@@ -8192,7 +8174,7 @@ moment-timezone@^0.5.23:
   dependencies:
     moment ">= 2.9.0"
 
-moment@*, moment@2.x, "moment@>= 2.9.0", moment@>=2.14.0, moment@^2.17.1, moment@^2.18.1, moment@^2.22.2:
+moment@2.x, "moment@>= 2.9.0", moment@^2.17.1, moment@^2.18.1, moment@^2.22.2:
   version "2.24.0"
   resolved "https://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmoment%2Fdownload%2Fmoment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
@@ -12759,6 +12741,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+viewerjs@^1.2.1:
+  version "1.5.0"
+  resolved "https://registry.npm.taobao.org/viewerjs/download/viewerjs-1.5.0.tgz#debea9492189fa41223cc567de915d79435899d0"
+  integrity sha1-3r6pSSGJ+kEiPMVn3pFdeUNYmdA=
 
 vm-browserify@^1.0.1:
   version "1.1.2"

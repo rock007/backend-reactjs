@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Panel, Tag,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import Viewer from 'bee-viewer';
 
 import Grid from '../../components/Grid';
 import Alert from '../../components/Alert';
@@ -17,9 +18,9 @@ import DatePicker from "bee-datepicker";
 import { getValidateFieldsTrim } from '../../utils/tools';
 import { Info } from '../../utils';
 import AppConsts from '../../lib/appconst';
+import defaultPic from '../../images/pic_holder.png';
 
 const FormItem = FormListItem;
-const {Option} = Select;
 
 interface IOtherProps {
     
@@ -157,9 +158,12 @@ handler_delete=async ()=>{
       
         { title: '封面', dataIndex: 'logo', key: 'logo',textAlign:'center', width: 160 ,render(text,record,index) {
                   
-            return (
-                <img id="image" width={60} height={60} src={AppConsts.uploadUrl+text} alt="Picture"/>
-            );
+             
+               return text!==null&&text!==''?
+                   ( 
+                    <img id="image" width={60} height={60} src={AppConsts.uploadUrl+text} alt="封面"/>
+                  ):
+                (<img id="image" width={60} height={60} src={defaultPic} alt="封面"/>);
         }},
 
         { title: '置顶', dataIndex: 'isTop', key: 'isTop',textAlign:'center', width: 100 ,render(text,record,inex){
