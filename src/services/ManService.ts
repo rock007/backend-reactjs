@@ -217,7 +217,16 @@ class ManService {
     let result = await http.post('/rest/buss-audit',args);
     return result;
   }
+  public async searchBussUpdate(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/modify-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
 
+  public async findBussUpdateById(id:string): Promise<any> {
+    let result = await http.get('/rest/modify-get',{params:{id:id}});
+    return result;
+  }
+ 
 }
 
 export default new ManService();

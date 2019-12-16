@@ -70,11 +70,11 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
         this.setState({record:result,isLoading:false});
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
     handler_uploadChange=(files:Array<any>)=>{
@@ -168,7 +168,7 @@ class ArticleEdit extends React.Component<IPageProps,IPageState> {
                     <Breadcrumb.Item active>
                         编辑
 			        </Breadcrumb.Item>
-                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
                 </Breadcrumb>)
                 :null
             }

@@ -37,7 +37,7 @@ export  class ChangePwd extends React.Component<IPageProps,IPageState> {
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(0);
         }
     }
 

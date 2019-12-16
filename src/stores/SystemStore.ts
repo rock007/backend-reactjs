@@ -3,6 +3,7 @@ import loadsh from  'lodash';
 
 import AccountService from '../services/account/AccountService';
 import { MenuModel,PermissionModel,RoleModel } from '../services/dto/SystemModel';
+import AppConsts from '../lib/appconst';
 
 //系统信息
 class SystemStore {
@@ -29,18 +30,24 @@ class SystemStore {
     const data= await AccountService.myProfile();
     this.data =data;
 
+    //set
+    AppConsts.session={
+      userId:data.id, //'402881f73e1c4ba4013e1c4c08470001',
+      userName:data.userName,
+      realName:data.trueName,
+      sex:data.sex==1?'男':data.sex==0?'女':'',
+      orgName:data.orgName,
+      orgId:data.orgId,
+      roles:data.roles
+    };
+
     this.title="社区戒毒康复人员网格化管控服务平台";
-    this.realName=data.realName;
+    this.realName=data.trueName;
     this.unReadNum=data.unReadNum;
     this.orgName=data.orgName;
   
     this._permissions=data.permission;
-    this.roles=data.roles.map((v,i)=>{ 
-      return {
-        id:v.id,
-        roleName:v.roleName
-      } as RoleModel
-    });
+    this.roles=data.roles;
 
     this._getMenus();
   };

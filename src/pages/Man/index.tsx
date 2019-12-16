@@ -362,31 +362,26 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 reset={this.clear}
                 onCallback={()=>{}}
                 search={this.search}
-                searchOpen={true}
-            >
+                searchOpen={true} >
 
                 <FormList size="sm">
                     <FormItem
-                        label="身份证号"
-                    >
+                        label="身份证号"  >
                         <FormControl placeholder='精确查询' {...getFieldProps('idsNo', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="姓名"
-                    >
+                        label="姓名"  >
                         <FormControl placeholder='模糊查询' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="联系方式"
-                    >
+                        label="联系方式">
                         <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})}/>
                     </FormItem>
 
                     <FormItem
-                        label="性别"
-                    >
+                        label="性别">
                         <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
                             <Option value="1">男</Option>
@@ -403,14 +398,12 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                     </FormItem>
 
                     <FormItem
-                        label="网格"
-                    >
+                        label="网格">
                         <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
                         
                     </FormItem>
                     <FormItem
-                        label="创建时间"
-                    >
+                        label="创建时间">
                         <DatePicker.RangePicker
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
@@ -436,7 +429,10 @@ export  class Man extends React.Component<IPageProps,IPageState> {
  
 
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                    }} >
             </PageDlog>
             
             <Alert show={this.state.isDeleteAlterShow} context="是否要删除 ?"

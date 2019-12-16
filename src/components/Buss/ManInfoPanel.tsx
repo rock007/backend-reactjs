@@ -4,6 +4,7 @@ import ManService from '../../services/ManService';
 import { PageModel } from '../../services/Model/Models';
 import UploadFile from '../UploadFile';
 import AppConsts from '../../lib/appconst';
+import { convertFile } from '../../utils/tools';
 
 interface IPanelProps {
     manId:string
@@ -18,7 +19,7 @@ interface IPanelState {
 export default class ManInfoPanel extends React.Component<IPanelProps,IPanelState> {
     
     state:IPanelState={
-        isLoading:false,
+        isLoading:true,
 		record:{},
 		relatesPage:new PageModel<any>(),
 		worksPage:new PageModel<any>()
@@ -32,11 +33,11 @@ export default class ManInfoPanel extends React.Component<IPanelProps,IPanelStat
 				this.loadData(nextProps.manId);
 			}
         }
-    }
+	}
 
 	loadData=async (id)=>{
 
-        this.setState({isLoading:true});
+        //this.setState({isLoading:true});
 		let result = await ManService.findManById(id);
 		
 		//亲属
@@ -48,8 +49,13 @@ export default class ManInfoPanel extends React.Component<IPanelProps,IPanelStat
     }
     render() {
 		
+		if(this.state.isLoading){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+		}
+		
         return ( <div className="form-view">
-            	<Loading show={this.state.isLoading} container={this} /> 
+
                <table>
 			<tbody><tr>
 				<th colSpan={4} style={{textAlign:"left"}}>
@@ -60,8 +66,9 @@ export default class ManInfoPanel extends React.Component<IPanelProps,IPanelStat
 			<th rowSpan={4} style={{width:"20%"}}>照片</th>
 			<td rowSpan={4} style={{width:"30%"}}>
 			<div style={{textAlign:'center'}}>
-				<img id="image" width={80} height={80} 
-					src={AppConsts.uploadUrl +this.state.record.avatar} alt={this.state.record.realName}/>
+
+				 <UploadFile defaultFileList={ convertFile(this.state.record.avatar)}  disabled={true}/>
+                     	
         	</div>
 
 			</td>

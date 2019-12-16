@@ -53,7 +53,7 @@ type IPageState = IOtherState & IPageDetailState;
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(0);
         }
     }
     

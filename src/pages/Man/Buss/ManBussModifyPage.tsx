@@ -69,11 +69,11 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
         }
 
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 
@@ -240,13 +240,12 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                 <FormItem>
                     <Label>原因</Label>
                     <Select {...getFieldProps('reason')}
-          showSearch={true}
-          allowClear={true}
-        >
+                        showSearch={true}
+                        allowClear={true} >
           <Select.Option value="">(请选择)</Select.Option>
-          <Select.Option value="confirming">不是我们社区的人员</Select.Option>
-          <Select.Option value="executing">执行强戒，终止社区戒毒</Select.Option>
-          <Select.Option value="termination">其它</Select.Option>
+          <Select.Option value="不是我们社区的人员">不是我们社区的人员</Select.Option>
+          <Select.Option value="执行强戒，终止社区戒毒">执行强戒，终止社区戒毒</Select.Option>
+          <Select.Option value="其它">其它</Select.Option>
         </Select>
                </FormItem>
                <FormItem>

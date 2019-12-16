@@ -42,11 +42,11 @@ class ManBussFullPage extends React.Component<IPageProps,IPageState> {
         this.setState({id:this.id});
     }
   
-    goBack=()=>{
+    goBack=(flag:number)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 
@@ -63,7 +63,7 @@ class ManBussFullPage extends React.Component<IPageProps,IPageState> {
 			    <Breadcrumb.Item active>
                    业务查看
 			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
 			</Breadcrumb>
 			:null}
 			<ManBussFullPanel manId={this.state.id}></ManBussFullPanel>

@@ -71,8 +71,8 @@ componentDidMount() {
 go2Page=async (item)=>{
  
   //this.props.history.push('/forhelp');
- 
-  const route=appRouters.find((v,i)=>v.title==item.name);
+  
+  const route=appRouters.find((v,i)=>v.title===item.name);
   if(route!=null){
     console.log('go2Page:'+route.path);
     this.props.history.push(route.path);
@@ -83,6 +83,9 @@ go2Page=async (item)=>{
 }
 
 pushPage=(url:string)=>{
+  
+  this.setState({showRightDrawer:false});
+
   this.props.history.push(url);
 }
 
@@ -180,8 +183,10 @@ render() {
         </PageLayout.Content>
     </PageLayout>
     <Footer/>
-    <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={true} width={'450px'} showClose={true}  title={"消息"} show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
-          <MsgPanel unReadNum={this.props.systemStore.unReadNum}></MsgPanel>
+    <Drawer closeIcon={<Icon type="uf-close-c"/>} showMask={true} width={'450px'} showClose={true}  
+      title={"消息"} 
+      show={this.state.showRightDrawer} placement='right' onClose={this.closeRightDrawer}>
+          <MsgPanel unReadNum={this.props.systemStore.unReadNum}  go2page={this.pushPage} ></MsgPanel>
     </Drawer>
     <Alert show={this.state.isLogoffAlert} context="确定要退出登录?"
                            confirmFn={() => {

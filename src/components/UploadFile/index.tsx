@@ -87,7 +87,6 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
   }
   handler_onChange=(info)=>{
    
-    console.log('upload status:'+info.file.status);
     this.setState({fileList:info.fileList});
 
     if (info.file.status === 'uploading') {
@@ -115,7 +114,6 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
   }
 
   render() {
-    console.log('defaultFileList:'+JSON.stringify( this.props.defaultFileList));
 
     return (
       <div>

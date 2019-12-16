@@ -10,7 +10,8 @@ import { PageModel } from '../../../../services/Model/Models';
 import { Info } from '../../../../utils';
 
 interface IPanelProps {
-    unReadNum:number
+    unReadNum:number,
+    go2page:(url:string)=>void,
 }
 interface IPanelState {
     records: Array<any>,
@@ -50,7 +51,6 @@ export  class MsgPanel extends React.Component<IPanelProps,IPanelState> {
     }
     handler_delete=async (ids)=>{
 
-        debugger;
         this.setState({isLoading:true});
 
         SysService.deleteMessage(ids).then(()=>{
@@ -76,7 +76,7 @@ export  class MsgPanel extends React.Component<IPanelProps,IPanelState> {
                             return(<MsgItem item={item} onRead={this.handler_read} onDelete={this.handler_delete}></MsgItem>)
                         })
                     }
-
+                    <Label className="link-go" onClick={()=>this.props.go2page('/my-message')}>查看全部</Label>
             </div>)
     }
 }

@@ -297,9 +297,9 @@ handler_delete=async ()=>{
             
         
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>{
+                    onClose={(flag)=>{
                         this.setState({isPopPage:false});
-                        this.search();
+                        if(flag==1) this.search();
                     }} >
           </PageDlog>
           <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"

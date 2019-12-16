@@ -48,11 +48,11 @@ type IPageState = IOtherState & IPageDetailState;
         let result = await CmsService.findArticleById(id);
         this.setState({record:result,isLoading:false});
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
     
@@ -74,7 +74,7 @@ type IPageState = IOtherState & IPageDetailState;
                     <Breadcrumb.Item active>
                         查看
 			        </Breadcrumb.Item>
-                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
                 </Breadcrumb>)
                 :null
             }

@@ -6,7 +6,7 @@ import { appRouters } from '../../components/Router/router.config';
 interface IProps {
     model: PopPageModel,
     isShow:boolean,
-    onClose:()=>void,
+    onClose:(flag:number)=>void,//0:close,1:reload
     //size?:'lg'|'lg'|"xlg"
 }
 interface IState {

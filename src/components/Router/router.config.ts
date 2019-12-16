@@ -311,23 +311,29 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Checkin/View'))
   },
   {
-    path: '/audit-noticewarn',
+    path: '/audit/noticewarn',
     title: '通知函',
     name: 'audit_noticewarn',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/NoticeWarn'))
   },{
-    path: '/audit-mantrans',
+    path: '/audit/mantrans',
     title: '社区转移',
     name: 'audit_mantrans',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/ManTrans'))
   },{
-    path: '/audit-buss-modify',
+    path: '/audit/buss-modify/:id',
+    title: '社戒修改-查看',
+    name: 'audit_buss_modify_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Audit/ManBuss/view'))
+  },{
+    path: '/audit/buss-modify',
     title: '社戒修改',
-    name: 'audit_mancate',
+    name: 'audit_buss_modify',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/ManBuss'))
@@ -494,6 +500,12 @@ export const appRouters: any = [
     name: 'sys_logs',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Logs'))
+  },{
+    path: '/my-message',
+    title: '我的消息',
+    name: 'sys_msg',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/Msg'))
   },{
     path: '/grid-unit',
     title: '包办单位',

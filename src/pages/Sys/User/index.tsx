@@ -71,7 +71,7 @@ type IPageState = IOtherState & IListPageState;
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
             }
-            values['orgId']=this.orgId;
+            values['deptIdSelected']=this.orgId;
             console.log('Search:'+JSON.stringify(values));
 
             //let queryParam = deepClone(this.props.queryParam);
@@ -84,7 +84,7 @@ type IPageState = IOtherState & IListPageState;
       loadData= async (args)=>{
        
         args['orderby']=this.orderBy;
-        args['isMan']=0;
+        //args['isMan']=0;
 
         this.setState({isLoading:true});
         let page = await SysService.searchAccount(args,this.pageIndex,this.pageSize) as PageModel<any>;
@@ -217,12 +217,13 @@ type IPageState = IOtherState & IListPageState;
 
                    var html=  m.split(',').map(element => {
                         
-                        return (
+                        return (<li style={{paddingBottom:'3px'}}>
                             <Tag colors={"success"}>{element}</Tag>
+                            </li>
                             )
                     });
 
-                    return (<div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}}>{html}</div>)
+                    return (<ul>{html}</ul>)
                 }
                 return '';
             }},
@@ -231,10 +232,7 @@ type IPageState = IOtherState & IListPageState;
                 return m!=null?(<Tag colors={"success"}>否</Tag>):(<Tag colors={"danger"}>是</Tag>)
 
             } },
-            { title: '组织部门', dataIndex: 'dept', key: 'dept', width: 200,textAlign:'center',render(m){
-
-                return m!=null?(m.deptName!=null?m.deptName:''):'';
-            } },
+            { title: '组织部门', dataIndex: 'orgName', key: 'orgName', width: 200,textAlign:'center' },
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
             
           ];
@@ -353,11 +351,9 @@ type IPageState = IOtherState & IListPageState;
                     <FormItem
                         label="戒毒人员">
                         <Radio.RadioGroup
-                            name="isMan"
-                            defaultValue="2"
-                            onChange={(v)=>{}} >
+                            {...getFieldProps('isMan', {initialValue: '0'})}>
                             <Radio value="1" >是</Radio>
-                            <Radio value="2" >否</Radio>
+                            <Radio value="0" >否</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
 
@@ -389,7 +385,10 @@ type IPageState = IOtherState & IListPageState;
 
            
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                        }} >
             </PageDlog>
             <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {

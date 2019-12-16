@@ -120,7 +120,7 @@ export interface IPageDetailProps {
   //in pop
   isPage?:boolean,
   url?:string,
-  handlerBack?:()=>void
+  handlerBack?:(flag:number)=>void
 }
 export interface IPageDetailState {
   isLoading:boolean,

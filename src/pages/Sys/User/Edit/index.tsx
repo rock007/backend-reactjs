@@ -10,6 +10,9 @@ import { IPageDetailProps, IPageDetailState, PageModel } from '../../../../servi
 import SysService from '../../../../services/SysService';
 import { Warning, getValidateFieldsTrim, Info } from '../../../../utils';
 import UploadFile from '../../../../components/UploadFile';
+import AppConsts from '../../../../lib/appconst';
+import { convertFile } from '../../../../utils/tools';
+import { isArray } from 'util';
 
 const FormItem = Form.FormItem;
 
@@ -29,7 +32,8 @@ type IPageState = IOtherState & IPageDetailState;
 
 export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
-    id:string='0'
+    id:string=''
+    avatar:string=''
 
     state:IPageState={
         selectedValue:'',
@@ -51,8 +55,13 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
             const m1=new RegExp('/user-edit/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
+        if(this.id!=null&&this.id!='0'){
 
-        this.loadData(this.id);
+            this.loadData(this.id);
+        }else{
+            this.forceUpdate();
+        }
+
     }
 
     loadData=async (id)=>{
@@ -67,17 +76,21 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
         this.setState({record:data,roles:rolePage.data,isLoading:false});
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
     handler_uploadChange=(files:Array<any>,where:string)=>{
 
-        let ids=files.map(m=>m.fileId);
-        //this.setState({fileIds:ids});
+        if(files.length>0){
+
+            this.avatar= files[0].url.replace(AppConsts.uploadUrl,'');
+        }else{
+            this.avatar='';
+        }
     }
     submit=(e)=>{
 
@@ -97,15 +110,20 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     values.orgName=oo.refname;
                 }
 
-                values['id']=this.id!=='0'?this.id:null;
-                values['avatar']='';
+                if(values.roleIds&&isArray(values.roleIds)){
 
+                    values.roleIds=values.roleIds.join(',');
+                }
+
+                values['id']=this.id!=='0'?this.id:null;
+                values['avatar']=this.avatar;
+                
                 this.setState({isLoading:true});
                 SysService.submitAccount(values)
                     .then((resp)=>{
     
                         Info(resp);
-                        this.goBack();
+                        this.goBack(1);
                     })
                     .catch((resp)=>{
     
@@ -122,8 +140,29 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
         const { getFieldProps, getFieldError } = this.props.form;
 
         let me=this;
+
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
+        const roleOptions=this.state.roles.map(
+            (item,index)=>{
+               return  { label:item.roleName,'value':item.id}
+            });
+
+            /**
+              {
+                                    ...getFieldProps('roleIds',{
+                                        initialValue:this.state.record.roleIds,
+                                        rules: [{ required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请选择角色</span></span> }]
+                                    })
+                                }
+             * 
+            */
+
         return ( <Panel>
-            <Loading container={this} show={this.state.isLoading}/>
+
               {
                   this.isPage()?<Breadcrumb>
                   <Breadcrumb.Item href="#">
@@ -138,14 +177,15 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                   <Breadcrumb.Item active>
                     {this.id==='0'?"添加":"编辑"}
                   </Breadcrumb.Item>
-                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
               </Breadcrumb>:null
               }
             <Form className='edit_form_pop'>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>头像</Label></div>
                         <div>
-                            <UploadFile  uploadChange={this.handler_uploadChange} />
+                            <UploadFile maxSize={1}   uploadChange={this.handler_uploadChange} 
+                             defaultFileList={convertFile(this.state.record.avatar)}/>
                         </div>
                     </FormItem>
                     <FormItem>
@@ -220,22 +260,19 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         
                         <FormError errorMsg={getFieldError('orgId')}/>
                     </FormItem>
-                    <FormItem>
+                    <FormItem style={{display:'flex'}}>
                         <Label>角色</Label>
-                        <Checkbox.CheckboxGroup 
+                        <div style={{display:'inline-block',width:'auto'}}>
+                        <Checkbox.CheckboxGroup    options={roleOptions}
                                 {
                                     ...getFieldProps('roleIds',{
-                                        initialValue:this.state.record.roleIds!=null?this.state.record.roleIds:'',
+                                        initialValue:this.state.record.roleIds!=null?this.state.record.roleIds.split(','):'',
                                         rules: [{ required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请选择角色</span></span> }]
                                     })
                                 }>
                            
-                                {
-                                    this.state.roles.map((item,index)=>
-                                        <Checkbox value={item.id}>{item.roleName}</Checkbox>
-                                    )
-                                }
                         </Checkbox.CheckboxGroup>
+                        </div>
                         <span className='error'>
                             {getFieldError('roleIds')}
                         </span>
@@ -246,7 +283,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
                             {
                             ...getFieldProps('status', {
-                                initialValue: this.state.record.status,
+                                initialValue: this.state.record.status+'',
                              
                                 rules: [{ required: true }]
                             }
@@ -257,7 +294,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                         </Radio.RadioGroup>
                     </FormItem>
                     <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border"  onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
+                        <Button shape="border"  onClick={this.goBack.bind(this,1)} style={{"marginRight":"8px"}}>取消</Button>
                         <Button colors="primary"  onClick={this.submit}>保存</Button>
                     </FormItem>
                 </Form>

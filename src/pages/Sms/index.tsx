@@ -4,11 +4,9 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 import Grid from '../../components/Grid';
-import SelectDict from '../../components/SelectDict';
-import ManCateSelect from '../../components/ManCateSelect';
+
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../services/Model/Models';
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
-import {RefGridTreeTableSelect} from '../../components/RefViews/RefGridTreeTableSelect';
 
 import PageDlog from '../../components/PageDlg';
 import { getValidateFieldsTrim } from '../../utils/tools';

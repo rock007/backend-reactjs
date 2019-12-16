@@ -62,11 +62,11 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
         }
 
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 

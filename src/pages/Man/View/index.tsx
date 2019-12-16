@@ -63,7 +63,7 @@ class ManView extends React.Component<IPageProps,IPageState> {
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(0);
         }
     }
 	go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{

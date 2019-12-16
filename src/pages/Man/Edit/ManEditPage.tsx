@@ -16,6 +16,10 @@ import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
 import ManService from '../../../services/ManService';
 
 import './index.scss';
+import UploadFile from '../../../components/UploadFile';
+import { convertFile } from '../../../utils/tools';
+import AppConsts from '../../../lib/appconst';
+import { isArray, isString } from 'util';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -29,7 +33,7 @@ interface IPageProps {
     //in pop
     isPage?:boolean,
     url?:string,
-    handlerBack?:()=>void
+    handlerBack?:(flag:number)=>void
 }
 interface IPageState {
     record:any,
@@ -41,7 +45,8 @@ const format = "YYYY-MM-DD";
 
 class ManEditPage extends React.Component<IPageProps,IPageState> {
     
-    id:string='';
+    id:string=''
+    avatar:string=''
 
     state:IPageState={
         record:{},
@@ -73,6 +78,8 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
         if(this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate();
         }
 
     }
@@ -98,10 +105,21 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 values.catchDate = values.catchDate!=null?values.catchDate.format(format):"";
                 values.registSetDate = values.registSetDate!=null?values.registSetDate.format(format):"";
 
-                values.drugsTypes=values.drugsTypes!=null?values.drugsTypes.join(','):'';
-                values.gridId=values.gridId!=null?JSON.parse(values.gridId).refpk:'';
+                if(values.drugsTypes!=null){
+
+                    if(isString(values.drugsTypes)){
+                        values.drugsTypes= values.drugsTypes;       
+                    }else if(isArray (values.drugsTypes)){
+                        values.drugsTypes=values.drugsTypes.join(',');
+                    }
+                }
+
+                //values.drugsTypes=values.drugsTypes!=null&&isArray (values.drugsTypes) ?values.drugsTypes.join(','):values.drugsTypes;
+                values.cellId=values.cellId!=null?JSON.parse(values.cellId).refpk:'';
                 values.orgId=values.orgId!=null?JSON.parse(values.orgId).refpk:'';//eg:{"refname":"漫水乡中心戒毒社区","refpk":"001001005"}
 
+                values['manId']=this.id;
+                values['avatar']=this.avatar;
                 this.setState({isLoading:true});
                 this.doSubmit(values);
             }else{
@@ -114,7 +132,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
 
         ManService.submitMan(args).then((resp)=>{
 
-            debugger;
+            this.goBack(1);
 
         }).catch((err)=>{
 
@@ -130,33 +148,41 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
         this.setState({activeKey:activeKey});
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
-   
+    handler_uploadChange=(files:Array<any>)=>{
+
+        if(files.length>0){
+
+            this.avatar= files[0].url.replace(AppConsts.uploadUrl,'');
+        }else{
+            this.avatar='';
+        }
+    }
     renderProcess(){
 
         if(this.state.record['manId']!=null) return null;
 
         let {getFieldProps, getFieldError} = this.props.form;
+
         return (
             <Panel header="社戒情况" eventKey="2">
             <FormList>
             <FormItem
                    required
-                   label="组织社区"
-               >
+                   label="组织社区" >
 
                    <RefOrgTreeSelect  
                     {...getFieldProps('orgId', {
                         initialValue: this.state.record.idsType,
                         rules: [{
                             required: true, message: '请选择组织社区',
-                          //  pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/
+                            pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/
                         }]
                     })}
                     />
@@ -165,20 +191,18 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
            </FormItem>
            <FormItem
                    required
-                   label="网格单元"
-               >
-                   <RefGridTreeTableSelect {...getFieldProps('gridId', {
+                   label="网格单元">
+                   <RefGridTreeTableSelect {...getFieldProps('cellId', {
                         initialValue: this.state.record.gridId,
                         rules: [{
                             required: true, message: '请选择网格单元',
                         }]
                     })}/>
-                   <FormError errorMsg={getFieldError('gridId')}/>
+                   <FormError errorMsg={getFieldError('cellId')}/>
            </FormItem>
            <FormItem
                    required
-                   label="人员分类"
-               >
+                   label="人员分类" >
                    <ManCateSelect {...getFieldProps('cateType', {
                         initialValue: this.state.record.cateType,
                         rules: [{
@@ -189,8 +213,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
            </FormItem>
            <FormItem
                    required
-                   label="风险等级"
-               >
+                   label="风险等级" >
                    <SelectDict onChange={()=>{}} type={31} {
                        ...getFieldProps('level', {
                            initialValue: this.state.record.level,
@@ -204,8 +227,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
            <FormItem
                 className="time"
                 required
-                label="社区报到时间"
-            >
+                label="社区报到时间" >
                  <DatePicker className='form-item' format={format} 
                                 {...getFieldProps('registSetDate', {
                                     initialValue: this.state.record.registSetDate ? moment(this.state.record.registSetDate ) : moment(),
@@ -216,8 +238,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 <FormError errorMsg={getFieldError('registSetDate')}/>
             </FormItem>
            <FormItem
-               label="备注"
-           >
+               label="备注" >
                <FormControl 
                             {...getFieldProps('remark', {
                                     initialValue: this.state.record.remark 
@@ -235,21 +256,14 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
     render() {
 
         let {getFieldProps, getFieldError} = this.props.form;
-        
-        const demo4props = {
-            action: '/upload.do',
-            listType: 'picture-card',
-            defaultFileList: [ {
-              uid: -2,
-              name: 'zzz.png',
-              status: 'done',
-              url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-              thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
-            }],
-          };
+
+        if(this.id!=='0'&&this.state.record.manId==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
 
         return (   <Panel>
-              <Loading container={this} show={this.state.isLoading}/>
+
              {this.isPage()?
                 (<Breadcrumb>
 			        <Breadcrumb.Item href="#">
@@ -261,22 +275,21 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
 			        <Breadcrumb.Item active>
                     {this.id==''?"添加":"编辑"}
 			        </Breadcrumb.Item>
-                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
                 </Breadcrumb>)
                 :null}
               
             <PanelGroup activeKey={this.state.activeKey}  onSelect={this.handleSelect}   accordion>
                 <Panel header="基本信息" eventKey="1">
                 <FormList>
+                
                 <div style={{textAlign:'center'}}>
-                    <Upload {...demo4props}>
-                        <Icon type="uf-plus" style={{fontSize:'22px'}}/> 
-                        <p>上传</p>
-                    </Upload>
+                    
+                    <UploadFile uploadChange={this.handler_uploadChange}  defaultFileList={ convertFile(this.state.record.avatar)}  disabled={false}/>
+                     
                 </div>
                 <FormItem
-                    label="编号"
-                >
+                    label="编号">
                     <FormControl disabled={true}
                                  {...getFieldProps('manNo', {
                                      initialValue: this.state.record.manNo,
@@ -285,8 +298,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem
                     required
-                    label="姓名"
-                >
+                    label="姓名" >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('realName', {
                                      validateTrigger: 'onBlur',
@@ -302,8 +314,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('realName')}/>
                 </FormItem>
                 <FormItem
-                    label="绰号/别名"
-                >
+                    label="绰号/别名" >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('nickName', {
                                      validateTrigger: 'onBlur',
@@ -321,8 +332,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
 
                 <FormItem
                     required
-                    label="性别"
-                >
+                    label="性别">
                     <Radio.RadioGroup {...getFieldProps('sex', {
                                 initialValue: this.state.record.sex,
                                 rules: [{
@@ -335,8 +345,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('sex')}/>
                 </FormItem>
                 <FormItem
-                    label="民族"
-                >
+                    label="民族" >
                     <Select 
                             {...getFieldProps('nation', {
                                 initialValue: this.state.record.nation,
@@ -354,8 +363,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 <FormItem
                     className="time"
                     required
-                    label="出生日期"
-                >
+                    label="出生日期">
                      <DatePicker className='form-item' format={format} 
                                     {...getFieldProps('birthday', {
                                         initialValue: this.state.record.birthday==null? moment(): moment(this.state.record.birthday) ,
@@ -367,8 +375,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem
                     required
-                    label="联系方式"
-                >
+                    label="联系方式">
                     <FormControl  maxLength={20}
                                  {...getFieldProps('linkPhone', {
                                      validateTrigger: 'onBlur',
@@ -384,16 +391,14 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('linkPhone')}/>
                 </FormItem>
                 <FormItem
-                    label="政治面貌"
-                >
+                    label="政治面貌" >
                     <Select 
                             {...getFieldProps('politicalStatus', {
                                 initialValue:  this.state.record.politicalStatus,
                                 rules: [{
                                     required: false, message: '请选择政治面貌',
                                 }],
-                            })}
-                    >
+                            })}    >
                         <Option value="群众">群众</Option>
                         <Option value="农民">农民</Option>
                         <Option value="团员">团员</Option>
@@ -404,8 +409,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 
                 <FormItem
                     required
-                    label="证件类型"
-                >
+                    label="证件类型" >
                     <Select 
                             {...getFieldProps('idsType', {
                                 initialValue: this.state.record.idsType,
@@ -421,8 +425,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem
                     required
-                    label="证件号码"
-                >
+                    label="证件号码" >
                     <FormControl  maxLength={25}
                                  {...getFieldProps('idsNo', {
                                      validateTrigger: 'onBlur',
@@ -439,8 +442,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 </FormItem>
              
                 <FormItem
-                    label="职业"
-                >
+                    label="职业"  >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('job', {
                                      validateTrigger: 'onBlur',
@@ -456,16 +458,14 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('job')}/>
                 </FormItem>
                 <FormItem
-                    label="婚姻状况"
-                >
+                    label="婚姻状况"  >
                     <Select 
                             {...getFieldProps('marriageStatus', {
                                 initialValue:  this.state.record.marriageStatus,
                                 rules: [{
                                     required: false, message: '请选择婚姻状况',
                                 }],
-                            })}
-                    >
+                            })}  >
                         <Option value={"未婚"}>未婚</Option>
                         <Option value={"已婚"}>已婚</Option>
                         <Option value={"离婚"}>离婚</Option>
@@ -475,16 +475,14 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('marriageStatus')}/>
                 </FormItem>
                 <FormItem
-                    label="文化程度"
-                >
+                    label="文化程度" >
                      <Select 
                             {...getFieldProps('educationLevel', {
                                 initialValue: this.state.record.educationLevel,
                                 rules: [{
                                     required: false, message: '请选择文化程度',
                                 }],
-                            })}
-                    >
+                            })}   >
                         <Option value={"文盲"}>文盲</Option>
                         <Option value={"小学"}>小学</Option>
                         <Option value={"初中"}>初中</Option>
@@ -497,8 +495,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('educationLevel')}/>
                 </FormItem>
                 <FormItem
-                    label="身高(cm)"
-                >
+                    label="身高(cm)" >
                     <InputNumber iconStyle="one" min={0} step={1} max={399}
                                  {...getFieldProps('height', {
                                      initialValue: this.state.record.height,
@@ -508,8 +505,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('height')}/>
                 </FormItem>
                 <FormItem
-                    label="体重(kg)"
-                >
+                    label="体重(kg)" >
                     <InputNumber iconStyle="weight" min={0} step={1}  max={400}
                                  {...getFieldProps('weight', {
                                      initialValue: this.state.record.weight,
@@ -519,8 +515,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('weight')}/>
                 </FormItem>
                 <FormItem
-                    label="户籍地"
-                >
+                    label="户籍地"  >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('birthplaceDistrict', {
                                      validateTrigger: 'onBlur',
@@ -536,8 +531,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('birthplaceDistrict')}/>
                 </FormItem>
                 <FormItem
-                    label="户籍地派出所"
-                >
+                    label="户籍地派出所"  >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('birthplaceRegion', {
                                      validateTrigger: 'onBlur',
@@ -553,8 +547,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('birthplaceRegion')}/>
                 </FormItem>
                 <FormItem
-                    label="户籍地详址"
-                >
+                    label="户籍地详址">
                     <FormControl  maxLength={200}
                                  {...getFieldProps('birthplaceAddress', {
                                      validateTrigger: 'onBlur',
@@ -570,8 +563,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('birthplaceAddress')}/>
                 </FormItem>
                 <FormItem
-                    label="居住地"
-                >
+                    label="居住地" >
                     <FormControl 
                                  {...getFieldProps('liveDistrict', {
                                      validateTrigger: 'onBlur',
@@ -587,9 +579,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('liveDistrict')}/>
                 </FormItem>
                 <FormItem
-                    
-                    label="居住地派出所"
-                >
+                    label="居住地派出所" >
                     <FormControl  maxLength={20}
                                  {...getFieldProps('liveRegion', {
                                      validateTrigger: 'onBlur',
@@ -605,9 +595,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('liveRegion')}/>
                 </FormItem>
                 <FormItem
-                    
-                    label="居住地详址"
-                >
+                    label="居住地详址" >
                     <FormControl  maxLength={200}
                                  {...getFieldProps('liveAddress', {
                                      validateTrigger: 'onBlur',
@@ -623,9 +611,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('liveAddress')}/>
                 </FormItem>
                 <FormItem
-                    
-                    label="籍贯"
-                >
+                    label="籍贯">
                     <FormControl  maxLength={20}
                                  {...getFieldProps('birthplace', {
                                      validateTrigger: 'onBlur',
@@ -641,8 +627,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('birthplace')}/>
                 </FormItem>
                 <FormItem
-                    label="宗教信仰"
-                >
+                    label="宗教信仰" >
                     <Select 
                             {...getFieldProps('beliefType', {
                                 initialValue: this.state.record.beliefType,
@@ -658,16 +643,14 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('beliefType')}/>
                 </FormItem>
                 <FormItem
-                    label="滥用毒品种类"
-                >
+                    label="滥用毒品种类"  >
                     <Select multiple
                             {...getFieldProps('drugsTypes', {
                                 initialValue:  this.state.record.drugsTypes,
                                 rules: [{
                                     required: false, message: '请选择滥用毒品种类',
                                 }],
-                            })}
-                    >
+                            })}  >
                         <Option value="冰毒">冰毒</Option>
                         <Option value="麻古">麻古</Option>
                         <Option value="安定">安定</Option>
@@ -679,8 +662,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     <FormError errorMsg={getFieldError('drugsTypes')}/>
                 </FormItem>
                 <FormItem
-                   label="查获日期"
-               >
+                   label="查获日期" >
                     <DatePicker className='form-item' format={format} 
                                    {...getFieldProps('catchDate', {
                                        initialValue:  this.state.record.catchDate? moment(this.state.record.catchDate) : moment(),
@@ -691,8 +673,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                    <FormError errorMsg={getFieldError('catchDate')}/>
                </FormItem>
                <FormItem
-                   label="查获单位"
-               >
+                   label="查获单位" >
                    <FormControl  maxLength={20} 
                                 {...getFieldProps('catchUnit', {
                                     initialValue: this.state.record.catchUnit

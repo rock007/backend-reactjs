@@ -9,9 +9,6 @@ import { IPageDetailProps, IPageDetailState } from '../../../../services/Model/M
 import SysService from '../../../../services/SysService';
 import { getValidateFieldsTrim, Warning, Info } from '../../../../utils';
 
-const FormItem = Form.FormItem;
-
-
 interface IOtherProps {
     
 } 
@@ -60,11 +57,11 @@ export  class RolePermissionPage extends React.Component<IPageProps,IPageState> 
       
         this.setState({record:data,isLoading:false,isLoaded:true});
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
    

@@ -4,15 +4,16 @@ import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Ra
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 import Grid from '../../../components/Grid';
+
 import SelectDict from '../../../components/SelectDict';
 import ManCateSelect from '../../../components/ManCateSelect';
 import {PageModel, IPageCommProps, IListPageState, PopPageModel} from '../../../services/Model/Models';
 import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
-import {RefGridTreeTableSelect} from '../../../components/RefViews/RefGridTreeTableSelect';
 
 import DatePicker from "bee-datepicker";
 import PageDlog from '../../../components/PageDlg';
-import { getValidateFieldsTrim } from '../../../utils';
+import { getValidateFieldsTrim, Info } from '../../../utils';
+import ManService from '../../../services/ManService';
 
 const FormItem = FormListItem;
 
@@ -63,14 +64,14 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
             }
 
             this.pageIndex=1;
-            //this.loadData(values);
+            this.loadData(values);
         });
       }
       
       loadData= async (args)=>{
       
         this.setState({isLoading:true});
-        let page =null; //await BussService.searchWarn(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page =await ManService.searchBussUpdate(args,this.pageIndex,this.pageSize) as PageModel<any>;
 
         this.setState({page:page,isLoading:false});
       }
@@ -125,26 +126,61 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
         console.log('export=======');
     }
    
+    handler_audit=async ()=>{
+
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+    
+        let ids:string='';
+        this.state.checkedRows.map((item,index)=>{
+            ids=ids+','+item.id;
+        });
+       await ManService.submitCheckinAudit(ids).then(()=>{
+    
+            Info('操作成功');
+            this.search();
+        })
+        .catch((err)=>{
+            Error('操作失败');
+        }).finally(()=>{
+            this.setState({isLoading:false});
+        });
+    }
+
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const columns = [
-            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 150 },
             { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
-            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 },
-            { title: '原值', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
-            { title: '修改为', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
-            { title: '状态', dataIndex: 'mjResp', key: 'mjResp',textAlign:'center', width: 200 },
-            { title: '操作人', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
-            { title: '审核人', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
+            { title: '类型', dataIndex: 'modifyType', key: 'modifyType',textAlign:'center', width: 100 },
+            { title: '原值', dataIndex: 'oldText', key: 'oldText', textAlign:'center',width: 200 },
+            { title: '修改为', dataIndex: 'newText', key: 'newText',textAlign:'center', width: 150 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 200 },
+            { title: '操作人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 150 },
+            { title: '审核人', dataIndex: 'respUser', key: 'respUser',textAlign:'center', width: 150 },
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
           ];
           
           const toolBtns = [{
             value:'审批',
             bordered:false,
-            colors:'primary'
+            colors:'primary',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:()=>{
+                
+                if(this.state.checkedRows.length>1){
+
+                    Info('审批只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+
+                    this.go2Page('/audit/buss-modify/'+this.state.checkedRows[0].id,"社戒修改审批",false);
+
+                }else{
+                    Info('请选择要审批的记录');
+                }
+            }
         },{
             value:'导出',
             iconType:'uf-export',

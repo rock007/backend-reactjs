@@ -1,6 +1,7 @@
 import cloneDeep from 'clone-deep';
 import {ITreeNode} from '../services/Model/Models';
 import AppConsts from "../lib/appconst";
+import defaultPic from '../images/pic_holder.png';
 
 export function isMoment(obj){
     return typeof obj === 'object' && obj.date && obj.format;
@@ -187,7 +188,7 @@ export function convertArticleCateTreeNode(item:any):ITreeNode{
 }
 
 
-export function convertFiles(list):Array<any>{
+export function convertFiles(list:Array<any>):Array<any>{
 
     if(list==null) return [];
      
@@ -206,6 +207,26 @@ export function convertFiles(list):Array<any>{
     });
 
     return files;
+}
+
+
+export function convertFile(fileUrl:string):Array<any>{
+
+    let now=new Date().getUTCSeconds();
+
+    if(fileUrl==null||fileUrl==='') return [{uid:now,name:'img_'+now,url:defaultPic,thumbUrl:defaultPic}];
+     
+
+    return [{
+            uid:  now,
+            name: 'img_'+now,
+            //status: 'done',
+            url:  AppConsts.uploadUrl+fileUrl,
+            thumbUrl:AppConsts.uploadUrl+fileUrl
+            //response:item,
+            //url: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+            //thumbUrl: 'https://p0.ssl.qhimgs4.com/t010e11ecf2cbfe5fd2.png',
+        }];
 }
 
 export function  convertLevelText(m):string{
@@ -234,6 +255,19 @@ export function  convertWarnTypeText(m):string{
     if(m==3) return '拒绝检查';
     if(m==4) return '失联';
     if(m==5) return '其它';
+    
+    return m;
+}
+
+
+export function  convertBussModifyTypeText(m):string{
+    if(m==null) return '';
+    if(m==0) return '未知';
+    if(m==1) return '转移社区';
+    if(m==2) return '修改人员分类';
+    if(m==3) return '修改风险等级';
+    if(m==4) return '修改所属网格';
+    if(m==5) return '修改报到时间';
     
     return m;
 }
