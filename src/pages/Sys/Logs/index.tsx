@@ -114,21 +114,17 @@ class LogsPage extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '标题', dataIndex: 'title', key: 'title',textAlign:'center', width: 150 },
             
-            { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 200 },
-            { title: '操作者', dataIndex: 'receiveName', key: 'receiveName',textAlign:'center', width: 120 },
+            { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 300 },
+            { title: '操作者', dataIndex: 'trueName', key: 'trueName',textAlign:'center', width: 120 },
          
-            { title: '角色', dataIndex: 'visitorDate', key: 'visitorDate',textAlign:'center', width: 120},
+            { title: '角色', dataIndex: 'roles', key: 'roles',textAlign:'center', width: 120},
             
             { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },
             
-            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 150 }
+            { title: '社区', dataIndex: 'deptName', key: 'deptName',textAlign:'center', width: 150 }
           ];
 
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+          const toolBtns = [];
 
         return ( <Panel>
 

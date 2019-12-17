@@ -57,11 +57,9 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
         }
         if(this.id!=null&&this.id!='0'){
 
-            this.loadData(this.id);
-        }else{
-            this.forceUpdate();
+            //this.loadData(this.id);
         }
-
+        this.loadData(this.id);
     }
 
     loadData=async (id)=>{
@@ -150,16 +148,6 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
             (item,index)=>{
                return  { label:item.roleName,'value':item.id}
             });
-
-            /**
-              {
-                                    ...getFieldProps('roleIds',{
-                                        initialValue:this.state.record.roleIds,
-                                        rules: [{ required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请选择角色</span></span> }]
-                                    })
-                                }
-             * 
-            */
 
         return ( <Panel>
 
@@ -280,17 +268,15 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     <FormItem>
                         <Label>状态</Label>
                         <Radio.RadioGroup
-
                             {
                             ...getFieldProps('status', {
                                 initialValue: this.state.record.status+'',
                              
                                 rules: [{ required: true }]
                             }
-                            ) }
-                        >
-                            <Radio value="0" >正常</Radio>
-                            <Radio value="1" >禁用</Radio>
+                            ) }>
+                            <Radio value="1" >正常</Radio>
+                            <Radio value="0" >禁用</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                     <FormItem style={{'paddingLeft':'106px'}}>

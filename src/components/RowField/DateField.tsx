@@ -131,7 +131,7 @@ class DateField extends Component<any,any> {
                     onChange={this.handlerChange}
                     format={'YYYY-MM-DD'}
                     locale={zhCN}
-                    placeholder={"选择年"}
+                    placeholder={"选择年月日"}
                 />
             </FieldWrap>
         );

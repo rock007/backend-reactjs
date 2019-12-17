@@ -72,8 +72,7 @@ type IPageState = IOtherState & IPageDetailState;
                 SysService.submitRole(values)
                     .then((resp)=>{
     
-                        Info(resp);
-                        this.goBack();
+                        this.goBack(1);
                     })
                     .catch((resp)=>{
     

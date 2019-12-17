@@ -2,7 +2,7 @@ import axios from 'axios';
 import AppConsts from './../lib/appconst';
 import { Modal ,Message} from 'tinper-bee';
 import {JsonBody} from './Model/Models';
-import { Warning } from '../utils';
+import { Warning ,Info,Error} from '../utils';
 
 const qs = require('qs');
 
@@ -43,16 +43,32 @@ http.interceptors.response.use(
         
         AppConsts.authorization.token='';
         window.location.href='/#/account/login';
+
+        return;
+      }
+
+      Warning(resp.data||resp.msg);
+      return Promise.reject(resp);
+    }
+
+    /** 
+    if(resp.result < 0){
+
+      if(resp.result==-401){
+        console.log('请重新登录');
+        
+        AppConsts.authorization.token='';
+        window.location.href='/#/account/login';
       }
       
       Message.destroy();
       Message.create({content: resp.msg, color: 'warn'});
       return Promise.reject(resp);
     }
+    ***/
 
-    if(resp.result!=1){
-      Warning(resp.msg);
-      return resp.data||resp.msg;
+    if(resp.msg!=='success'){
+      Info(resp.msg)
     }
 
     return resp.data;
@@ -61,13 +77,13 @@ http.interceptors.response.use(
 
     console.log('请求返回:'+JSON.stringify(error.response));
 
-    Message.destroy();
+    //Message.destroy();
     
     if(error.response!=null&&error.response.data!=null){
 
       let resp=error.response.data as JsonBody<any>;
 
-      Message.create({content: resp.msg, color: 'danger'});
+      //Message.create({content: resp.msg, color: 'danger'});
 
       if(resp.result==-401){
         console.log('请重新登录');
@@ -75,12 +91,14 @@ http.interceptors.response.use(
         window.location.href='/#/account/login';
       }else{
 
-        return Promise.reject(resp);
+        Error(resp.data||resp.msg);
+        //return Promise.reject(resp);
       }
 
     }else{
 
-      Message.create({content: '请求失败', color: 'danger'});
+      Error('请求失败');
+      //Message.create({content: '请求失败', color: 'danger'});
     }
    /**  
     if (!!error.response && !!error.response.data.msg && !!error.response.data.data ) {

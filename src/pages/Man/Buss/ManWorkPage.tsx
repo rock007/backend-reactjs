@@ -65,7 +65,7 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
             onValidate={this.onValidate}
       />
     }},
-    {title: "止时",dataIndex: "endDate",key: "endDate",width: 80,  render: (text, record, index) => {
+    {title: "止时",dataIndex: "endDate",key: "endDate",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
           type='textInput'
           value={text}
@@ -77,7 +77,7 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
         onValidate={this.onValidate}
       />
     }},
-    {title: "所在单位",dataIndex: "company",key: "company",width: 100,  render: (text, record, index) => {
+    {title: "所在单位",dataIndex: "company",key: "company",width: 120,  render: (text, record, index) => {
       return   <FactoryComp
           type='textInput'
           value={text}
@@ -89,7 +89,7 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
           onValidate={this.onValidate}
       />
     }},
-    {title: "职位",dataIndex: "postion",key: "postion",width: 100,  render: (text, record, index) => {
+    {title: "职位",dataIndex: "postion",key: "postion",width: 150,  render: (text, record, index) => {
       return   <FactoryComp
           type='textInput'
           value={text}
@@ -101,7 +101,7 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
           onValidate={this.onValidate}
       />
     }},
-    {title: "职业",dataIndex: "job",key: "job",width: 100,  render: (text, record, index) => {
+    {title: "职业",dataIndex: "job",key: "job",width: 150,  render: (text, record, index) => {
       return   <FactoryComp
           type='textInput'
           value={text}
@@ -133,15 +133,15 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
 
       if(this.manId!='0'){
 
-        this.loadData(this.manId);
+        this.loadData();
       }
     }
 
-    loadData=async (id)=>{
+    loadData=async ()=>{
 
       this.setState({isLoading:true});
 
-      let result = await ManService.searchWork({manId:id}) as PageModel<any>;
+      let result = await ManService.searchWork({manId:this.manId}) as PageModel<any>;
 
       this.setState({data:result.data,isLoading:false});
     }
@@ -152,7 +152,9 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
        ManService.submitWork(args)
               .then((resp)=>{
 
-                debugger;
+                this.setState({editModel:null});
+                this.loadData();
+
               })
               .catch((err)=>{
                 Error('保存数据出错');
@@ -161,10 +163,26 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
         });
     }
 
-    delData= async (ids:string)=>{
-      let result =  await ManService.deleteRelate(ids);
+    doDelete= async ()=>{
+      const me=this;
+      
+      this.setState({isLoading:true,showAlert:false});
 
-      debugger;
+      let ids:string='';
+      this.checkedRows.map((item,index)=>{
+          ids=ids+','+item.id;
+      });
+      ManService.deleteWork(ids).then(()=>{
+
+          this.setState({editModel:null});
+       
+          me.loadData();
+      })
+      .catch((err)=>{
+        //Error('删除操作失败');
+      }).finally(()=>{
+          this.setState({isLoading:false});
+      });
 
     }
 
@@ -268,7 +286,7 @@ isVerifyData = (data) => {
           manId:this.manId
       }
 
-      if (this.oldData.length <= 0) {
+      if (this.oldData.length <= 0&&this.state.editModel==null) {
 
          this.oldData=loadsh.cloneDeep(this.state.data);
 
@@ -278,22 +296,7 @@ isVerifyData = (data) => {
           });
       }
 
-      //this.oldData.unshift(tmp);
       newData.unshift(tmp);
-
-      /** 
-      if(this.oldData.length != 0 ){
-          for (let index = 0; index < this.oldData.length; index++) {
-              const element = this.oldData[index];
-              for (let i = 0; i < newData.length; i++) {
-                  if(element.key ===  newData[i].key){
-                      newData[i] = {...element};
-                      break;
-                  }
-              }
-          }
-      }
-      **/
 
       this.setState({data:newData,editModel:'add'});
   }
@@ -312,78 +315,82 @@ isVerifyData = (data) => {
     }
 
     handler_delete=()=>{
-      
+
       if(this.checkedRows.length==0){
         Info('请勾选要删除的记录');
         return;
       }
-      this.setState({  showAlert: true });
+
+      if(this.state.editModel=='add'){
+
+        let newData = loadsh.cloneDeep(this.state.data);
+
+        this.checkedRows.forEach((m,i)=>{
+          newData=  newData.filter(o=>o.key !== m.key);
+        })
+
+        this.setState({data:newData});
+
+      }else {
+
+        this.setState({  showAlert: true });
+      }
     }
 
     handler_save=async ()=>{
       
-        let filterResult = null;
+      if(this.checkedRows.length==0){
+        Info('请勾选要保存的记录');
+        return;
+      }
+      if (this.isVerifyData(this.checkedRows)) {
+
+        this.saveData(this.checkedRows);
+        
+      } else {
+        Info('数据填写不完整')
+      }
     
-        let msg = "请勾选数据后再新增";
-
-        switch (this.state.editModel) {
-            case 'add':
-                filterResult = this.filterList(this.oldData, this.state.data, 'key');
-                break;
-            case 'edit':
-                filterResult = this.filterList(this.oldData, this.state.data, 'id');
-                msg = '请勾选数据后再更新';
-                break;
-            default:
-                break;
-        }
-
-        if (filterResult.selectList.length > 0) {
-
-            //检查是否验证通过
-            if (this.isVerifyData(filterResult.selectList)) {
-
-                this.saveData(filterResult.selectList);
-
-            } else {
-                Info('数据填写不完整')
-            }
-        } else {
-            Info(msg);
-        }
     }
 
     handler_cancel=()=>{
       
-      this.setState({editModel:null,data:this.oldData});
       this.oldData = [];
+
+      this.setState({editModel:null});
+      this.loadData();
     }
 
     onValidate = (field, flag, index) => {
-
+/** old
       if (this.oldData.length > 0) {
           this.oldData[index][`_${field}Validate`] = (flag == null);
       }
+***/
+      let _sourseData = loadsh.cloneDeep(this.state.data);
+
+      if (_sourseData.length > 0) {
+        _sourseData[index][`_${field}Validate`] = (flag == null);
+      }
+
+      this.setState({data:_sourseData});
     }
 
     changeAllData = (field, value, index,refname) => {
 
-      let oldData = this.oldData;
-      let _sourseData = loadsh.cloneDeep(this.state.data);
-      oldData[index][field] = value;
+        let _sourseData = loadsh.cloneDeep(this.state.data);
+        _sourseData[index][field] = value;
+  
+        if(refname){
+            _sourseData[index][field+"Name"] = refname;
+        }
 
-      if(refname){
-          oldData[index][field+"Name"] = refname;
-      }
-      //有字段修改后去同步左侧对号checkbox
-      if (!_sourseData[index]['_checked']) {
-          _sourseData[index]['_checked'] = true;
-          //actions.inlineEdit.updateState({ list: _sourseData });
-          this.setState({data:_sourseData});
-      }
-      oldData[index]['_checked'] = true;
-      
-      this.oldData = oldData;
+        //if (!_sourseData[index]['_checked']) {
+        //    _sourseData[index]['_checked'] = true;
+       // }
+
+        this.setState({data:_sourseData});
+
     }
 
     hasCheck = () => {
@@ -400,19 +407,6 @@ isVerifyData = (data) => {
           }
       });
       return flag
-  }
-
-  onClickPopUnSaveOK = () => {
-    //重置store内的数据
-    //actions.inlineEdit.resetData(true);
-    //清空选中的数据
-    //actions.inlineEdit.updateState({ selectData: [], rowEditStatus: true });
-    this.setState({ showAlert: false });
-    this.oldData = [];
-  }
-
-  onClickPopUnSaveCancel = () => {
-    this.setState({ showAlert: false });
   }
 
   render() {
@@ -450,10 +444,11 @@ isVerifyData = (data) => {
           </Panel>
           <Alert
                 show={this.state.showAlert}
-                context="数据未保存，确定离开 ?"
-                confirmFn={this.onClickPopUnSaveOK}
-                cancelFn={this.onClickPopUnSaveCancel}
+                context="确定要删除记录?"
+                confirmFn={this.doDelete}
+                cancelFn={()=>this.setState({ showAlert: false })}
           />
+          <Loading container={this} show={this.state.isLoading}/>
         </React.Fragment>);
     }
 }

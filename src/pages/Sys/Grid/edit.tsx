@@ -68,14 +68,13 @@ type IPageState = IOtherState & IPageDetailState;
             console.log('校验失败', values);
             Warning("请检查输入数据，验证失败");
         } else {
-            console.log('提交成功', values);
 
             //this.doSave(values);
             this.setState({isLoading:true});
 
             if(values.areaId&&values.areaId!=''){
 
-                let oo=JSON.parse(values.cellId);
+                let oo=JSON.parse(values.areaId);
                 values.areaId=oo.refpk;
                 values.areaName=oo.refname;
             }
@@ -85,14 +84,14 @@ type IPageState = IOtherState & IPageDetailState;
                 values.linkUid=oo.refpk;
                 values.linkUserName=oo.refname;
             }
-            
-            values['id']=this.id;
+
+            values['cellId']=this.id!=='0'?this.id:null;
 
             SysService.submitGrid(values)
                 .then((resp)=>{
     
                     Info(resp);
-                    this.goBack();
+                    this.goBack(1);
                 })
                 .catch((resp)=>{
     
@@ -143,7 +142,7 @@ goBack=(flag:number=0)=>{
                         <Label>所在地区</Label>
                         <RefAreaTreeSelect  
                             {...getFieldProps('areaId', {
-                            initialValue: JSON.stringify({ 'refpk':this.state.record.superId,'refname':this.state.record.superName}),
+                            initialValue: JSON.stringify({ 'refpk':this.state.record.areaId,'refname':this.state.record.areaName}),
                             rules: [{
                                 required: true, message: '请选择地区',
                                   pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/
@@ -189,7 +188,7 @@ goBack=(flag:number=0)=>{
                         <RefUserTreeTableSelect  {
                             ...getFieldProps('linkUid', {
                                 validateTrigger: 'onBlur',
-                                initialValue: JSON.stringify({refpk:this.state.record.linkUid,refname:this.state.record.contactMan}),
+                                initialValue: JSON.stringify({refpk:this.state.record.linkUid,refname:this.state.record.linkName}),
                                 rules: [{ required: true }],message: <span><Icon type="uf-exc-t"></Icon><span>请选择网格管理员</span></span>
                             }
                         )}/>

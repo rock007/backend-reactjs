@@ -86,21 +86,7 @@ class AuditManBussModifyView extends React.Component<IPageProps,IPageState> {
 
                 values.registDate = values.registDate!=null?values.registDate.format('YYYY-MM-DD'):"";
 
-                if(values.cellId!=null){
-
-                    var obj=JSON.parse(values.cellId);
-                    values.cellId=obj.refpk;
-                    values.cellName=obj.refname;
-                }
-
-                if(values.orgId!=null){
-
-                    var obj=JSON.parse(values.orgId);
-                    values.orgId=obj.refpk;
-                    values.orgName=obj.refname;
-                }
-
-                values['manId']=this.id;
+                values['id']=this.id;
                 this.setState({isLoading:true});
 
                 ManService.submitBussAudit(values).then(()=>{

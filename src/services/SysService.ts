@@ -136,7 +136,7 @@ class SysService {
       [ "banana", 20 ],
       [ "carraot", 30 ]
   ]);
-    let result = await http.post('/rest/role-search',{parameters:{"uid":"22222","sex":12}});
+    let result = await http.post('/rest/role-search',args);
     return result;
   }
 
@@ -241,7 +241,7 @@ class SysService {
   //系统日志
   public async searchLog(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
-    let result = await http.post('/rest/logs-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    let result = await http.post('/rest/log-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }
 

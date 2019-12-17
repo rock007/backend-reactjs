@@ -35,6 +35,7 @@ type IPageState = IOtherState & IPageDetailState;
         return this.props.match&&this.props.history;
     }
     componentDidMount() {
+
         if(this.isPage()){
 
             this.id=this.props.match.params.id;
@@ -76,12 +77,13 @@ type IPageState = IOtherState & IPageDetailState;
                 values.cellName=oo.refname;
             }
 
-            values['id']=this.id;
+            values['id']=this.id!=='0'?this.id:null;
+
             BussService.submitUnit(values)
                 .then((resp)=>{
     
                     Info(resp);
-                    this.goBack();
+                    this.goBack(1);
                 })
                 .catch((resp)=>{
     

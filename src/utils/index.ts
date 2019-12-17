@@ -2,7 +2,7 @@ import {Message} from 'tinper-bee';
 import axios from "axios";
 import cloneDeep from 'clone-deep';
 
-export const success = (msg) => {
+export const Success = (msg) => {
     Message.create({content: msg, color: 'success', duration: 3});
 }
 
@@ -40,7 +40,7 @@ export const processData = (response, successMsg) => {
             let repMsg = data.success;
             if (repMsg == 'success') {
                 if (successMsg) {
-                    success(successMsg);
+                    Success(successMsg);
                 }
                 result.status = repMsg;
                 // 删除成功没有 data 值

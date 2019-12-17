@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Tag,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
@@ -14,6 +14,7 @@ import DatePicker from "bee-datepicker";
 import PageDlog from '../../../components/PageDlg';
 import { getValidateFieldsTrim, Info } from '../../../utils';
 import ManService from '../../../services/ManService';
+import { convertBussModifyTypeText } from '../../../utils/tools';
 
 const FormItem = FormListItem;
 
@@ -153,12 +154,22 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 150 },
             { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
-            { title: '类型', dataIndex: 'modifyType', key: 'modifyType',textAlign:'center', width: 100 },
+            { title: '类型', dataIndex: 'modifyType', key: 'modifyType',textAlign:'center', width: 100 ,
+                render(text, record, index){
+                    return convertBussModifyTypeText(text);
+            }},
             { title: '原值', dataIndex: 'oldText', key: 'oldText', textAlign:'center',width: 200 },
             { title: '修改为', dataIndex: 'newText', key: 'newText',textAlign:'center', width: 150 },
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 200 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 200 ,
+            render: (text, record, index) => {
+                return text==1?(<Tag colors={"success"}>已通过</Tag>):(
+                    text==-1?<Tag colors={"danger"}>已拒绝</Tag>:
+                    text==0?<Tag colors={"warning"}>未处理</Tag>:text
+                );
+            }},
             { title: '操作人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 150 },
             { title: '审核人', dataIndex: 'respUser', key: 'respUser',textAlign:'center', width: 150 },
+            { title: '审核回复', dataIndex: 'resp', key: 'resp',textAlign:'center', width: 150 },
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
           ];
           
@@ -277,7 +288,10 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
                     pageChange={this.onPageChange}
                 />
                 <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                            this.setState({isPopPage:false});
+                            if(flag==1) this.search();
+                        }} >
                 </PageDlog>
         </Panel >)
     }

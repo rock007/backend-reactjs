@@ -229,7 +229,7 @@ type IPageState = IOtherState & IListPageState;
             }},
             { title: '是否戒毒人员', dataIndex: 'manId', key: 'manId', width: 120,textAlign:'center',render(m){
 
-                return m!=null?(<Tag colors={"success"}>否</Tag>):(<Tag colors={"danger"}>是</Tag>)
+                return m==null||m===''?(<Tag colors={"success"}>否</Tag>):(<Tag colors={"danger"}>是</Tag>)
 
             } },
             { title: '组织部门', dataIndex: 'orgName', key: 'orgName', width: 200,textAlign:'center' },

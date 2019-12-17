@@ -9,7 +9,9 @@ import RefUserTreeTableSelect from '../../../components/RefViews/RefUserTreeTabl
 import Alert from '../../../components/Alert';
 import ManService from '../../../services/ManService';
 import { PageModel } from '../../../services/Model/Models';
-import { Info,Warning,getValidateFieldsTrim } from '../../../utils';
+import { Info,Warning,Error,getValidateFieldsTrim } from '../../../utils';
+import { isObject } from 'util';
+import { convertContactManTypeText } from '../../../utils/tools';
 
 
 const FormItem = Form.FormItem;
@@ -58,7 +60,9 @@ class ManContactPage extends React.Component<IPageProps,IPageState> {
     }
        
    columns = [
-    {title: "职务",dataIndex: "postion",key: "postion",width: 200},
+    {title: "职务",dataIndex: "postion",key: "postion",width: 200,render(text,rec,e){
+      return convertContactManTypeText(text);
+    }},
     {title: "姓名",dataIndex: "name",key: "name",width: 120},
     {title: "单位",dataIndex: "company",key: "company",width: 150},
     {title: "联系方式",dataIndex: "phone",key: "phone",width: 100},
@@ -83,36 +87,17 @@ class ManContactPage extends React.Component<IPageProps,IPageState> {
 
       if(this.manId!='0'){
 
-        this.loadData(this.manId);
+        this.loadData();
       }
     }
 
-    loadData=async (id)=>{
+    loadData=async ()=>{
 
       this.setState({isLoading:true});
 
-      let result = await ManService.searchContact({manId:id}) as PageModel<any>;
+      let result = await ManService.searchContact({manId:this.manId}) as PageModel<any>;
 
       this.setState({data:result.data,isLoading:false});
-    }
-
-    saveData= async (args:any)=>{
-
-      this.setState({isLoading:true});
-      ManService.submitContact(args)
-        .then((resp)=>{
-          debugger;
-        })
-        .catch((err)=>{
-          Error('保存数据出错');
-        }).finally(()=>{
-          this.setState({isLoading:false});
-        });
-    }
-
-    delData= async (ids:string)=>{
-      let result =  await ManService.deleteRelate(ids);
-
     }
 
     goBack=()=>{
@@ -151,50 +136,42 @@ class ManContactPage extends React.Component<IPageProps,IPageState> {
       this.setState({data:_list});
 }
 
+handler_save=async ()=>{
 
-handler_add=()=>{
-    
-    this.setState({editModel:'add',record:{}});
-}
-
-
-handler_modify=()=>{
-      
-     if(this.checkedRows.length==0){
-        Info('请勾选要编辑的记录');
-        return;
-      }
-
-      this.setState({record:this.checkedRows[0],editModel:'edit'}); 
-  }
-
-  handler_delete=()=>{
-      
-      if(this.checkedRows.length==0){
-        Info('请勾选要删除的记录');
-        return;
-      }
-
-      this.setState({  showAlert: true });
-    }
-
-    handler_save=async ()=>{
-
+      const me=this;
       this.props.form.validateFields((err, _values) => {
         let values = getValidateFieldsTrim(_values);
         
         if (!err) {
 
-          if(_values['manId']==null) _values['manId']=this.manId;
-          if(_values['postion']==null) _values['postion']=this.state.postion;
+          if(values['manId']==null) values['manId']=this.manId;
+          if(values['postion']==null) values['postion']=this.state.postion;
 
+          if(values.name!=null){
+
+            try{
+              const obj=JSON.parse(values.name);
+
+              if(obj!=null&&isObject(obj)){
+                values.name=obj.refname;
+                values.linkUid=obj.refpk;
+              }
+            }catch {
+
+            }
+            
+          }
+
+          values['id']=this.state.record.id;
           this.setState({isLoading:true});
           ManService.submitContact(values)
             .then((resp)=>{
-              debugger;
+             
+              this.setState({editModel:null});
+              me.loadData();
             })
             .catch((err)=>{
-              Error('保存数据出错');
+              //Error('保存数据出错');
             }).finally(()=>{
               this.setState({isLoading:false});
             });
@@ -206,18 +183,30 @@ handler_modify=()=>{
 
     }
 
+  handler_delete=async ()=>{
+
+     const me=this;
+      this.setState({isLoading:true,showAlert:false});
+
+      let ids:string='';
+      this.checkedRows.map((item,index)=>{
+          ids=ids+','+item.id;
+      });
+     await ManService.deleteContact(ids).then(()=>{
+
+          this.setState({editModel:null});
+          //Info('删除操作成功');
+          me.loadData()
+      })
+      .catch((err)=>{
+        //Error('删除操作失败');
+      }).finally(()=>{
+          this.setState({isLoading:false});
+      });
+  }
+
     handler_cancel=()=>{
       this.setState({editModel:null});
-    }
-
-    onClickPopUnSaveOK = () => {
-
-      this.setState({ showAlert: false });
-    
-    }
-
-    onClickPopUnSaveCancel = () => {
-      this.setState({ showAlert: false });
     }
 
     renderEditModel=(rec:any)=>{
@@ -231,16 +220,15 @@ handler_modify=()=>{
               defaultValue={this.state.record.postion}
               disabled={this.state.record.postion==null?false:true}
               style={{ width: 200, marginRight: 6 }}
-              onChange={(v)=>this.setState({postion:v})}
-              >
-              <Select.Option value="主任">主任</Select.Option>
-              <Select.Option value="(村/社区)责任人">(村/社区)责任人</Select.Option>
-              <Select.Option value="家庭成员及其监护人（担保人）">家庭成员及其监护人（担保人）</Select.Option>
-              <Select.Option value="专（兼）职社工">专（兼）职社工</Select.Option>
-              <Select.Option value="社区网格员">社区网格员</Select.Option>
-              <Select.Option value="社区民警">社区民警</Select.Option>
-              <Select.Option value="社区医护人员">社区医护人员</Select.Option>
-              <Select.Option value="禁毒志愿者">禁毒志愿者</Select.Option>
+              onChange={(v)=>this.setState({postion:v})}>
+              <Select.Option value="1">主任</Select.Option>
+              <Select.Option value="2">(村/社区)责任人</Select.Option>
+              <Select.Option value="3">家庭成员及其监护人（担保人）</Select.Option>
+              <Select.Option value="4">专（兼）职社工</Select.Option>
+              <Select.Option value="7">社区网格员</Select.Option>
+              <Select.Option value="5">社区民警</Select.Option>
+              <Select.Option value="6">社区医护人员</Select.Option>
+              <Select.Option value="8">禁毒志愿者</Select.Option>
             </Select>
             <span className='error'>
                  {getFieldError('postion')}
@@ -249,10 +237,10 @@ handler_modify=()=>{
         <FormItem>
             <Label>姓名</Label>
             {
-              this.state.postion==='专（兼）职社工'||this.state.postion==='社区民警'||this.state.postion==='社区医护人员'?
+              this.state.postion==='4'||this.state.postion==='5'||this.state.postion==='6'||this.state.postion==='7'?
 
               <RefUserTreeTableSelect {...getFieldProps('name', {
-                initialValue:this.state.record.name,
+                initialValue: JSON.stringify({refpk:this.state.record.linkUid,refname:this.state.record.name}),
                 validateTrigger: 'onBlur',
                 rules: [{
                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入姓名</span></span>,
@@ -341,9 +329,25 @@ handler_modify=()=>{
                 :null
             }
             <ButtonGroup style={{ margin: 10 }}>
-                <Button onClick={this.handler_add}  disabled={this.state.editModel!=null}>新增</Button>
-                <Button onClick={this.handler_modify} disabled={this.state.editModel!=null}>修改</Button>
-                <Button onClick={this.handler_delete} disabled={this.state.editModel!=null}>删除</Button>
+                <Button onClick={()=>{
+                  this.setState({editModel:'add',record:{}});
+                }}  disabled={this.state.editModel!=null}>新增</Button>
+                <Button onClick={()=>{
+                  if(this.checkedRows.length==0){
+                    Info('请勾选要编辑的记录');
+                    return;
+                  }
+            
+                  this.setState({record:this.checkedRows[0],postion:this.checkedRows[0].postion,editModel:'edit'});
+                }} disabled={this.state.editModel!=null}>修改</Button>
+                <Button onClick={()=>{
+                    if(this.checkedRows.length==0){
+                      Info('请勾选要删除的记录');
+                      return;
+                    }
+              
+                    this.setState({  showAlert: true });
+                }} disabled={this.state.editModel!=null}>删除</Button>
                 <Button onClick={this.handler_save} disabled={this.state.editModel==null}>保存</Button>
                 <Button onClick={this.handler_cancel} disabled={this.state.editModel==null} >取消</Button>
             </ButtonGroup>
@@ -361,8 +365,8 @@ handler_modify=()=>{
           <Alert
                 show={this.state.showAlert}
                 context="确定要删除记录?"
-                confirmFn={this.onClickPopUnSaveOK}
-                cancelFn={this.onClickPopUnSaveCancel}
+                confirmFn={this.handler_delete}
+                cancelFn={()=>this.setState({ showAlert: false })}
           />
         </React.Fragment>);
     }

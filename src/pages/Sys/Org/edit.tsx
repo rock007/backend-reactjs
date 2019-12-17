@@ -16,7 +16,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-    selectedValue:string
+   
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -29,7 +29,6 @@ type IPageState = IOtherState & IPageDetailState;
     state:IPageState={
         isLoading:false,
         record:{},
-        selectedValue:''
     }
 
     isPage=()=>{
@@ -84,14 +83,23 @@ type IPageState = IOtherState & IPageDetailState;
                     }
                 }
 
-                values['parentId']=this.state.selectedValue;
+                if(values.superId!=null){
+
+                    let objSelect=JSON.parse(values.superId);
+
+                    if(objSelect!=null){
+                        values.superId=objSelect.refpk;
+                        values.superName=objSelect.refName;
+                    }
+                }
+
                 values['id']=this.id!=='0'?this.id:null;
 
                 SysService.submitOrg(values)
                     .then((resp)=>{
     
                         Info(resp);
-                        this.goBack();
+                        this.goBack(1);
                     })
                     .catch((resp)=>{
     
@@ -230,7 +238,7 @@ goBack=(flag:number=0)=>{
                         <Label>排序值</Label>
                         <FormControl  placeholder="请输入排序值" {
                             ...getFieldProps('deptSort', {
-                                initialValue: this.state.record.index,
+                                initialValue: this.state.record.deptSort,
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     pattern: /[0-9]$/, 
@@ -244,7 +252,7 @@ goBack=(flag:number=0)=>{
                         <Radio.RadioGroup
                             {
                             ...getFieldProps('isDisable', {
-                                initialValue: this.state.selectedValue,
+                                initialValue: this.state.record.isDisable+'',
                                 rules: [{ required: true }]
                             }) }>
                             <Radio value="0">正常</Radio>

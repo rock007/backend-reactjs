@@ -123,7 +123,7 @@ interface IPageState {
 
     let ids:string='';
     this.state.checkedRows.map((item,index)=>{
-        ids=ids+','+item.id;
+        ids=ids+','+item.unitId;
     });
    await BussService.deleteUnit(ids).then(()=>{
 
@@ -144,7 +144,7 @@ interface IPageState {
             { title: '简称', dataIndex: 'shortName', key: 'shortName',textAlign:'center', width: 100 },
             { title: '名称', dataIndex: 'unitName', key: 'unitName', textAlign:'center',width: 150 },
       
-            { title: '负责人', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
+            { title: '负责人', dataIndex: 'chargeMan', key: 'chargeMan',textAlign:'center', width: 120 },
             { title: '联系电话', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
             { title: '地址', dataIndex: 'address', key: 'address',textAlign:'center', width: 180 },
             { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 180 },
@@ -170,7 +170,7 @@ interface IPageState {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/grid-unit/'+this.state.checkedRows[0].manId,"修改包办单位",false);
+                    this.go2Page('/grid-unit/'+this.state.checkedRows[0].unitId,"修改包办单位",false);
 
                 }else{
                     Info('请选择要修改的记录');
@@ -245,7 +245,10 @@ interface IPageState {
                 </Col>
             </Row>    
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                    }} >
           </PageDlog>
           <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {

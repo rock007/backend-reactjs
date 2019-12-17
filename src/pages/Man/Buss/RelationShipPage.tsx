@@ -48,94 +48,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
         isLoading:false,
         showAlert:false
     }
-       
-   columns = [
-    {title: "关系",dataIndex: "relationship",key: "relationship",width: 100,  render: (text, record, index) => {
-      return   <FactoryComp
-          type='relationship'
-          value={text}
-          field='relationship'
-          index={index}
-          required={true}
-          record={record}
-          onChange={this.changeAllData}
-          onValidate={this.onValidate}
-      />
-    }},
-    {title: "姓名",dataIndex: "name",key: "name",width: 100,  render: (text, record, index) => {
-      return   <FactoryComp
-            type='textInput'
-            value={text}
-            field='name'
-            index={index}
-            required={true}
-            record={record}
-            onChange={this.changeAllData}
-            onValidate={this.onValidate}
-      />
-    }},
-    {title: "性别",dataIndex: "sex",key: "sex",width: 80,  render: (text, record, index) => {
-      return   <FactoryComp
-          type='sex'
-          value={text}
-          field='sex'
-          index={index}
-          required={true}
-          record={record}
-          onChange={this.changeAllData}
-        onValidate={this.onValidate}
-      />
-    }},
-    {title: "出生年月",dataIndex: "birthday",key: "birthday",width: 100,  render: (text, record, index) => {
-      return   <FactoryComp
-          type='textInput'
-          value={ text }
-          field='birthday'
-          index={index}
-          required={true}
-          record={record}
-          onChange={this.changeAllData}
-          onValidate={this.onValidate}
-      />
-    }},
-    {title: "身份证号",dataIndex: "idCard",key: "idCard",width: 100,  render: (text, record, index) => {
-      return   <FactoryComp
-          type='textInput'
-          value={text}
-          field='idCard'
-          index={index}
-          required={true}
-          record={record}
-          onChange={this.changeAllData}
-          onValidate={this.onValidate}
-      />
-    }},
-    {title: "联系方式",dataIndex: "phone",key: "phone",width: 100,  render: (text, record, index) => {
-      return   <FactoryComp
-          type='textInput'
-          value={text}
-          field='phone'
-          index={index}
-          required={true}
-          record={record}
-          onChange={this.changeAllData}
-          onValidate={this.onValidate}
-      />
-    }},
-    {title: "家庭住址",dataIndex: "address",key: "address",width: 200,  render: (text, record, index) => {
-      return  <FactoryComp
-        type='textInput'
-        value={text}
-        field='address'
-        index={index}
-        required={true}
-        record={record}
-        onChange={this.changeAllData}
-        onValidate={this.onValidate}
-      />
-    }}
-  ]
-
+   
     isPage=()=>{
 
       return this.props.match&&this.props.history;
@@ -154,26 +67,33 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
 
       if(this.manId!='0'){
 
-        this.loadData(this.manId);
+        this.loadData();
       }
     }
 
-    loadData=async (id)=>{
+    loadData=async ()=>{
 
       this.setState({isLoading:true});
 
-      let result = await ManService.searchRelate({manId:id}) as PageModel<any>;
+      let result = await ManService.searchRelate({manId:this.manId}) as PageModel<any>;
 
       this.setState({data:result.data,isLoading:false});
     }
 
-    saveData= async (args:any)=>{
-        
+    saveData= async (args:Array<any>)=>{
+
       this.setState({isLoading:true});
+
+      for(var i=0;i<args.length;i++){
+        args[i].birthday = args[i].birthday!=null?args[i].birthday.format('YYYY-MM-DD'):"";
+      }
+
       ManService.submitRelate(args)
         .then((resp)=>{
 
-          debugger;
+          this.setState({editModel:null});
+          this.loadData();
+
         })
         .catch((err)=>{
 
@@ -183,14 +103,30 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
 
           this.setState({isLoading:false});
         });
-
-
     }
 
-    delData= async (ids:string)=>{
-      let result =  await ManService.deleteRelate(ids);
+    doDelete= ()=>{
 
-      debugger;
+      const me=this;
+      
+      this.setState({isLoading:true,showAlert:false});
+
+      let ids:string='';
+      this.checkedRows.map((item,index)=>{
+          ids=ids+','+item.id;
+      });
+      ManService.deleteRelate(ids).then(()=>{
+
+          this.setState({editModel:null});
+       
+          me.loadData();
+      })
+      .catch((err)=>{
+        //Error('删除操作失败');
+      }).finally(()=>{
+          this.setState({isLoading:false});
+      });
+
 
     }
 
@@ -203,7 +139,6 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
       }
     }
 
-    
     getSelectedDataFunc = (selectData, record, index) => {
         
       this.checkedRows=selectData;
@@ -229,6 +164,93 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
       }
       this.setState({data:_list});
   }
+
+  columns = [
+    {title: "关系",dataIndex: "relationship",key: "relationship",width: 100,  render: (text, record, index) => {
+      return   <FactoryComp
+          type='relationship'
+          value={text}
+          field='relationship'
+          index={index}
+          required={true}
+          record={record}
+          onChange={this.changeAllData}
+          onValidate={this.onValidate}
+      />
+    }},
+    {title: "姓名",dataIndex: "name",key: "name",width: 100,  render: (text, record, index) => {
+      return   <FactoryComp
+            type='textInput'
+            value={text}
+            field='name'
+            index={index}
+            required={true}
+            record={record}
+            onChange={this.changeAllData}
+            onValidate={this.onValidate}
+      />
+    }},
+    {title: "性别",dataIndex: "sex",key: "sex",width: 100,  render: (text, record, index) => {
+      return   <FactoryComp
+          type='sex'
+          value={text}
+          field='sex'
+          index={index}
+          required={true}
+          record={record}
+          onChange={this.changeAllData}
+        onValidate={this.onValidate}
+      />
+    }},
+    {title: "出生年月",dataIndex: "birthday",key: "birthday",width: 150,  render: (text, record, index) => {
+      return   <FactoryComp
+          type='dateInput'
+          value={ text }
+          field='birthday'
+          index={index}
+          required={false}
+          record={record}
+          onChange={this.changeAllData}
+          onValidate={this.onValidate}
+      />
+    }},
+    {title: "身份证号",dataIndex: "idCard",key: "idCard",width: 180,  render: (text, record, index) => {
+      return   <FactoryComp
+          type='textInput'
+          value={text}
+          field='idCard'
+          index={index}
+          required={false}
+          record={record}
+          onChange={this.changeAllData}
+          onValidate={this.onValidate}
+      />
+    }},
+    {title: "联系方式",dataIndex: "phone",key: "phone",width: 120,  render: (text, record, index) => {
+      return   <FactoryComp
+          type='textInput'
+          value={text}
+          field='phone'
+          index={index}
+          required={true}
+          record={record}
+          onChange={this.changeAllData}
+          onValidate={this.onValidate}
+      />
+    }},
+    {title: "家庭住址",dataIndex: "address",key: "address",width: 200,  render: (text, record, index) => {
+      return  <FactoryComp
+        type='textInput'
+        value={text}
+        field='address'
+        index={index}
+        required={false}
+        record={record}
+        onChange={this.changeAllData}
+        onValidate={this.onValidate}
+      />
+    }}
+  ]
 
   filterList = (oldData,data, key) => {
 
@@ -257,6 +279,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
  * @returns {bool}
  */
 isVerifyData = (data) => {
+
     let flag = true;
     let pattern = /Validate\b/;//校验的正则结尾
 
@@ -309,7 +332,7 @@ isVerifyData = (data) => {
       //当第一次新增的时候
       // 禁用其他checked
       //重置表头状态
-      if (this.oldData.length <= 0) {
+      if (this.oldData.length <= 0&&this.state.editModel==null) {
 
           this.oldData=loadsh.cloneDeep(this.state.data);
 
@@ -345,15 +368,32 @@ isVerifyData = (data) => {
         return;
       }
 
-      this.setState({  showAlert: true });
+      if(this.state.editModel=='add'){
+
+        let newData = loadsh.cloneDeep(this.state.data);
+
+        this.checkedRows.forEach((m,i)=>{
+          newData=  newData.filter(o=>o.key !== m.key);
+        })
+
+        this.setState({data:newData});
+
+      }else {
+
+        this.setState({  showAlert: true });
+      }
+      
     }
 
     handler_save=async ()=>{
     
-      let filterResult = null;
-       
-      let msg = "请勾选数据后再新增";
+      //let msg = "请勾选数据后再新增";
 
+      if(this.checkedRows.length==0){
+        Info('请勾选要保存的记录');
+        return;
+      }
+ /**   
       switch (this.state.editModel) {
             case 'add':
                 filterResult = this.filterList(this.oldData, this.state.data, 'key');
@@ -361,12 +401,12 @@ isVerifyData = (data) => {
                 break;
             case 'edit':
                 filterResult = this.filterList(this.oldData, this.state.data, 'id');
-                msg = '请勾选数据后再更新';
+                //msg = '请勾选数据后再更新';
                 break;
             default:
                 break;
         }
-        
+     
         if (filterResult.selectList.length > 0) {
 
             if (this.isVerifyData(filterResult.selectList)) {
@@ -379,13 +419,24 @@ isVerifyData = (data) => {
         } else {
             Info(msg);
         }
+****/
+      if (this.isVerifyData(this.checkedRows)) {
+
+          this.saveData(this.checkedRows);
+          
+      } else {
+          Info('数据填写不完整')
+      }
 
     }
 
     handler_cancel=()=>{
       
-      this.setState({editModel:null,data:this.oldData});
+      //this.setState({editModel:null,data:this.oldData});
       this.oldData = [];
+
+      this.setState({editModel:null});
+      this.loadData();
 
     }
     onValidate = (field, flag, index) => {
@@ -418,11 +469,9 @@ isVerifyData = (data) => {
       }
 
       //有字段修改后去同步左侧对号checkbox
-      if (!_sourseData[index]['_checked']) {
-          _sourseData[index]['_checked'] = true;
-          //actions.inlineEdit.updateState({ list: _sourseData });
-          //!!this.setState({data:_sourseData});
-      }
+      //if (!_sourseData[index]['_checked']) {
+      //    _sourseData[index]['_checked'] = true;
+      //}
 
       //oldData[index]['_checked'] = true;
       //_sourseData[index]['_checked'] = true;
@@ -448,19 +497,6 @@ isVerifyData = (data) => {
       return flag
   }
 
-  onClickPopUnSaveOK = () => {
-    //重置store内的数据
-    //actions.inlineEdit.resetData(true);
-    //清空选中的数据
-    //actions.inlineEdit.updateState({ selectData: [], rowEditStatus: true });
-    this.setState({ showAlert: false });
-    this.oldData = [];
-  }
-
-  onClickPopUnSaveCancel = () => {
-    this.setState({ showAlert: false });
-  }
-
   render() {
   
     return (<React.Fragment>
@@ -474,7 +510,7 @@ isVerifyData = (data) => {
                   档案库
 			          </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    亲属关系
+                  亲属关系
 			          </Breadcrumb.Item>
                   <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
                 </Breadcrumb>)
@@ -496,10 +532,11 @@ isVerifyData = (data) => {
           </Panel>
           <Alert
                 show={this.state.showAlert}
-                context="数据未保存，确定离开 ?"
-                confirmFn={this.onClickPopUnSaveOK}
-                cancelFn={this.onClickPopUnSaveCancel}
+                context="确定要删除记录?"
+                confirmFn={this.doDelete}
+                cancelFn={()=>this.setState({ showAlert: false })}
           />
+          <Loading container={this} show={this.state.isLoading}/>
         </React.Fragment>);
     }
 }

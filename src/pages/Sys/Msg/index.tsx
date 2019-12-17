@@ -1,19 +1,20 @@
 import * as React from 'react';
 
-import {Panel, PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel, Tag,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import Alert from '../../../components/Alert';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
 import Grid from '../../../components/Grid';
 
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../../services/Model/Models';
-import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
 
 import PageDlog from '../../../components/PageDlg';
-import { getValidateFieldsTrim } from '../../../utils';
+import { getValidateFieldsTrim, Info } from '../../../utils';
 import SysService from '../../../services/SysService';
 
 import DatePicker from "bee-datepicker";
+import { convertBussTypeText } from '../../../utils/tools';
 
 const FormItem = FormListItem;
 interface IOtherProps {
@@ -52,15 +53,8 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
 
             let values = getValidateFieldsTrim(_values);
             
-            if(values.orgId){
-                values.orgId=JSON.parse(values.orgId).refpk;
-            }
-
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
-            }
-            if(values.visitorDate){
-                values.visitorDate=values.visitorDate[0].format('YYYY-MM-DD')+'~'+values.visitorDate[1].format('YYYY-MM-DD');
             }
 
             this.setState({isLoading:true});
@@ -106,13 +100,65 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
         }
     }
 
+    handler_delete=async()=>{
+  
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+        let arr=[];
+        this.state.checkedRows.map((v,i)=>arr.push(v.id));
+
+        let idstr=arr.join(',');
+
+        await SysService.deleteMessage(idstr)
+          .then((resp)=>{
+  
+            //Info(resp);
+            this.search();
+  
+          }).catch((err)=>{
+  
+            Error(err.msg||'删除操作失败！');
+           
+          }).finally(()=>{this.setState({isLoading:false})});
+        
+    }
+
+    handler_read=async()=>{
+  
+        this.setState({isLoading:true,isDeleteAlterShow:false});
+        let arr=[];
+        this.state.checkedRows.map((v,i)=>arr.push(v.id));
+
+        let idstr=arr.join(',');
+
+        await SysService.readMessage(idstr)
+          .then((resp)=>{
+  
+            //Info(resp);
+            this.search();
+  
+          }).catch((err)=>{
+  
+            Error(err.msg||'已读操作失败！');
+           
+          }).finally(()=>{this.setState({isLoading:false})});
+        
+    }
+
     render() {
 
         const { getFieldProps, getFieldError } = this.props.form;
         const me=this;
         const columns = [
-            { title: '类型', dataIndex: 'msgType', key: 'msgType',textAlign:'center', width: 120},
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 120 },
+            { title: '类型', dataIndex: 'msgType', key: 'msgType',textAlign:'center', width: 120,
+            render: (text, record, index) => {
+                return convertBussTypeText(text);
+            }},
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 120 ,
+            render: (text, record, index) => {
+                return text==1?(<Tag colors={"success"}>已读</Tag>):(
+                  <Tag colors={"info"}>未读</Tag>
+                );
+            }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 300 },
             { title: '发送者', dataIndex: 'sendFrom', key: 'sendFrom',textAlign:'center', width: 120 },
             { title: '发送时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 , sorter: (pre, after) => {return pre.c - after.c}},
@@ -125,11 +171,21 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
             bordered:false,
             colors:'primary',
             onClick:()=>{
-                this.go2Page('/niaojian-edit/0',"尿检新增",false);
+  
+                if(this.state.checkedRows.length==0){
+
+                    Info('请选择要已读的记录');
+                    return;
+                }
+                this.handler_read();
             }
         },{
             value:'删除',
             bordered:true,
+            onClick:()=>{
+  
+                this.setState({isDeleteAlterShow:true});
+            }
         },{
             value:'导出',
             iconType:'uf-export',
@@ -157,12 +213,16 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="类别">
                         <Select  {...getFieldProps('msgType', {initialValue: ''})}>
-                            <Select.Option value="">系统</Select.Option>
-                            <Select.Option value="1">档案</Select.Option>
-                            <Select.Option value="2">社戒</Select.Option>
-                            <Select.Option value="3">尿检</Select.Option>
-                            <Select.Option value="4">走访</Select.Option>
-                            <Select.Option value="5">请假</Select.Option>
+                            <Select.Option value="">全部</Select.Option>
+                            <Select.Option value="1">{convertBussTypeText(1)}</Select.Option>
+                            <Select.Option value="2">{convertBussTypeText(2)}</Select.Option>
+                            <Select.Option value="3">{convertBussTypeText(3)}</Select.Option>
+                            <Select.Option value="4">{convertBussTypeText(4)}</Select.Option>
+                            <Select.Option value="5">{convertBussTypeText(5)}</Select.Option>
+                            <Select.Option value="6">{convertBussTypeText(6)}</Select.Option>
+                            <Select.Option value="7">{convertBussTypeText(7)}</Select.Option>
+                            <Select.Option value="8">{convertBussTypeText(8)}</Select.Option>
+                            <Select.Option value="9">{convertBussTypeText(9)}</Select.Option>
                         </Select>
                     </FormItem>
 
@@ -200,6 +260,15 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
          <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
           </PageDlog>
+
+          <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
+                           confirmFn={() => {
+                               this.handler_delete();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isDeleteAlterShow:false})
+                           }}
+            />
         </Panel >)
     
     }

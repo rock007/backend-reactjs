@@ -127,7 +127,7 @@ interface IPageState {
 
     let ids:string='';
     this.state.checkedRows.map((item,index)=>{
-        ids=ids+','+item.id;
+        ids=ids+','+item.cellId;
     });
    await SysService.deleteGridByIds(ids).then(()=>{
 
@@ -177,7 +177,7 @@ interface IPageState {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/sys/grid-edit/'+this.state.checkedRows[0].manId,"修改网格",false);
+                    this.go2Page('/sys/grid-edit/'+this.state.checkedRows[0].cellId,"修改网格",false);
 
                 }else{
                     Info('请选择要修改的记录');
@@ -259,7 +259,10 @@ interface IPageState {
             </Row>    
         
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                    }} >
           </PageDlog>
           <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {

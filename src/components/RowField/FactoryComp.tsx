@@ -57,10 +57,10 @@ const renderComponentMap = {
             disabled: true
         }, {
             key: "男",
-            value: '1'
+            value: '男'
         }, {
             key: "女",
-            value: '0'
+            value: '女'
         }],
         type: 'select'
     },

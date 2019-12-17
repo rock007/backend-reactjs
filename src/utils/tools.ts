@@ -271,3 +271,34 @@ export function  convertBussModifyTypeText(m):string{
     
     return m;
 }
+
+export function  convertBussTypeText(m):string{
+    if(m==null) return '';
+    if(m==0) return '未知';
+    if(m==1) return '系统';
+    if(m==2) return '档案';
+    if(m==3) return '告诫书';
+    if(m==4) return '通知函';
+    if(m==5) return '尿检';
+    if(m==6) return '走访';
+    if(m==7) return '请假';
+    if(m==8) return '社戒';
+    if(m==9) return '求助';
+
+    return m;
+}
+
+export function  convertContactManTypeText(m):string{
+    if(m==null) return '';
+    if(m==0) return '未知';
+    if(m==1) return '主任';
+    if(m==2) return '(村/社区)责任人';
+    if(m==3) return '家庭成员及其监护人（担保人）';
+    if(m==4) return '专（兼）职社工';
+    if(m==5) return '社区民警';
+    if(m==6) return '社区医护人员';
+    if(m==7) return '社区网格员';
+    if(m==8) return '禁毒志愿者';
+    
+    return m;
+}

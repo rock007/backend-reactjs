@@ -271,7 +271,10 @@ type IPageState = IOtherState & IListPageState;
                     pageChange={this.onPageChange}
                 />
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                    }} >
             </PageDlog>
             <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {
