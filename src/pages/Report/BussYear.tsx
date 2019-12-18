@@ -33,7 +33,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageCommProps;
 type IPageState = IOtherState & IListPageState;
 
- class BussMonthPage extends React.Component<IPageProps,IPageState> {
+ class BussYearPage extends React.Component<IPageProps,IPageState> {
 
     pageIndex=1
     pageSize=10
@@ -72,7 +72,7 @@ type IPageState = IOtherState & IListPageState;
   loadData=async (args:any)=>{
       
       args['orderby']=this.orderBy;
-      let page = await ReportService.searchReportMonth(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      let page = await ReportService.searchReportYear(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
       if(page!=null)
         this.setState({page:page,isLoading:false});
@@ -151,7 +151,7 @@ render() {
           ];
 
         const columns = [
-          { title: '时间', dataIndex: 'yyyymm', key: 'yyyymm',textAlign:'center', width: 100 },
+          { title: '时间', dataIndex: 'yyyy', key: 'yyyy',textAlign:'center', width: 100 },
           { title: '社区', dataIndex: 'orgName', key: 'orgName', textAlign:'center',width: 150 },
     
           { title: '建档(人)', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
@@ -181,7 +181,7 @@ render() {
                 统计分析
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                业务月报（历史）
+                业务年报（历史）
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -201,8 +201,8 @@ render() {
                     </FormItem>
                     <FormItem
                         label="时间">
-                        <DatePicker.MonthPicker   format='YYYY-MM' defaultValue={moment()}
-                           {...getFieldProps('yyyymm', {initialValue: ''})}
+                        <DatePicker.YearPicker  format='YYYY' defaultValue={moment()}
+                           {...getFieldProps('yyyy', {initialValue: ''})}
                         />
                     </FormItem>
                     <FormItem
@@ -254,4 +254,4 @@ render() {
     }
 }
 
-export default Form.createForm()(BussMonthPage);
+export default Form.createForm()(BussYearPage);

@@ -29,7 +29,7 @@ interface IPageProps {
     //in pop
     isPage?:boolean,
     url?:string,
-    handlerBack?:()=>void
+    handlerBack?:(flag:number)=>void
 }
 interface IPageState {
 
@@ -85,11 +85,11 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
         this.setState({record:result,isLoading:false});
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 
@@ -123,8 +123,7 @@ class VisitEdit extends React.Component<IPageProps,IPageState> {
 
                 ManService.submitVisit(values).then(()=>{
 
-                    Info('保存操作成功');
-                    this.goBack()
+                    this.goBack(1)
                 })
                 .catch((err)=>{
                     Error('保存操作失败');

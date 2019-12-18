@@ -86,6 +86,7 @@ export default class RelationShipPage extends React.Component<IPageProps,IPageSt
 
       for(var i=0;i<args.length;i++){
         args[i].birthday = args[i].birthday!=null?args[i].birthday.format('YYYY-MM-DD'):"";
+        args[i].id=args[i].id==0?'':args[i].id;
       }
 
       ManService.submitRelate(args)
@@ -448,12 +449,6 @@ isVerifyData = (data) => {
       }
 
       this.setState({data:_sourseData});
-
-      //只要是修改过就启用校验
-      //if (this.oldData.length > 0) {
-      //    this.oldData[index][`_${field}Validate`] = (flag == null);
-      //}
-
     }
 
     changeAllData = (field, value, index,refname) => {

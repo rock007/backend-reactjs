@@ -4,22 +4,19 @@ import MapView from '../../../components/MapView';
 import ManService from '../../../services/ManService';
 import DatePicker from "bee-datepicker";
 import { relative } from 'path';
+import { IPageDetailProps, IPageDetailState, PageModel } from '../../../services/Model/Models';
 
-interface IPageProps {
-    form:any,
-    //in page
-    history:any,
-    match:any,
+interface IOtherProps {
+    
+} 
 
-    //in pop
-    isPage?:boolean,
-    url?:string,
-    handlerBack?:()=>void
+interface IOtherState {
+ dateRange:string[],
+ data:Array<any>
 }
-interface IPageState {
-    isLoading:boolean,
-    record:any,
-}
+
+type IPageProps = IOtherProps & IPageDetailProps;
+type IPageState = IOtherState & IPageDetailState;
 
 class ManLocation extends React.Component<IPageProps,IPageState> {
     
@@ -28,6 +25,8 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
     state:IPageState={
         isLoading:false,
         record:{},
+        dateRange:[],
+        data:[]
     }
     
     isPage=()=>{
@@ -51,26 +50,41 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
         }
     }
 
-    loadData=async (id)=>{
+    loadData=async (args)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findDayoffById(id);
 
-        this.setState({record:result,isLoading:false});
+        let result = await ManService.searchLocation(args) as PageModel<any>;
+
+        this.setState({data:result.data,isLoading:false});
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
+    }
+
+    handler_search=()=>{
+
+        var args={
+            manId:this.id,
+            createDate:this.state.dateRange==null?"":this.state.dateRange[0]+'~'+this.state.dateRange[1]
+        };
+        this.loadData(args);
+    }
+
+    onDatePickerChange = (dates:any[],dateStr1:string,dateStr2:string[] )  => {
+
+        this.setState({dateRange:dateStr2})
     }
 
     render() {
 
         return (<div>
 
-            <MapView width={730} height={500}/>
+            <MapView width={730} height={500} locations={this.state.data} />
             <div style={{padding:'5px',backgroundColor:"lightgray", position:'absolute',left:'10px',top:'15px'}}>
             <ul style={{display:'flex'}}>
                 
@@ -78,11 +92,12 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
                     <DatePicker.RangePicker                             
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
+                            onChange={this.onDatePickerChange}
                             showClear={true}
                             showClose={true}
                     />
                 </li>
-                <li><Button colors="info"><Icon type='uf-search' />查询</Button></li>
+                <li><Button colors="info" onClick={this.handler_search}><Icon type='uf-search' />查询</Button></li>
             </ul>
             </div>
                

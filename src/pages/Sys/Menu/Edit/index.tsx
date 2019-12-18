@@ -73,6 +73,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
 
         this.props.form.validateFields((err, values) => {
 
+            /** 
             if(this.state.record==null||this.state.record["id"]==null){
                 //编辑状态
                 if(this.state.selectedValue==null){
@@ -81,9 +82,11 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                     return;
                 }
 
+
                 values['parentId']=this.state.selectedValue;
                 values['id']=this.id!=='0'?this.id:null;
             }
+            ***/
 
             if (err) {
                 console.log('校验失败', values);
@@ -91,6 +94,8 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
             } else {
                 console.log('提交成功', values);
 
+               // values['parentId']=this.state.selectedValue;
+                values['id']=this.id!=='0'?this.id:null;
                 this.doSave(values);
             }
         });
@@ -153,7 +158,15 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                     <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>上一级</Label>
-                        <MenuTreeSelect onSelected={this.onMenuTreeClick}  defaultValue={this.state.record.parentId}  allowType={[1,2]} showRoot={true}>
+                        <MenuTreeSelect //onSelected={this.onMenuTreeClick}
+                              {...getFieldProps('parentId', {
+                                initialValue: this.state.record.parentId,
+                                rules: [{
+                                    required: true, message: '请选择上级',
+                                }],
+                            })}    
+                             //defaultValue={this.state.record.parentId}  
+                             allowType={[1,2]} showRoot={true}>
                         </MenuTreeSelect>
                         <span className='error'>
                             {getFieldError('parentId')}

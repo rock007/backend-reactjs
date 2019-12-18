@@ -341,7 +341,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
         />
 
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag)=>{this.setState({isPopPage:false});if(flag==1)this.search()}} >
             </PageDlog>
             <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
                            confirmFn={() => {

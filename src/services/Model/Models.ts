@@ -76,12 +76,12 @@ export interface LocationModel{
 
   id?:string
 
-  pointX:number
-  pointY:number
-  pointZ?:number
+  locationX:number
+  locationY:number
+  locationZ?:number
 
-  sn?:string  
-  address?:string
+  locationSn?:string  
+  location?:string
   from?:string
 
   createDate?:string

@@ -193,7 +193,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                    required
                    label="网格单元">
                    <RefGridTreeTableSelect {...getFieldProps('cellId', {
-                        initialValue: this.state.record.gridId,
+                        initialValue: this.state.record.cellId,
                         rules: [{
                             required: true, message: '请选择网格单元',
                         }]
@@ -227,12 +227,12 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
            <FormItem
                 className="time"
                 required
-                label="社区报到时间" >
+                label="报到截止时间" >
                  <DatePicker className='form-item' format={format} 
                                 {...getFieldProps('registSetDate', {
                                     initialValue: this.state.record.registSetDate ? moment(this.state.record.registSetDate ) : moment(),
                                     validateTrigger: 'onBlur',
-                                    rules: [{required: true, message: '请选择社区报到时间'}],
+                                    rules: [{required: true, message: '请选择到社区报到截止时间'}],
                                 })}
                 />
                 <FormError errorMsg={getFieldError('registSetDate')}/>

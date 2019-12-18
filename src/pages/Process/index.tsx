@@ -8,8 +8,6 @@ import SearchPanel from '../../components/SearchPanel';
 import OrgPanel from '../../pages/Sys/Org/Panel';
 import Alert from '../../components/Alert';
 
-import ProcessViewPop from './View';
-
 import DatePicker from "bee-datepicker";
 
 import ManService from '../../services/ManService';
@@ -470,7 +468,10 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 </Col>
             </Row>
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{
+                        this.setState({isPopPage:false});
+                        if(flag==1) this.search();
+                    }} >
             </PageDlog>
             <Alert show={this.state.isAlterShow} context="是否要删除 ?"
                            confirmFn={() => {

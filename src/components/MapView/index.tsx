@@ -25,7 +25,7 @@ export default class MapView extends React.Component<ISceneProps,ISceneState> {
     Position:any
 
     static defaultProps: Partial<ISceneProps> = {
-        locations:[{pointX:116.39,pointY:39.9,address:'22233sssssss中止'}],
+        locations:[{locationX:116.39,locationY:39.9,location:'22233sssssss中止'}],
       
     }
 
@@ -95,7 +95,7 @@ export default class MapView extends React.Component<ISceneProps,ISceneState> {
                         {
                             this.props.locations.map((item) => (
 
-                                <Marker position={[item.pointX,item.pointY]} title={item.address} 
+                                <Marker position={[item.locationX,item.locationY]} title={item.location} 
                                     events={{'click':this.markerOnClick}}>
                                 </Marker>
                             ))

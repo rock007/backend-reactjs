@@ -1,5 +1,7 @@
 import * as React from 'react';
-import {TreeSelect ,Icon } from 'tinper-bee';
+import {Label} from 'tinper-bee';
+
+import {TreeSelect} from 'tinper-bee';
 
 import SysService from '../../../../services/SysService';
 
@@ -62,6 +64,13 @@ interface IPanelState {
   }
   
   render() {
+
+        if(this.state.data.length==0) {
+          return  (<Label>加载中...</Label>);
+        }
+
+        //var {checked , ...other} = this.props;
+
         return ( 
                 <TreeSelect className="menuTree" 
                     showLine 
@@ -70,6 +79,7 @@ interface IPanelState {
                    // treeDefaultExpandAll
                     value={this.state.value}
                     onChange={this.onSelect}
+                    {...this.props}
                 >
                   { this.renderTreeNodes(this.state.data)}
               </TreeSelect>

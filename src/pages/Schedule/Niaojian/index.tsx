@@ -111,7 +111,7 @@ type IPageState = IOtherState & IPageDetailState;
 
        await ManService.submitNiaojianGenerate({processId:this.id}).then(()=>{
 
-            Info('尿检计划生成成功');
+            //Info('尿检计划生成成功');
             this.search();
         })
         .catch((err)=>{

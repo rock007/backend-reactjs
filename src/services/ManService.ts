@@ -46,8 +46,9 @@ class ManService {
     return result;
   }
 
+  //生成尿检计划
   public async submitNiaojianGenerate(args:any): Promise<any> {
-    let result = await http.post('/rest/niaojian-plan-generate',args);
+    let result = await http.post('/rest/schedule/generate-niaojian',args);
     return result;
   }
 
@@ -111,6 +112,24 @@ class ManService {
     return result;
   }
   
+  //见面
+  public async searchMeet(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/meet-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
+    return result;
+  }
+  public async getMeetById(id:string): Promise<any> {
+    let result = await http.get('/rest/meet-get',{params:{id:id}});
+    return result;
+  }
+  public async submitMeet(args:any): Promise<any> {
+    let result = await http.post('/rest/meet-submit',args);
+    return result;
+  }
+  public async deleteMeetByIds(ids:string): Promise<any> {
+    let result = await http.get('/rest/meet-delete',{params:{ids:ids}});
+    return result;
+  }
+
   //位置人员
   public async searchLocationMan(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/location-man-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);

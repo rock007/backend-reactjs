@@ -309,6 +309,18 @@ export const appRouters: any = [
     name: 'checkin_view',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Checkin/View'))
+  },{
+    path: '/meet/:id',
+    title: '见面-查看',
+    name: 'meet_view',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Meet/View'))
+  },{
+    path: '/meet',
+    title: '见面',
+    name: 'meet',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Meet'))
   },
   {
     path: '/audit/noticewarn',
@@ -392,6 +404,13 @@ export const appRouters: any = [
     name: 'buss_month',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Report/BussMonth'))
+  },
+  {
+    path: '/report/buss-year',
+    title: '业务年报',
+    name: 'buss_year',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Report/BussYear'))
   },
   {
     path: '/manager/:id',

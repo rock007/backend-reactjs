@@ -98,8 +98,7 @@ class ManTrans extends React.Component<IPageProps,IPageState> {
 
                 ManService.submitTran(values).then(()=>{
 
-                    Info('操作成功');
-                    this.goBack()
+                    this.goBack(1)
                 })
                 .catch((err)=>{
                     Error('操作失败');
@@ -240,7 +239,7 @@ class ManTrans extends React.Component<IPageProps,IPageState> {
         <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>附件</Label></div>
                         <div>
-                            <UploadFile  uploadChange={this.handler_uploadChange}/>
+                            <UploadFile  maxSize={3}   uploadChange={this.handler_uploadChange}/>
                         </div>
         </FormItem>
         <FormItem>

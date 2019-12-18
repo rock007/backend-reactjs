@@ -75,7 +75,7 @@ interface IPanelState {
   }
 
   onSelect=(selectedKeys, info) =>{
-    console.log('onSelect', selectedKeys);
+
     if(this.props.onClick!=null){
       this.props.onClick.call(this,selectedKeys)
     }

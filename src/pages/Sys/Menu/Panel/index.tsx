@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, Tree,Message ,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Label, Tree,Icon} from 'tinper-bee';
 
 import SysService from '../../../../services/SysService';
 
@@ -33,12 +33,14 @@ interface IPanelState {
         data:[],
         defaultCheckedKeys:[]
     }
-    async componentDidMount() {
-        let data = await SysService.getAllMenu();
-
-        this.setState({data:this.props.showRoot?[data]: data.childs});
+    componentDidMount() {
+        this.loadData();
     }
 
+    loadData= async ()=>{
+      let data = await SysService.getAllMenu();
+      this.setState({data:this.props.showRoot?[data]: data.childs});
+    }
 /*** 
     componentWillReceiveProps(nextProps:IPanelProps) {
       let _this = this;
@@ -92,6 +94,11 @@ interface IPanelState {
     }
   }
     render() {
+
+        if(this.state.data.length==0) {
+          return  (<Label>加载中...</Label>);
+        }
+
         return ( <div className="menu-tree-left" style={{padding:"10px"}}>
             
               <div >
@@ -100,7 +107,7 @@ interface IPanelState {
                     showIcon
                     checkStrictly={true}
                     checkable={this.props.isCheckbox}
-                    cancelUnSelect={true}
+                    //cancelUnSelect={true}
                     
                     onSelect={this.onSelect}
                     onCheck={this.onCheck}

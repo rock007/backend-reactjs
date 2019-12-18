@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Form,Label,Breadcrumb,Icon,Button} from 'tinper-bee';
+import {Form,Label,Breadcrumb,Panel,Loading,Icon,Button} from 'tinper-bee';
 
-import {getValidateFieldsTrim, Warning} from "../../../utils";
+import {getValidateFieldsTrim, Warning, Info} from "../../../utils";
 
 import moment from "moment";
 import DatePicker from "bee-datepicker";
@@ -9,6 +9,7 @@ import AppConsts from '../../../lib/appconst';
 import UploadFile from '../../../components/UploadFile';
 import { convertFiles } from '../../../utils/tools';
 import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
+import ManService from '../../../services/ManService';
 
 /**
  * 社区报到
@@ -57,11 +58,26 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/prrocess-regist/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/process-regist/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
+        if(this.id!='0'){
+
+            this.loadData(this.id);
+        }else{
+            this.forceUpdate();
+        }
     }
+    
+    loadData=async (id)=>{
+
+        this.setState({isLoading:true});
+        let result = await ManService.getProcessFiles(id);
+
+        this.setState({record:result,isLoading:false});
+    }
+
     goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
@@ -72,7 +88,7 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
 
     handler_uploadChange=(files:Array<any>,where:string)=>{
 
-        const m1=files.map((m,i)=>m.fileId);
+        const m1=files.map((m,i)=>m.uid);
         const o1={};
         o1[where]=m1;
 
@@ -81,10 +97,48 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
 
     submit=()=>{
 
+        this.props.form.validateFields((err, _values) => {
+            let values = getValidateFieldsTrim(_values);
+
+            if (!err) {
+
+                values.registDate = values.registDate!=null?values.registDate.format('YYYY-MM-DD'):"";
+
+                values['fileIds0']=this.state.fileIds0.join(',');
+                values['fileIds1']=this.state.fileIds1.join(',');//
+                values['fileIds2']=this.state.fileIds2.join(',');
+                values['fileIds3']=this.state.fileIds3.join(',');
+
+                values['processId']=this.id;
+                this.setState({isLoading:true});
+
+                ManService.submitRegist(values).then(()=>{
+
+                    this.goBack(1)
+                })
+                .catch((err)=>{
+                    Error('保存操作失败');
+                }).finally(()=>{
+                    this.setState({isLoading:false});
+                });
+
+            }else{
+                Warning('输入验证不通过，请检查');
+            }
+        } );
+
+
     }
 
     render() {
         let {getFieldProps, getFieldError} = this.props.form;
+
+        if(this.id!=='0'&&this.state.record.status==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
+        const isDisable=this.state.record.status==1;
 
         return (<div>
              	{
@@ -105,44 +159,53 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
                      <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>社区戒毒协议书</Label></div>
                         <div>
-                            <UploadFile from="0" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds0)}/>
+                            <UploadFile disabled={isDisable}  maxSize={3}  from="fileIds0" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files0)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>担保书</Label></div>
                         <div>
-                            <UploadFile from="1" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds1)}/>
+                            <UploadFile disabled={isDisable}  maxSize={3}    from="fileIds1" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files1)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>社区康复决定书</Label></div>
                         <div>
-                            <UploadFile from="2" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds2)}/>
+                            <UploadFile disabled={isDisable}  maxSize={3}    from="fileIds2" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files2)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <div style={{ width: '100px', float: 'left'}}><Label>人员分类审批表</Label></div>
                         <div>
-                            <UploadFile from="3" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.fileIds3)}/>
+                            <UploadFile disabled={isDisable} maxSize={3}  from="fileIds3" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files3)}/>
                         </div>
                     </FormItem>
                     <FormItem>
                         <Label>报到时间</Label>
-                        <DatePicker  format={format} 
-                                    {...getFieldProps('registDate', {
-                                        initialValue:  moment(),
-                                        validateTrigger: 'onBlur',
-                                        rules: [{required: true, message: '请选择报到时间'}],
-                                    })}
-                        />
+                        {
+                            this.state.record.status==1?
+                            <strong>{this.state.record.registDate}</strong>:
+                            <DatePicker  format={format} disabled={isDisable} 
+                                {   ...getFieldProps('registDate', {
+                                    initialValue:   this.state.record.registDate,
+                                    validateTrigger: 'onBlur',
+                                    rules: [{required: true, message: '请选择报到时间'}],
+                                })}
+                            />
+                        }
+                       
                         <span className='error'>
                             {getFieldError('registDate')}
                         </span>
                     </FormItem>
-                     <FormItem style={{'paddingLeft':'106px'}}>
-                        <Button shape="border"   onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
-                        <Button colors="primary"  onClick={this.submit}>保存</Button>
-                    </FormItem>
+                    {
+                        this.state.record.status==1?null:
+                        <FormItem style={{'paddingLeft':'106px'}}>
+                            <Button shape="border"   onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
+                            <Button colors="primary"  onClick={this.submit}>保存</Button>
+                        </FormItem>
+                    }
+                    
                 </Form>
         </div >)
     }

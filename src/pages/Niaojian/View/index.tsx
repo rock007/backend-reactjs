@@ -69,12 +69,14 @@ class NiaojianView extends React.Component<IPageProps,IPageState> {
         }
     }
 
-   
-
     render() {
 
-        return (<Panel >
-                <Loading container={this} show={this.state.isLoading}/>
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
+        return (<Panel>
                 <Form className='edit_form_pop'>
                 <FormItem>
                     <Label>戒毒人员</Label>

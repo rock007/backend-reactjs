@@ -51,7 +51,7 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
         isLoading:false,
         showAlert:false
     }
-       
+  
    columns = [
     {title: "起时",dataIndex: "startDate",key: "startDate",width: 100,  render: (text, record, index) => {
       return   <FactoryComp
@@ -143,16 +143,19 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
 
       let result = await ManService.searchWork({manId:this.manId}) as PageModel<any>;
 
-      this.setState({data:result.data,isLoading:false});
+      this.setState({data:result.data,isLoading:false,editModel:null});
     }
 
     saveData= async (args:any)=>{
 
        this.setState({isLoading:true});
+
+       for(var i=0;i<args.length;i++){
+        args[i].id=args[i].id==0?'':args[i].id;
+      }
        ManService.submitWork(args)
               .then((resp)=>{
 
-                this.setState({editModel:null});
                 this.loadData();
 
               })
@@ -164,7 +167,6 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
     }
 
     doDelete= async ()=>{
-      const me=this;
       
       this.setState({isLoading:true,showAlert:false});
 
@@ -173,10 +175,8 @@ export default class ManWorkPage extends React.Component<IPageProps,IPageState> 
           ids=ids+','+item.id;
       });
       ManService.deleteWork(ids).then(()=>{
-
-          this.setState({editModel:null});
        
-          me.loadData();
+          this.loadData();
       })
       .catch((err)=>{
         //Error('删除操作失败');
@@ -267,6 +267,8 @@ isVerifyData = (data) => {
 
   handler_add=()=>{
     
+      this.checkedRows=[];
+
       let newData = loadsh.cloneDeep(this.state.data);
   
       let tmp = {
@@ -303,6 +305,7 @@ isVerifyData = (data) => {
 
   handler_modify=()=>{
       
+      this.checkedRows=[];
       this.oldData=loadsh.cloneDeep(this.state.data);
 
       let editData = this.state.data.map(item => {
@@ -362,11 +365,7 @@ isVerifyData = (data) => {
     }
 
     onValidate = (field, flag, index) => {
-/** old
-      if (this.oldData.length > 0) {
-          this.oldData[index][`_${field}Validate`] = (flag == null);
-      }
-***/
+
       let _sourseData = loadsh.cloneDeep(this.state.data);
 
       if (_sourseData.length > 0) {
@@ -390,7 +389,6 @@ isVerifyData = (data) => {
        // }
 
         this.setState({data:_sourseData});
-
     }
 
     hasCheck = () => {

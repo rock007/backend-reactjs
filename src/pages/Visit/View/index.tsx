@@ -17,7 +17,7 @@ interface IPageProps {
     //in pop
     isPage?:boolean,
     url?:string,
-    handlerBack?:()=>void
+    handlerBack?:(flag:number)=>void
 }
 interface IPageState {
 
@@ -74,11 +74,11 @@ class VisitView extends React.Component<IPageProps,IPageState> {
 
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 

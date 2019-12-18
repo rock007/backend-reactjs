@@ -24,7 +24,7 @@ interface IPageProps {
     //in pop
     isPage?:boolean,
     url?:string,
-    handlerBack?:()=>void
+    handlerBack?:(flag:number)=>void
 }
 interface IPageState {
    
@@ -77,11 +77,11 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
         this.setState({record:result,isLoading:false});
     }
 
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack();
+            this.props.handlerBack(flag);
         }
     }
 
@@ -94,7 +94,6 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
 
                 values.testDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
 
-                debugger;
                 //戒毒人员
                 if(values.toUid&&values.toUid!=''){
 
@@ -107,13 +106,12 @@ class NiaojianEdit extends React.Component<IPageProps,IPageState> {
                 values['file2Ids']=this.state.file2Ids;
                 values['file3Ids']=this.state.file3Ids;
 
-                values['id']=this.id;
+                values['id']=this.id==='0'?'':this.id;
                 this.setState({isLoading:true});
 
                 ManService.submitNiaojian(values).then(()=>{
 
-                    Info('保存操作成功');
-                    this.goBack()
+                    this.goBack(1);
                 })
                 .catch((err)=>{
                     Error('保存操作失败');

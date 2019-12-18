@@ -65,7 +65,6 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
 
             this.setState({record:result,isLoading:false});
         }
-
     }
     goBack=(flag:number=0)=>{
         if(this.isPage()){
@@ -101,8 +100,7 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
 
                 BussService.submitWarn(values).then(()=>{
 
-                    Info('操作成功');
-                    this.goBack()
+                    this.goBack(1);
                 })
                 .catch((err)=>{
                     Error('操作失败');

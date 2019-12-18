@@ -160,7 +160,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
         let ids:string='';
         this.state.checkedRows.map((item,index)=>{
-            ids=ids+','+item.id;
+            ids=ids+','+item.manId;
         });
        await ManService.deleteManByIds(ids).then(()=>{
 

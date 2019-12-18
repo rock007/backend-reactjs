@@ -79,7 +79,7 @@ export  class RolePermissionPage extends React.Component<IPageProps,IPageState> 
             SysService.submitRolePermisson(values)
                 .then((resp)=>{
 
-                    Info("操作成功");
+                    //Info("操作成功");
                 })
                 .catch((resp)=>{
                     Warning("操作失败");

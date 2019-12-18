@@ -191,11 +191,11 @@ export function convertArticleCateTreeNode(item:any):ITreeNode{
 export function convertFiles(list:Array<any>):Array<any>{
 
     if(list==null) return [];
-     
+    
     const files= list.map((item,index)=>{
 
         return {
-            uid:  item.fileId,
+            uid:  item.fileId ||item.id,
             name: item.fileName,
             //status: 'done',
             url:  AppConsts.uploadUrl+item.fileUrl,
