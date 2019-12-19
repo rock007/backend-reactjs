@@ -11,7 +11,7 @@ import SelectDict from '../../components/SelectDict';
 import ManCateSelect from '../../components/ManCateSelect';
 import {RefOrgTreeSelect} from '../../components/RefViews/RefOrgTreeSelect';
 import PageDlog from '../../components/PageDlg';
-import { getValidateFieldsTrim } from '../../utils/tools';
+import { getValidateFieldsTrim, openPage } from '../../utils/tools';
 
 import DatePicker from "bee-datepicker";
 import ManService from '../../services/ManService';
@@ -216,7 +216,16 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             iconType:'uf-print',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
-                
+                if(this.state.checkedRows.length>1){
+
+                    Info('打印只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+                    
+                  openPage("report/visitDetail?ids="+this.state.checkedRows[0].id); 
+                }else{
+                    Info('请选择要打印戒毒人员');
+                }
             }
         }];
 

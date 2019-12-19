@@ -323,12 +323,18 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Meet'))
   },
   {
-    path: '/audit/noticewarn',
+    path: '/audit/warn',
     title: '通知函',
-    name: 'audit_noticewarn',
+    name: 'audit_warn',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/NoticeWarn'))
+  },{
+    path: '/audit/warn-view/:id',
+    title: '通知函-详细',
+    name: 'audit_noticewarn_detail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Audit/NoticeWarn/view'))
   },{
     path: '/audit/mantrans',
     title: '社区转移',
@@ -519,6 +525,12 @@ export const appRouters: any = [
     name: 'sys_logs',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Sys/Logs'))
+  },{
+    path: '/sys/flow/:id',
+    title: '工作流查看',
+    name: 'sys_flow_view',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Sys/Flow'))
   },{
     path: '/my-message',
     title: '我的消息',

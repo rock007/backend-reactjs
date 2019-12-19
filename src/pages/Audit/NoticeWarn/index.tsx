@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Loading,Tag ,Button,Icon,Radio,Select,Form,FormControl, Breadcrumb } from 'tinper-bee';
+import {Panel,Loading,Tag ,Label,Icon,Radio,Select,Form,FormControl, Breadcrumb } from 'tinper-bee';
 import DatePicker from "bee-datepicker";
 
 import {FormList ,FormListItem}from '../../../components/FormList';
@@ -32,7 +32,7 @@ type IPageState = IOtherState & IListPageState;
 /**
  * 通知函审核
  */
- class AuditNoticeWarnPage extends React.Component<IPageProps,IPageState> {
+ class NoticeWarnPage extends React.Component<IPageProps,IPageState> {
 
     pageIndex=1
     pageSize=10
@@ -131,8 +131,13 @@ type IPageState = IOtherState & IListPageState;
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
+        const me=this;
         const columns = [
-            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
+            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 ,render(text,record,index) {
+
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/audit/warn-view/'+record.id,'查看',false)}}>{text}</Label>;
+                
+              }},
             { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 },
             { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 ,
@@ -146,6 +151,11 @@ type IPageState = IOtherState & IListPageState;
                 return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
 
             } },
+            { title: '流程', dataIndex: 'wfProcId', key: 'wfProcId',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/sys/flow/'+record.id,'跟踪',false)}}>跟踪</Label>;
+                
+            }},
             { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
             { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
             { title: '处理结果', dataIndex: 'mjResp', key: 'mjResp',textAlign:'center', width: 200 },
@@ -153,7 +163,7 @@ type IPageState = IOtherState & IListPageState;
           ];
         
           const toolBtns = [{
-                    value:'接收',
+                    value:'操作',
                     bordered:false,
                     colors:'primary',
                     disabled:this.state.checkedRows.length>1?true:false,
@@ -161,14 +171,14 @@ type IPageState = IOtherState & IListPageState;
                         
                         if(this.state.checkedRows.length>1){
         
-                            Info('接收只能选择一条记录');
+                            Info('操作只能选择一条记录');
         
                         }else if(this.state.checkedRows.length==1){
         
-                            this.go2Page('/forhelp-edit/'+this.state.checkedRows[0].id,"通知函接收",false);
+                            this.go2Page('/audit/warn-view/'+this.state.checkedRows[0].id,"通知函操作",false);
         
                         }else{
-                            Info('请选择要接收的记录');
+                            Info('请选择要操作的记录');
                         }
                     }
                 },{
@@ -292,4 +302,4 @@ type IPageState = IOtherState & IListPageState;
     }
 }
 
-export default Form.createForm()(AuditNoticeWarnPage);
+export default Form.createForm()(NoticeWarnPage);

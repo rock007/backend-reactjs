@@ -37,7 +37,10 @@ class BussService {
     let result = await http.post('/rest/warn-submit',args);
     return result;
   }
-
+  public async findWarnById(id:string): Promise<any> {
+    let result = await http.get('/rest/warn-get',{params:{id:id}});
+    return result;
+  }
   //包办单位
   public async searchUnit(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/unit-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);

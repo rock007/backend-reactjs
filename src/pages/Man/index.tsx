@@ -26,6 +26,7 @@ import PageDlog from '../../components/PageDlg';
 
 import './index.scss';
 import {Info} from '../../utils/index';
+import { openPage } from '../../utils/tools';
 
 const FormItem = FormListItem;
 
@@ -338,7 +339,21 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'打印',
-            iconType:'uf-print'
+            iconType:'uf-print',
+            disabled:this.state.checkedRows.length>1?true:false,
+            onClick:()=>{
+
+                if(this.state.checkedRows.length>1){
+
+                    Info('打印只能选择一条记录');
+
+                }else if(this.state.checkedRows.length==1){
+                    
+                  openPage("report/manRegist?id="+this.state.checkedRows[0].manId); 
+                }else{
+                    Info('请选择要打印戒毒人员');
+                }
+            }
         }];
 
         return (

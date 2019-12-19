@@ -118,7 +118,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                 values.cellId=values.cellId!=null?JSON.parse(values.cellId).refpk:'';
                 values.orgId=values.orgId!=null?JSON.parse(values.orgId).refpk:'';//eg:{"refname":"漫水乡中心戒毒社区","refpk":"001001005"}
 
-                values['manId']=this.id;
+                values['manId']=this.id=='0'?null:this.id;
                 values['avatar']=this.avatar;
                 this.setState({isLoading:true});
                 this.doSubmit(values);

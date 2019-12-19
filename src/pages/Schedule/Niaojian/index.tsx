@@ -8,6 +8,8 @@ import PageDlog from '../../../components/PageDlg';
 import {PageModel, PopPageModel, IPageDetailProps, IPageDetailState} from '../../../services/Model/Models';
 import ManService from '../../../services/ManService';
 import { Info } from '../../../utils';
+import { openPage } from '../../../utils/tools';
+import AppConsts from '../../../lib/appconst';
 
 interface IOtherProps {
     
@@ -123,7 +125,6 @@ type IPageState = IOtherState & IPageDetailState;
 
     render() {
 
-        const me=this;
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
@@ -159,6 +160,13 @@ type IPageState = IOtherState & IPageDetailState;
             value:'导出',
             iconType:'uf-search',
             onClick:this.export
+        },{
+            value:'打印',
+            iconType:'uf-print',
+            onClick:()=>{
+
+                openPage("report/niaojianAll?ids="+this.id+'&uid='+AppConsts.session.userId); 
+            }
         }];
 
         return ( <Panel>

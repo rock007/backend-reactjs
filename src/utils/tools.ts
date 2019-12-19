@@ -302,3 +302,18 @@ export function  convertContactManTypeText(m):string{
     
     return m;
 }
+
+
+export function openPage(url:string):Window{
+    let strWindowFeatures = `
+        menubar=yes,
+        location=yes,
+        resizable=yes,
+        scrollbars=yes,
+        status=yes
+    `;
+
+    let winName:string="win_"+new Date().getUTCSeconds();
+
+    return window.open(AppConsts.uploadUrl+url, winName,  strWindowFeatures);
+}
