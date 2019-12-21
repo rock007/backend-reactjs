@@ -44,7 +44,7 @@ class FlowPanel extends React.Component<IOtherProps,IOtherState> {
     render() {
 
         return (<div>
-         <SvgInline url={AppConsts.remoteServiceBaseUrl+"/wf/getProcessExecImage?uid=sam&instanceId=95001"} />
+         <SvgInline url={AppConsts.remoteServiceBaseUrl+"/wf/getProcessExecImage?instanceId="+this.props.procId} />
     </div>)
     }
 }

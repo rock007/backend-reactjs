@@ -80,7 +80,7 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.registSetDate = values.registSetDate!=null?values.registSetDate.format('YYYY-MM-DD'):"";
+                values.registDate = values.registDate!=null?values.registDate.format('YYYY-MM-DD'):"";
 
                 values.niaojianDate = values.niaojianDate!=null?values.niaojianDate.format('YYYY-MM-DD'):"";
                 
@@ -177,14 +177,14 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
                         <FormItem>
                         <Label>应报到时间</Label>
                         <DatePicker  format={format} 
-                                    {...getFieldProps('registSetDate', {
+                                    {...getFieldProps('registDate', {
                                         initialValue:  moment(),
                                         validateTrigger: 'onBlur',
                                         rules: [{required: true, message: '请选择应报到时间'}],
                                     })}
                         />
                         <span className='error'>
-                            {getFieldError('registSetDate')}
+                            {getFieldError('registDate')}
                         </span>
                     </FormItem>
                     ):null}
@@ -240,9 +240,6 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入失联天数</span></span>,
-                                }, {
-                                    pattern: /^(?!\d+$)$/, 
-                                    message: <span><Icon type="uf-exc-t"></Icon><span>失联天数,只能输入数字</span></span>,
                                 }],
                             }) }
                         />
@@ -257,9 +254,6 @@ class ManWarn extends React.Component<IPageProps,IPageState> {
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入失联次数</span></span>,
-                                }, {
-                                    pattern: /^(?!\d+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{8,15}$/, 
-                                    message: <span><Icon type="uf-exc-t"></Icon><span>失联次数输入错误,只能输入数字</span></span>,
                                 }],
                             }) }
                         />

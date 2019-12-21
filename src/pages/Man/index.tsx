@@ -27,6 +27,7 @@ import PageDlog from '../../components/PageDlg';
 import './index.scss';
 import {Info} from '../../utils/index';
 import { openPage } from '../../utils/tools';
+import AppConsts from '../../lib/appconst';
 
 const FormItem = FormListItem;
 
@@ -349,7 +350,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
                     
-                  openPage("report/manRegist?id="+this.state.checkedRows[0].manId); 
+                  openPage("report/manRegist?id="+this.state.checkedRows[0].manId+"&uid="+AppConsts.session.userId); 
                 }else{
                     Info('请选择要打印戒毒人员');
                 }

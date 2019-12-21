@@ -74,8 +74,6 @@ export class Login extends React.Component<IPageProps,IPageState> {
             }
         }).then(function(res:any) {
           
-            console.log(res);  
-            debugger;
             const response=res.data;
 
             if( response['msg']!=null ){
@@ -90,10 +88,10 @@ export class Login extends React.Component<IPageProps,IPageState> {
                 setCookie('login_pwd',password);
     
                 setCookie('login_token',response.access_token);
-                AppConsts.authorization.token=response.access_token;
+                //AppConsts.authorization.token=response.access_token;
     
-                console.log('in :'+AppConsts.authorization.token);
-                console.log('out :'+getCookie('login_token'));
+                //console.log('in :'+AppConsts.authorization.token);
+                //console.log('out :'+getCookie('login_token'));
     
                 window.location.href='/#/';
             }else{

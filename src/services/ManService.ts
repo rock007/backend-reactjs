@@ -216,14 +216,26 @@ class ManService {
     let result = await http.post('/rest/process-tran',args);
     return result;
   }
+  public async searchTran(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/tran-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
+    return result;
+  }
   //解除戒毒
   public async submitRelease(args:any): Promise<any> {
     let result = await http.post('/rest/process-release',args);
     return result;
   }
+  public async searchRelease(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/release-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
+    return result;
+  }
   //执行强戒
   public async submitBack(args:any): Promise<any> {
     let result = await http.post('/rest/process-back',args);
+    return result;
+  }
+  public async searchBack(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+    let result = await http.post('/rest/back-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
     return result;
   }
 

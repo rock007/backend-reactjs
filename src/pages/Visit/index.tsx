@@ -18,6 +18,7 @@ import ManService from '../../services/ManService';
 
 import './index.scss';
 import { Info } from '../../utils';
+import AppConsts from '../../lib/appconst';
 
 const FormItem = FormListItem;
 
@@ -222,7 +223,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
                     
-                  openPage("report/visitDetail?ids="+this.state.checkedRows[0].id); 
+                  openPage("report/visitDetail?ids="+this.state.checkedRows[0].id+"&uid="+AppConsts.session.userId); 
                 }else{
                     Info('请选择要打印戒毒人员');
                 }

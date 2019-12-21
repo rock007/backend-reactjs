@@ -5,7 +5,6 @@ import {FormControl ,Radio} from 'tinper-bee';
 import { RefTreeTableWithInput } from 'ref-tree-table'
 import 'ref-tree-table/lib/index.css';
 
-import request from '../../utils/request';
 import SysService from '../../services/SysService';
 import { convertOrgTreeNode } from '../../utils/tools';
 import { PageModel } from '../../services/Model/Models';
@@ -178,7 +177,7 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
             displayField={ (record) => {
               return record.trueName
             }}  //显示内容的键
-            valueField={ 'key'} 
+            valueField={ 'id'} 
             showLine={true}
             treeData={this.state.treeData}
             columnsData={columns}

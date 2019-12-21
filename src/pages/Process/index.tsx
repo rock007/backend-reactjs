@@ -300,7 +300,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 }
             }
         },{
-            value:'变更社区',
+            value:'社区转移',
             disabled:this.state.checkedRows.length>1?true:false,
             colors:'default',
             onClick:() => {
@@ -418,8 +418,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
 
                     <FormItem
-                        label="网格"
-                    >
+                        label="网格">
                         <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
                         
                     </FormItem>

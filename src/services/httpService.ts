@@ -19,8 +19,8 @@ const http = axios.create({
 http.interceptors.request.use(
   function(config) {
     
-    if (!!AppConsts.authorization.token) {
-      config.headers.common['Authorization'] = 'Bearer ' + AppConsts.authorization.token;
+    if (!!AppConsts.getToken()) {
+      config.headers.common['Authorization'] = 'Bearer ' + AppConsts.getToken();
     }
 
     return config;
@@ -41,7 +41,8 @@ http.interceptors.response.use(
       if(resp.result==-401){
         console.log('请重新登录');
         
-        AppConsts.authorization.token='';
+        AppConsts.clearToken();
+
         window.location.href='/#/account/login';
 
         return;
@@ -86,8 +87,8 @@ http.interceptors.response.use(
       //Message.create({content: resp.msg, color: 'danger'});
 
       if(resp.result==-401){
-        console.log('请重新登录');
-        AppConsts.authorization.token='';
+
+        AppConsts.clearToken();
         window.location.href='/#/account/login';
       }else{
 
@@ -100,22 +101,7 @@ http.interceptors.response.use(
       Error('请求失败');
       //Message.create({content: '请求失败', color: 'danger'});
     }
-   /**  
-    if (!!error.response && !!error.response.data.msg && !!error.response.data.data ) {
-      Modal.error({
-        title: '提示',
-        content: error.response.data.data,
-      });
-    } else if (!!error.response && !!error.response.data.error && !!error.response.data.error.message) {
-      Modal.error({
-        title: 'LoginFailed',
-        content: error.response.data.error.message,
-      });
-    } else if (!error.response) {
-      //Modal.error({ content: 'UnknownError' });
-      Message.create({content: '请求失败', color: 'danger'});
-    }
-**/
+  
     return Promise.reject(error);
   }
 );

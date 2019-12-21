@@ -1,10 +1,10 @@
 import './index.scss';
 
 import * as React from 'react';
-
 import { Dropdown, Icon, Menu, Navbar } from 'tinper-bee';
-
 import { Link } from 'react-router-dom';
+
+import ConnectPanel from '../Connect';
 
 //import profilePicture from '../../images/user.png';
 
@@ -60,6 +60,8 @@ handleSelect = (index) => {
  
   if(index==3){
     this.props.handler_msg();
+  }else if(index==2){
+    this.props.go2page('/my-todo');
   }
 
 }
@@ -104,9 +106,12 @@ onSelect=( {key} )=> {
       <Navbar.Collapse>
    
           <Navbar.Form pullRight>
+
           <Navbar.Nav 
-              selectedkey={this.state.selectedkey}
+             // selectedkey={this.state.selectedkey}
+
               onSelect={this.handleSelect}>
+              <Navbar.NavItem eventKey={5}><ConnectPanel/></Navbar.NavItem>
               <Navbar.NavItem eventKey={1}>全屏</Navbar.NavItem>
               <Navbar.NavItem  eventKey={2}>
                   待办

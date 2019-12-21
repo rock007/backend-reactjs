@@ -154,11 +154,11 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                             }
                             ) }
                         >
-                        <Radio value="1" >转移社区</Radio>
-                        <Radio value="2" >修改人员分类</Radio>
-                        <Radio value="3" >修改风险等级</Radio>
-                        <Radio value="4" >修改所属网格</Radio>
-                        <Radio value="5" >修改报到时间</Radio>
+                        <Radio value="1" >社区组织</Radio>
+                        <Radio value="2" >人员分类</Radio>
+                        <Radio value="3" >风险等级</Radio>
+                        <Radio value="4" >所属网格</Radio>
+                        <Radio value="5" >报到时间</Radio>
                     </Radio.RadioGroup>
                 </FormItem>
                 {this.state.selectedValue==1?(

@@ -245,6 +245,19 @@ class SysService {
     return result;
   }
 
+  //工作流
+  public async myTodo(): Promise<any> {
+   
+    let result = await http.get('/rest/manager/myTodo');
+    return result;
+  }
+
+  public async actWorkflow( taskId:string,args:any): Promise<any> {
+   
+    let result = await http.post('/rest/manager/actWorkflow?taskId='+taskId,args);
+    return result;
+  }
+
 }
 
 export default new SysService();

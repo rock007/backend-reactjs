@@ -173,7 +173,7 @@ export  class RefGridTreeTableSelect extends React.Component<IComponentProps,ICo
           lang= "zh_CN"
           value={value}
           showLoading={this.state.loading}
-          valueField={ 'id'}
+          valueField={ 'cellId'}
           //WithInput
           canClickGoOn={this.canClickGoOn}
           placeholder='请选择地区网格'

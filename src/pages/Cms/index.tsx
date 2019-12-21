@@ -273,7 +273,7 @@ handler_delete=async ()=>{
                     </FormItem>
                     <FormItem
                         label="状态">
-                        <Radio.RadioGroup {...getFieldProps('sataus', {initialValue: ''})}>
+                        <Radio.RadioGroup {...getFieldProps('status', {initialValue: ''})}>
                             <Radio value="">(请选择)</Radio>
                             <Radio value="0">草稿</Radio>
                             <Radio value="1">上线中</Radio>

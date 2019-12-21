@@ -315,5 +315,5 @@ export function openPage(url:string):Window{
 
     let winName:string="win_"+new Date().getUTCSeconds();
 
-    return window.open(AppConsts.uploadUrl+url, winName,  strWindowFeatures);
+    return window.open(AppConsts.remoteServiceBaseUrl+"/web/"+url, winName,  strWindowFeatures);
 }

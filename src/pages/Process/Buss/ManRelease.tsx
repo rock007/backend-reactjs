@@ -86,11 +86,11 @@ class ManRelease extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
+                //values.selectDate = values.testDate!=null?values.testDate.format('YYYY-MM-DD'):"";
 
                 if(values.selectDate){
-                    values['joinDate']=values.createDate[0].format('YYYY-MM-DD');
-                    values['finishDate']=values.createDate[1].format('YYYY-MM-DD');
+                    values['joinDate']=values.selectDate[0].format('YYYY-MM-DD');
+                    values['finishDate']=values.selectDate[1].format('YYYY-MM-DD');
                 }
 
                 values['manId']=this.state.record.manId;

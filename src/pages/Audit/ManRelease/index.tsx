@@ -26,7 +26,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageCommProps;
 type IPageState = IOtherState & IListPageState;
 
- class ManTransPage extends React.Component<IPageProps,IPageState> {
+ class ManReleasePage extends React.Component<IPageProps,IPageState> {
 
     pageIndex=1
     pageSize=10
@@ -140,7 +140,7 @@ type IPageState = IOtherState & IListPageState;
 			      业务审核
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      社区转移
+			      解除戒毒
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
@@ -211,4 +211,4 @@ type IPageState = IOtherState & IListPageState;
     }
 }
 
-export default Form.createForm()(ManTransPage);
+export default Form.createForm()(ManReleasePage);

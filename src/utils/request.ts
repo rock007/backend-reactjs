@@ -16,7 +16,7 @@ export default (url:string, options) => {
             'X-Requested-With': 'XMLHttpRequest',
             'random-num' : random_num,
             'x-xsrf-token' : x_xsrf_token,
-            'Authorization':'Bearer '+AppConsts.authorization.token
+            'Authorization':'Bearer '+AppConsts.getToken()
         },
         params,
 

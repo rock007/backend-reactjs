@@ -1,16 +1,16 @@
 import  React from 'react';
 import { Route, Redirect ,HashRouter} from 'react-router-dom';
 import AppConsts from  '../../lib/appconst';
+import { getCookie } from '../../utils';
 
 const ProtectedRoute = ({ path, component: Component, permission, render, ...rest }: any) => {
 
-  console.log('path:'+path+"  permission:"+permission);
   return (
     <Route
       {...rest}
       render={props => {
         
-        if (!AppConsts.session.userId)
+        if (!AppConsts.getToken())
           return (
             <Redirect
               to={{

@@ -25,8 +25,11 @@ interface IPanelState {
         let data = await SysService.getDetpTree();
 
         //let treeData=convertOrgTreeNode(data);
-        
-        this.setState({data:data.childs});
+        if(data.id=='0'){
+          this.setState({data:data.childs});
+        }else{
+          this.setState({data:[data]});
+        }
     }
 
     onChange = (value) => {

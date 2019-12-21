@@ -153,7 +153,7 @@ type IPageState = IOtherState & IListPageState;
             } },
             { title: '流程', dataIndex: 'wfProcId', key: 'wfProcId',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label  className='link-go' onClick={()=>{me.go2Page('/sys/flow/'+record.id,'跟踪',false)}}>跟踪</Label>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/sys/flow/'+text,'跟踪',false)}}>跟踪</Label>;
                 
             }},
             { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },

@@ -56,14 +56,14 @@ closeRightDrawer=()=>{
 }
 
 componentDidMount() {
-  const token= getCookie('login_token');
+  const token= AppConsts.getToken();
 
   if(token==null){
     
     window.location.href='/#/account/login';
 
   }else{
-    AppConsts.authorization.token=token;
+    //AppConsts.authorization.token=token;
     this.props.systemStore.loadData();
   }
 }
@@ -127,7 +127,7 @@ handlerLogoff=()=>{
   //setCookie('login_pwd','');
 
   setCookie('login_token','');
-  AppConsts.authorization.token='';
+  //AppConsts.authorization.token='';
   window.location.href='/#/account/login';
 }
 render() {

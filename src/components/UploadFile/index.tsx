@@ -119,7 +119,7 @@ export default class UploadFile extends React.Component<IPanelProps,IPanelSate> 
       <div>
         <Upload action= {AppConsts.remoteServiceBaseUrl+'/web/rest/file/upload'}
         headers= {{
-            Authorization: 'Bearer '+AppConsts.authorization.token
+            Authorization: 'Bearer '+AppConsts.getToken()
           }
         }
         disabled={this.props.disabled}

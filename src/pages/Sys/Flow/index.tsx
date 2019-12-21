@@ -42,7 +42,7 @@ type IPageState = IOtherState & IPageDetailState;
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/sys/grid-edit/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/sys/flow/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 

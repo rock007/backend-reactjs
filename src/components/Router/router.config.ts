@@ -336,12 +336,26 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Audit/NoticeWarn/view'))
   },{
-    path: '/audit/mantrans',
+    path: '/audit/man-trans',
     title: '社区转移',
-    name: 'audit_mantrans',
+    name: 'audit_man_trans',
     icon: 'caven',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Audit/ManTrans'))
+  },{
+    path: '/audit/man-release',
+    title: '解除戒毒',
+    name: 'audit_man_release',
+    icon: 'caven',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Audit/ManRelease'))
+  },{
+    path: '/audit/man-back',
+    title: '执行强戒',
+    name: 'audit_man_back',
+    icon: 'caven',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../pages/Audit/ManBack'))
   },{
     path: '/audit/buss-modify/:id',
     title: '社戒修改-查看',
@@ -537,6 +551,12 @@ export const appRouters: any = [
     name: 'sys_msg',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Sys/Msg'))
+  },{
+    path: '/my-todo',
+    title: '我的待办',
+    name: 'sys_todo',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Sys/My/Todo'))
   },{
     path: '/grid-unit',
     title: '包办单位',
