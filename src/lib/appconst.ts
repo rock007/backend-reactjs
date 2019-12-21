@@ -21,10 +21,11 @@ const AppConsts = {
     setCookie('login_token','');
   },
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
-  remoteServiceBaseUrl: 'http://localhost:10000',
-  //remoteServiceBaseUrl: 'http://219.138.150.225:10000',
-  uploadUrl: 'http://localhost:10007/',
-  //uploadUrl: 'http://219.138.150.225:10002/',
+  //remoteServiceBaseUrl: 'http://localhost:10000',
+  remoteServiceBaseUrl: 'http://219.138.150.225:10000',
+  //uploadUrl: 'http://localhost:10007/',
+  uploadUrl: 'http://219.138.150.225:10002/',
+  //websocketUrl: 'http://219.138.150.225:10005/',
   session:{
     userId:'',
     userName:'',

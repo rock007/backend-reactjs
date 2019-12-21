@@ -217,8 +217,8 @@ handler_save=async ()=>{
         <FormItem>
             <Label>职务</Label>
             <Select
-              defaultValue={this.state.record.postion}
-              disabled={this.state.record.postion==null?false:true}
+              defaultValue={this.state.postion}
+              disabled={this.state.record.id==null?false:true}
               style={{ width: 200, marginRight: 6 }}
               onChange={(v)=>this.setState({postion:v})}>
               <Select.Option value="1">主任</Select.Option>
@@ -338,7 +338,7 @@ handler_save=async ()=>{
                     return;
                   }
             
-                  this.setState({record:this.checkedRows[0],postion:this.checkedRows[0].postion,editModel:'edit'});
+                  this.setState({record:this.checkedRows[0],postion:this.checkedRows[0].postion+'',editModel:'edit'});
                 }} disabled={this.state.editModel!=null}>修改</Button>
                 <Button onClick={()=>{
                     if(this.checkedRows.length==0){

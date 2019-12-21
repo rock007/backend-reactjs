@@ -49,8 +49,8 @@ export  class RefManTreeTableSelect extends React.Component<IComponentProps,ICom
        
         const data = await SysService.getDetpTree();
         const treeData=convertOrgTreeNode(data);
-      
-        this.setState({treeData: treeData.children});
+     
+        this.setState({treeData: treeData.key!=='0'?[treeData]:treeData.children});
 
         return true;//必须要有
       }

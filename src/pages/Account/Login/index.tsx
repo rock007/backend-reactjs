@@ -84,8 +84,8 @@ export class Login extends React.Component<IPageProps,IPageState> {
 
                 Info("用户登录验证成功");
 
-                setCookie('login_name',username);
-                setCookie('login_pwd',password);
+                //setCookie('login_name',username);
+                //setCookie('login_pwd',password);
     
                 setCookie('login_token',response.access_token);
                 //AppConsts.authorization.token=response.access_token;

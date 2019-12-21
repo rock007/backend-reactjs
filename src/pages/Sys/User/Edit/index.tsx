@@ -178,12 +178,15 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                     <FormItem>
                         <Label>用户名</Label>
-                        <FormControl placeholder="请输入用户名(包含数字和字母，8-15位)"
+                        <FormControl placeholder="请输入用户名"
                             {...getFieldProps('userName', {
                                 validateTrigger: 'onBlur',
                                 initialValue: this.state.record.userName,
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入用户名</span></span>,
+                                }, {
+                                    pattern: /^\\w{3,18}$/, 
+                                    message: <span><Icon type="uf-exc-t"></Icon><span>账号只能由数字、字母或者下划线组成，长度在3-18之间</span></span>,
                                 }],
                             }) }
                         />

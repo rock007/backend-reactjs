@@ -327,7 +327,7 @@ type IPageState = IOtherState & IListPageState;
                     </FormItem>
                     <FormItem
                         label="手机号" >
-                        <FormControl placeholder='请输入手机号' {...getFieldProps('mobilePhoneNumber', {initialValue: ''})}/>
+                        <FormControl placeholder='请输入手机号' {...getFieldProps('mobile', {initialValue: ''})}/>
                     </FormItem>
                     <FormItem
                         label="性别">

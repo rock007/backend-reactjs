@@ -53,7 +53,7 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
       let data = await SysService.getDetpTree();
       let treeData=convertOrgTreeNode(data);
       
-      this.setState({treeData: treeData.children});
+      this.setState({treeData: treeData.key!=='0'?[treeData]:treeData.children});
       return true;
   }
 
@@ -154,7 +154,7 @@ export  class RefUserTreeTableSelect extends React.Component<IComponentProps,ICo
             }},
             { title: '角色', dataIndex: 'roles', key: 'roles', textAlign:'center', width: 150 ,render(text,record,index) {
 
-              return text==null?'':JSON.stringify(text);
+              return text;
             }},
           ];
 

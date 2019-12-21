@@ -41,7 +41,7 @@ export  class RefOrgTreeSelect extends React.Component<any,IComponentState> {
         let data = await SysService.getDetpTree();
         let treeData=convertOrgTreeNode(data);
         
-        this.setState({treeData: treeData.children});
+        this.setState({treeData:treeData.key!=='0'?[treeData]:treeData.children});
         return true;//必须要有
     }
    

@@ -20,9 +20,9 @@ export default class ConnectPanel extends React.Component<IOtherProps,IOtherStat
     isConnect:false
   }
   componentDidMount() {
-
     //this.init();
   }
+
   componentWillUnmount() {
     if(this.timer!=null) clearTimeout(this.timer);
    };
@@ -32,8 +32,11 @@ export default class ConnectPanel extends React.Component<IOtherProps,IOtherStat
     //socket = io('http://219.138.150.224:10008');
 
     ConnectPanel.socket = io.connect(AppConsts.remoteServiceBaseUrl, {
-      path: '/connect',upgrade:true
+      path: '/connect',
+      upgrade:true
     });
+
+    //ConnectPanel.socket = io.connect("http://localhost:10008");
     ConnectPanel.socket.on('connect', function(){
         console.log("连接成功");
         me.setState({isConnect:true});
