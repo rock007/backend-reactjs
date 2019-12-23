@@ -82,10 +82,6 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
     clear=()=>{
         this.props.form.resetFields()
     }
-     
-    export = ()=>{
-        console.log('export=======');
-    }
   
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
         
@@ -237,8 +233,6 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={()=>{}}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                         />
                     </FormItem>

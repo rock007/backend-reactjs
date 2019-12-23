@@ -62,6 +62,9 @@ handleSelect = (index) => {
     this.props.handler_msg();
   }else if(index==2){
     this.props.go2page('/my-todo');
+  }else if(index==1){
+    //全屏
+   
   }
 
 }
@@ -93,13 +96,14 @@ onSelect=( {key} )=> {
 
     return (
     <Navbar
+      className="header"
       expanded={this.state.expanded}
       onToggle={this.onToggle}>
       <Navbar.Header>
           <Navbar.Brand>
-              <a href="#">{this.props.title}</a>
+              <a href="/#/" className='white'>{this.props.title}</a>
           </Navbar.Brand>
-              <Navbar.Brand style={{fontSize:"9px"}}>{this.props.orgName}</Navbar.Brand>
+              <Navbar.Brand style={{fontSize:"9px",color:'white'}}>{this.props.orgName}</Navbar.Brand>
           <Navbar.Toggle />
       </Navbar.Header>
 
@@ -111,12 +115,12 @@ onSelect=( {key} )=> {
              // selectedkey={this.state.selectedkey}
 
               onSelect={this.handleSelect}>
-              <Navbar.NavItem eventKey={5}><ConnectPanel/></Navbar.NavItem>
-              <Navbar.NavItem eventKey={1}>全屏</Navbar.NavItem>
-              <Navbar.NavItem  eventKey={2}>
+              <Navbar.NavItem eventKey={5} className='white'><ConnectPanel/></Navbar.NavItem>
+              <Navbar.NavItem eventKey={1} className='white'>全屏</Navbar.NavItem>
+              <Navbar.NavItem  eventKey={2} className='white'>
                   待办
               </Navbar.NavItem>
-              <Navbar.NavItem eventKey={3} >
+              <Navbar.NavItem eventKey={3} className='white'>
                   消息({this.props.unReadNum})
               </Navbar.NavItem>
               <Navbar.NavItem  eventKey={4}>
@@ -125,7 +129,7 @@ onSelect=( {key} )=> {
                     trigger={['hover']}
                     overlay={menu2}
                     animation="slide-up">
-                      <span>欢迎:{this.props.realName}</span> 
+                      <span className='white'>欢迎:{this.props.realName}</span> 
                 </Dropdown> 
               </Navbar.NavItem>
                         
@@ -135,6 +139,7 @@ onSelect=( {key} )=> {
 
       </Navbar.Collapse>
   </Navbar>
+ 
     );
   }
 }

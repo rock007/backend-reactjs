@@ -2,16 +2,16 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { Icon, Button, Label, FormControl, Form ,Panel,LoadingState} from 'tinper-bee';
-import request from '../../../utils/request';
 import axios from 'axios';
 
 import './index.scss';
-import { Redirect } from 'react-router-dom';
 import AccountStore from '../../../stores/AccountStore';
 import Store from '../../../stores/StoreIdentifier';
 import { Error, Warning,Info ,setCookie,getCookie} from '../../../utils';
 import AppConsts from '../../../lib/appconst';
 import { JsonBody } from '../../../services/Model/Models';
+import loginLogoPic from '../../../images/login_logo.png';
+import loginLogoSvg from '../../../images/login_logo.svg';
 
 interface IPageProps {
     form:any,
@@ -55,6 +55,9 @@ export class Login extends React.Component<IPageProps,IPageState> {
         });
     }
 
+    reset=()=>{
+
+    }
     doLogin = async (username:string,password:string) => {
         
         const me=this;
@@ -118,10 +121,12 @@ export class Login extends React.Component<IPageProps,IPageState> {
         //if (AppConsts.authorization.token!='') return <Redirect to={from} />;
 
         return ( <div className="login-page">
-        <Panel style={{width:"450px",margin:"30px"}}>
+        <img src={loginLogoSvg} ></img>    
+        <h1 style={{color:'white'}}>社区戒毒康复人员网格化管控平台</h1>
+        <div style={{width:"450px",margin:"3px",textAlign:'left'}}>
         <Form >
             <Form.FormItem>
-                <Label>用户名</Label>
+                <Label style={{color:'white'}}>用户名</Label>
                 <FormControl placeholder="请输入用户名"
                     {...getFieldProps('username', {
                         validateTrigger: 'onBlur',
@@ -136,7 +141,7 @@ export class Login extends React.Component<IPageProps,IPageState> {
                 </span>
             </Form.FormItem>
             <Form.FormItem>
-                <Label>密码</Label>
+                <Label  style={{color:'white'}}>密码</Label>
                 <FormControl placeholder="请输入密码" type='password'
                     {...getFieldProps('password', {
                         validateTrigger: 'onBlur',
@@ -152,11 +157,10 @@ export class Login extends React.Component<IPageProps,IPageState> {
             </Form.FormItem>
             <Form.FormItem style={{'paddingLeft':'106px'}}>
                 <Button shape="border" className="reset" style={{"marginRight":"8px"}}>取消</Button>
-                
                 <LoadingState
 				    onClick={ this.submit }
-                    colors="primary"
                     className="login"
+                    colors="primary"
 				    show={ this.state.isWaiting }
 				    loadingText="登录中...">
 				    登录
@@ -164,7 +168,7 @@ export class Login extends React.Component<IPageProps,IPageState> {
 
             </Form.FormItem>
         </Form>
-        </Panel>
+        </div>
     </div>
             )
     }

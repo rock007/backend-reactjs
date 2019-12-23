@@ -1,90 +1,147 @@
 import * as React from 'react';
-import {Panel, Table ,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-
-import Chart from '../../components/Chart';
-import Editor from '../../components/Editor';
-
-const format = "YYYY";
+import {Panel, Table,Loading,Tag,Label} from 'tinper-bee';
+import ManService from '../../services/ManService';
+import BussService from '../../services/BussService';
+import { PageModel } from '../../services/Model/Models';
+import { convertWarnTypeText, convertBussModifyTypeText } from '../../utils/tools';
 
 interface ISceneProps {
     
 }
 interface ISceneState {
-    expanded:boolean,
-    current:any,
-    selectedkey:any
+    warnsPage:PageModel<any>,//待操作的通知函
+    manModifyPage:PageModel<any>,//档案信息修改
+    planNiaojianTodo:PageModel<any>,//待尿检
+    planNiaojianOver:PageModel<any>,//已过期尿检
+
+    isLoading:boolean
 }
 
 export default class WellcomeScene extends React.Component<ISceneProps,ISceneState> {
     
+    pageIndex=1
+    pageSize=5
+    orderBy=[]
+
     state:ISceneState={
-        expanded:false,
-        current:null,
-        selectedkey:null
+        planNiaojianTodo:new PageModel<any>(),
+        planNiaojianOver:new PageModel<any>(),
+        warnsPage:new PageModel<any>(),
+        manModifyPage:new PageModel<any>(),
+        isLoading:false
     }
 
     componentDidMount() {
+        this.loadData();
+    }
+
+    loadData=async ()=>{
+
+        this.setState({isLoading:true});
+
+        let page1 = await BussService.searchWarn({state:1}, this.pageIndex,this.pageSize) as PageModel<any>;
+        let page2 = await ManService.searchBussModify({status:0}, this.pageIndex,this.pageSize) as PageModel<any>;
+
+        let page3 = await ManService.searchNiaojianPlan({status:1}, this.pageIndex,this.pageSize) as PageModel<any>;
+        let page4 = await ManService.searchNiaojianPlan({status:3}, this.pageIndex,this.pageSize) as PageModel<any>;
+
+        this.setState({warnsPage:page1,manModifyPage:page2,planNiaojianTodo:page3,planNiaojianOver:page4,isLoading:false});
 
     }
 
     render() {
         const columns = [
-            { title: "员工编号", dataIndex: "a", key: "a", width: 150 },
-            { title: "员工姓名", dataIndex: "b", key: "b", width:100},
-            { title: "性别", dataIndex: "c", key: "c", width: 100},
-            { title: "部门", dataIndex: "d", key: "d", width: 100 },
-            { title: "职级", dataIndex: "e", key: "e", width: 100 }
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 },
+            { title: '时间区间', dataIndex: 'startDate', key: 'startDate', textAlign:'center',width: 180,render(text,record,index) {
+
+                return text+'~'+record.endDate;
+            }},
+            { title: '第几年', dataIndex: 'year', key: 'year', textAlign:'center',width: 80 }
           ];
-          
-          const data = [
-            { a: "ASVAL_20190328", b: "小张", c: "男", d: "财务二科", e: "M1", key: "1" },
-            { a: "ASVAL_20190320", b: "小明", c: "男", d: "财务一科", e: "T1", key: "2" },
-            { a: "ASVAL_20190312", b: "小红", c: "女", d: "财务一科", e: "T2", key: "3" }
+
+          const modifyColumns =[
+            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
+
+            { title: '类型', dataIndex: 'modifyType', key: 'modifyType',textAlign:'center', width: 100 ,
+                render(text, record, index){
+                    return convertBussModifyTypeText(text);
+            }},
+            { title: '原值', dataIndex: 'oldText', key: 'oldText', textAlign:'center',width: 200 },
+            { title: '修改为', dataIndex: 'newText', key: 'newText',textAlign:'center', width: 150 },
+            { title: '操作人', dataIndex: 'createUser', key: 'createUser',textAlign:'center', width: 150 },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
           ];
+
+          const warnColumns = [
+            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
+
+            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 ,
+                render(text,record,index) {
+
+                return convertWarnTypeText(text);
+              }},
+            { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+                  
+                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
+
+            } },
+            { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
+            { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
+          ];
+        
         return ( <div>
             <h3>欢迎使用系统</h3>
-
+            <Loading container={this} show={this.state.isLoading}/>
             <div style={{display:'flex'}}>
-                <Panel header="戒毒人员修改审批">
+                <Panel header={"戒毒人员修改审批,共计"+this.state.manModifyPage.dataCount+"条"}>
                     <Table
-                        columns={columns}
-                        data={data}
-                        showRowNum={true}
+                        columns={modifyColumns}
+                        data={this.state.manModifyPage.data}
+                        showRowNum={false}
                     />
                 </Panel>
-                <Panel header="正在执行通知函">
-                    <Table
-                        columns={columns}
-                        data={data}
-                        showRowNum={true}
-                    />
-                </Panel>
-               
             </div>
-
             <div>
-                <Panel header="待尿检人员">
+                <Panel header={"正在执行通知函,共计"+this.state.warnsPage.dataCount+"条"}>
+                    <Table
+                        columns={warnColumns}
+                        data={this.state.warnsPage.data}
+                        showRowNum={false}
+                    />
+                </Panel>
+            </div>
+            <div>
+                <Panel header={"待尿检人员"+this.state.planNiaojianTodo.dataCount+"条"}>
                     <Table
                         columns={columns}
-                        data={data}
+                        data={this.state.planNiaojianTodo.data}
                         showRowNum={true}
                     />
                 </Panel>
-                <Panel header="尿检已过期">
+                <Panel header={"尿检已过期"+this.state.planNiaojianOver.dataCount+"条"}>
                     <Table
                         columns={columns}
-                        data={data}
+                        data={this.state.planNiaojianOver.data}
                         showRowNum={true}
                     />
                 </Panel>
-                <Panel header="待走访人员">
-                    <Table
-                        columns={columns}
-                        data={data}
-                        showRowNum={true}
-                    />
-                </Panel>
+
             </div>
         </div>)
     }
 }
+/** 
+<Panel header="待走访人员">
+<Table
+    columns={columns}
+    data={data}
+    showRowNum={true}
+/>
+</Panel>
+***/

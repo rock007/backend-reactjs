@@ -62,7 +62,7 @@ class ProcessView extends React.Component<IPageProps,IPageState> {
 			    <Breadcrumb.Item active>
               详细
 			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack} >返回</a>
+                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
 			</Breadcrumb>
 			:null}
 			<ManBussFullPanel processId={this.state.id} manId="" ></ManBussFullPanel>

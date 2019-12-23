@@ -1,6 +1,17 @@
 .login-page{
-   /** float:right;**/
     margin: auto;
     width: 460px;
-    padding-top: 100px !important;
+    padding-top: 60px !important;
+    text-align: center;
+}
+
+body{
+    background-image:url('../../../images/login_bg.png');
+    background-repeat: repeat;
+}
+
+.login{
+    background-color: #0d47a1;
+    color: white;
+   
 }

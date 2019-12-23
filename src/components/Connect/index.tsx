@@ -48,7 +48,7 @@ export default class ConnectPanel extends React.Component<IOtherProps,IOtherStat
         console.log("连接断开");
         me.setState({isConnect:false});
         this.timer= setTimeout(function(){
-          this.init();
+          me.init();
        }.bind(this),30000);
     });
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Tabs , PageLayout,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
+import {Panel} from 'tinper-bee';
 
 import AcMultiTabs from 'ac-multi-tabs';
 import 'ac-multi-tabs/dist/index.css';
@@ -24,7 +24,7 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
             title: "首页",
             component:()=>{return this.getScene('wellcome')}
             //component:sceneRouters.find((v,i)=>v.name=='wellcome').component
-        },{
+        }/*,{
             id: 1,
             name: 'visitor',
             title: "走访查询",
@@ -41,7 +41,7 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
             id: 4,
             name: 'mapDemo',
             title: "地图测试"
-        }]
+        }**/]
 
     }
     componentDidMount() {

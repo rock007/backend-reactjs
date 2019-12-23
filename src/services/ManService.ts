@@ -248,7 +248,7 @@ class ManService {
     let result = await http.post('/rest/buss-audit',args);
     return result;
   }
-  public async searchBussUpdate(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
+  public async searchBussModify(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
     let result = await http.post('/rest/modify-search?pageIndex='+pageIndex+'&pageSize='+pageSize,args);
     return result;
   }

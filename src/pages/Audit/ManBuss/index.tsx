@@ -72,7 +72,7 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
       loadData= async (args)=>{
       
         this.setState({isLoading:true});
-        let page =await ManService.searchBussUpdate(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page =await ManService.searchBussModify(args,this.pageIndex,this.pageSize) as PageModel<any>;
 
         this.setState({page:page,isLoading:false});
       }

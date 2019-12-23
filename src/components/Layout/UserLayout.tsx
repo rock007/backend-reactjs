@@ -34,7 +34,6 @@ class UserLayout extends React.Component<any> {
           </Switch>
 
         </Row>
-
       </DocumentTitle>
     );
   }
