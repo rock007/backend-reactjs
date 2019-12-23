@@ -186,10 +186,6 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
   
                 this.setState({isDeleteAlterShow:true});
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>
@@ -252,6 +248,7 @@ export  class MsgPage extends React.Component<IPageProps,IPageState> {
         <Grid
             isLoading={this.state.isLoading}
             toolBtns={toolBtns}
+            isExport={false}
             columns={columns}
             page={this.state.page}
             getSelectedDataFunc={this.getSelectedDataFunc}

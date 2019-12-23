@@ -130,10 +130,6 @@ class MeetPage extends React.Component<IPageProps,IPageState> {
         });
     }
    
-    export = ()=>{
-        console.log('export=======');
-    }
-   
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 

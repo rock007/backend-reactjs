@@ -189,10 +189,6 @@ interface IPageState {
                     this.setState({isDeleteAlterShow:true});
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>

@@ -192,13 +192,8 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
                     Info('请选择要审批的记录');
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
-      
         return ( <Panel>
 
             <Breadcrumb>

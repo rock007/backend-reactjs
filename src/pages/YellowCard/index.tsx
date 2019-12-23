@@ -85,10 +85,6 @@ type IPageState = IOtherState & IListPageState;
     clear=()=>{
         this.props.form.resetFields()
     }
-     
-    export = ()=>{
-        console.log('export=======');
-    }
   
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
         
@@ -137,11 +133,7 @@ type IPageState = IOtherState & IListPageState;
             },
           ];
           
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+        const toolBtns = [];
 
         return ( <Panel>
 

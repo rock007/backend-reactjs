@@ -209,10 +209,6 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
                 }
             }
         },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
-        },{
             value:'打印',
             iconType:'uf-print',
             disabled:this.state.checkedRows.length>1?true:false,

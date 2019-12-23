@@ -285,10 +285,6 @@ type IPageState = IOtherState & IListPageState;
             value:'删除',
             iconType:'uf-delete',
             onClick:this.alertDel 
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
        
@@ -378,6 +374,7 @@ type IPageState = IOtherState & IListPageState;
                     page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     isLoading={this.state.isLoading}
+                    isExport={false}
                     pageChange={this.onPageChange}
                 />
                  </Col>

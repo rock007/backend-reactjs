@@ -165,11 +165,7 @@ render() {
           { title: '求助(条)', dataIndex: 'checkin', key: 'checkin',textAlign:'center', width: 100 }
           ];
       
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+          const toolBtns = [];
 
         return ( <Panel>
 

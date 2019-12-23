@@ -21,7 +21,8 @@ interface IComponentProps {
     getSelectedDataFunc:(selectData, record, index)=>void,
    
     beeGridStore:BeeGridStore,
-    multiSelect?:any
+    multiSelect?:any,
+    isExport?:boolean
 }
 interface IComponentState {
     dataNumIndex:number,
@@ -39,7 +40,8 @@ class Grid extends Component<IComponentProps,IComponentState> {
     static defaultProps: Partial<IComponentProps> = {
         pageChange: (index,size,orderBy)=>{console.log('pageChange>> index'+index+',size:'+size+',orderBy'+JSON.stringify(orderBy))},
         isLoading:false,
-        multiSelect:{type:"checkbox"}
+        multiSelect:{type:"checkbox"},
+        isExport:true
     }
     state:IComponentState={
         dataNumIndex:0,
@@ -166,10 +168,29 @@ class Grid extends Component<IComponentProps,IComponentState> {
           element['key']=element.id||element.processId||element.manId;
         });
 
+        let toolBtns=this.props.toolBtns;
+        if(this.props.isExport){
+
+            if(toolBtns==null){
+
+                toolBtns=[{
+                    value:'导出',
+                    iconType:'uf-export',
+                    onClick:this.exportExcel
+                }];
+            }else{
+                toolBtns.push({
+                    value:'导出',
+                    iconType:'uf-export',
+                    onClick:this.exportExcel
+                });
+            }
+        }
+
         return (
             <div className='bs-grid-wrapper'>
                 
-                <BeeGrid.GridToolBar toolBtns={this.props.toolBtns} btnSize='sm' />
+                <BeeGrid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={this.props.multiSelect}

@@ -107,10 +107,6 @@ interface IPageState {
       }
   }
 
-  export = ()=>{
-      console.log('export=======');
-  }
-
   onOrgTreeClick=(records:any)=>{
 
     if(records!=null&&records.length>0){
@@ -190,10 +186,6 @@ handler_delete=async ()=>{
                     this.setState({isDeleteAlterShow:true});
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>
@@ -233,6 +225,7 @@ handler_delete=async ()=>{
 
                 <Grid
                     isLoading={this.state.isLoading}
+                    isExport={false}
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

@@ -130,10 +130,6 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
         });
     }
    
-    export = ()=>{
-        console.log('export=======');
-    }
-   
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
@@ -187,10 +183,6 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
                 }
                 
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>

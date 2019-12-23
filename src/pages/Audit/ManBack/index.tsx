@@ -125,10 +125,7 @@ type IPageState = IOtherState & IListPageState;
             { title: '创建者', dataIndex: 'createUser', key: 'createUser', textAlign:'center',width: 100 },
           ];
           
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export'
-        }];
+          const toolBtns = [];
 
         return ( <Panel>
 

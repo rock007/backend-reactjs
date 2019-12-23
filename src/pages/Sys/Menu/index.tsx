@@ -278,6 +278,7 @@ type IPageState = IOtherState & IListPageState;
                 </SearchPanel>
                   <Grid
                     toolBtns={toolBtns}
+                    isExport={false}
                     columns={columns}
                     page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}

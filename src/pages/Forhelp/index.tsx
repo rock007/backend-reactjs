@@ -172,10 +172,6 @@ interface IPageState {
                     Info('请选择要回复的记录');
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>
@@ -259,6 +255,7 @@ interface IPageState {
 
                 <Grid
                     isLoading={this.state.isLoading}
+                    isExport={false}
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

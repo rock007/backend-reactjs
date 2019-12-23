@@ -148,10 +148,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         this.setState({checkedRows:selectData});
     }
 
-    export = ()=>{
-        console.log('export=======');
-    }
-    
     gotoDetail=(id)=>{
         this.props.history.push('/process-view/'+id);
     }
@@ -354,10 +350,6 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                     Info('请选择记录');
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return (

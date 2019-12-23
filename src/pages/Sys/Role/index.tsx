@@ -239,6 +239,7 @@ type IPageState = IOtherState & IListPageState;
                 </SearchPanel>
 
                 <Grid
+                    isExport={false}
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

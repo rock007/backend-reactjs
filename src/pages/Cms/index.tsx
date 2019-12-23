@@ -285,6 +285,7 @@ handler_delete=async ()=>{
 
                 <Grid
                     isLoading={this.state.isLoading}
+                    isExport={false}
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

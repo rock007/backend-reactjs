@@ -89,11 +89,7 @@ class SmsListPage extends React.Component<IPageProps,IPageState> {
     clear=()=>{
         this.props.form.resetFields()
     }
-     
-    export = ()=>{
-        console.log('export=======');
-    }
-  
+   
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
         
         if(isPage){
@@ -123,11 +119,7 @@ class SmsListPage extends React.Component<IPageProps,IPageState> {
           ];
          
 
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+        const toolBtns = [];
 
         return ( <Panel>
 

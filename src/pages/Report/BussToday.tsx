@@ -107,10 +107,6 @@ interface IPageState {
           this.setState({isPopPage:true,pageModel:model});
       }
   }
-
-  export = ()=>{
-      console.log('export=======');
-  }
  
   render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -128,11 +124,7 @@ interface IPageState {
             { title: '求助(条)', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 100 }
           ];
       
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+        const toolBtns = [];
 
         return ( <Panel>
 

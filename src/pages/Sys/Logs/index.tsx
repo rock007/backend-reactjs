@@ -182,6 +182,7 @@ class LogsPage extends React.Component<IPageProps,IPageState> {
 
         <Grid
             isLoading={this.state.isLoading}
+            isExport={false}
             toolBtns={toolBtns}
             columns={columns}
             page={this.state.page}

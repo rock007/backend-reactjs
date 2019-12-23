@@ -210,12 +210,6 @@ interface IPageState {
                     this.setState({isDeleteAlterShow:true});
                 }
             }
-        },{
-            value:'打印'
-        },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
         }];
 
         return ( <Panel>

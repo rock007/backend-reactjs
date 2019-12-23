@@ -332,8 +332,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                 }
             }
         },{
-            value:'导出',
-            iconType:'uf-export',
+            value:'测试',
             onClick:()=>{
                 //this.setState({isPopPage:true});
                 this.go2Page('/test-pop',"测试",false);

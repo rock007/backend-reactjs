@@ -108,9 +108,6 @@ interface IPageState {
       }
   }
 
-  export = ()=>{
-      console.log('export=======');
-  }
   onOrgTreeClick=(records:any)=>{
 
     if(records!=null&&records.length>0){
@@ -196,10 +193,6 @@ interface IPageState {
                     this.setState({isDeleteAlterShow:true});
                 }
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>
@@ -249,6 +242,7 @@ interface IPageState {
 
                 <Grid
                     isLoading={this.state.isLoading}
+                     
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

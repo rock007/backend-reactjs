@@ -137,11 +137,7 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
           ];
          
 
-          const toolBtns = [{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
-        }];
+        const toolBtns = [];
 
         return ( <Panel>
 
