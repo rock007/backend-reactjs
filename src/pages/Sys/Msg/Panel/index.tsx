@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import 'ac-multi-tabs/dist/index.css';
-
-import { Panel,Navbar ,SearchPanel, FormControl,Row, Col,Label,Loading,Form,Radio,Menu  } from 'tinper-bee';
+import { Panel,Label,Loading} from 'tinper-bee';
 
 import './index.scss';
 import SysService from '../../../../services/SysService';

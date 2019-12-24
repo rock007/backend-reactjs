@@ -246,9 +246,15 @@ class SysService {
   }
 
   //工作流
-  public async myTodo(): Promise<any> {
+  public async myTodo(args:any): Promise<any> {
    
-    let result = await http.get('/rest/manager/myTodo');
+    let result = await http.get('/rest/manager/myTodo',{params:args});
+    return result;
+  }
+
+  public async getFlowInfoBy(wfProcId:string): Promise<any> {
+   
+    let result = await http.get('/wf/getTasksByProcId',{params:{processInstanceId:wfProcId}});
     return result;
   }
 

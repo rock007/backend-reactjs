@@ -123,10 +123,6 @@ type IPageState = IOtherState & IListPageState;
             this.setState({isPopPage:true,pageModel:model});
         }
     }
-
-    export = ()=>{
-        console.log('export=======');
-    }
     
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -296,7 +292,7 @@ type IPageState = IOtherState & IListPageState;
                     pageChange={this.onPageChange}
                 />
                 <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{this.setState({isPopPage:false});if(flag==1)this.search();}} >
                 </PageDlog>
         </Panel >)
     }

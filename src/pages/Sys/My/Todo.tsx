@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import {Panel, Tag,Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-import Alert from '../../../components/Alert';
+import {Panel, Tag,Tabs,Icon,Select, FormControl,Button,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
 
 import {FormList ,FormListItem}from '../../../components/FormList';
 import SearchPanel from '../../../components/SearchPanel';
@@ -10,11 +9,13 @@ import Grid from '../../../components/Grid';
 import {PageModel,IPageCommProps,IListPageState,PopPageModel} from '../../../services/Model/Models';
 
 import PageDlog from '../../../components/PageDlg';
-import { getValidateFieldsTrim, Info } from '../../../utils';
+import { getValidateFieldsTrim, Info, Warning } from '../../../utils';
 import SysService from '../../../services/SysService';
 
-import DatePicker from "bee-datepicker";
-import { convertBussTypeText } from '../../../utils/tools';
+import { convertBussTypeText, convertWarnTypeText } from '../../../utils/tools';
+import PopDialog from '../../../components/Pop';
+import AppConsts from '../../../lib/appconst';
+import FlowPanel from '../../../components/WorkFlow';
 
 const FormItem = FormListItem;
 interface IOtherProps {
@@ -22,7 +23,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-  records:Array<any>
+  
 }
 
 type IPageProps = IOtherProps & IPageCommProps;
@@ -42,7 +43,7 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
         isPopPage:false,
 
         isDeleteAlterShow:false,
-        records:[]
+        
      }
 
     componentDidMount() {
@@ -61,8 +62,18 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
 
     loadData=async (args:any)=>{
 
-        let data = await SysService.myTodo();
-        this.setState({records:data,isLoading:false,page:new PageModel<any>()});
+        let data = await SysService.myTodo(args);
+
+        if(data[args.bussType]!=null){
+
+            let page=new PageModel<any>();
+            page.data=data[args.bussType];
+            page.dataCount=data[args.bussType].length;
+
+            this.setState({isLoading:false,page:page});
+        }else{
+            this.setState({isLoading:false,page:new PageModel<any>()});
+        }
     }
 
     getSelectedDataFunc = data => {
@@ -80,10 +91,6 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
         this.props.form.resetFields()
     }
      
-    export = ()=>{
-        console.log('export=======');
-    }
-  
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
         
         if(isPage){
@@ -96,29 +103,6 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
             this.setState({isPopPage:true,pageModel:model});
         }
     }
-
-    handler_actFlow=async()=>{
-  
-        this.setState({isLoading:true,isDeleteAlterShow:false});
-        let arr=[];
-        this.state.checkedRows.map((v,i)=>arr.push(v.id));
-
-        let idstr=arr.join(',');
-
-        await SysService.actWorkflow(idstr,{})
-          .then((resp)=>{
-  
-            //Info(resp);
-            this.search();
-  
-          }).catch((err)=>{
-  
-            Error(err.msg||'删除操作失败！');
-           
-          }).finally(()=>{this.setState({isLoading:false})});
-        
-    }
-
 
     render() {
 
@@ -141,11 +125,31 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
            
           ];
          
+          const warnColumns = [
+            { title: '姓名', dataIndex: 'manName', key: 'manName',textAlign:'center', width: 150 },
+            { title: '性别', dataIndex: 'sex', key: 'sex',textAlign:'center', width: 100 },
+
+            { title: '类型', dataIndex: 'warnType', key: 'warnType',textAlign:'center', width: 100 ,
+                render(text,record,index) {
+
+                return convertWarnTypeText(text);
+              }},
+            { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+                  
+                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
+
+            } },
+            { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
+            { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
+            { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
+          ];
 
           const toolBtns = [{
             value:'审批',
             bordered:false,
             colors:'primary',
+            disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
   
                 if(this.state.checkedRows.length==0){
@@ -153,20 +157,25 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
                     Info('请选择要审批的记录');
                     return;
                 }
-                
+                //this.setState({isPopPage:true});
+                //me.go2Page('/sys/flow/'+this.state.checkedRows[0].wfProcId,'审批',AppConsts.getOpenModel(),'lg');
+                me.go2Page('/audit/warn-view/'+this.state.checkedRows[0].id,'通知函',AppConsts.getOpenModel(),'lg');
+
             }
-        },{
-            value:'删除',
-            bordered:true,
-            onClick:()=>{
-  
-                this.setState({isDeleteAlterShow:true});
-            }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
+
+        /** 
+        <Select.Option value="">全部</Select.Option>
+        <Select.Option value="1">{convertBussTypeText(1)}</Select.Option>
+        <Select.Option value="2">{convertBussTypeText(2)}</Select.Option>
+        <Select.Option value="3">{convertBussTypeText(3)}</Select.Option>
+        
+        <Select.Option value="5">{convertBussTypeText(5)}</Select.Option>
+        <Select.Option value="6">{convertBussTypeText(6)}</Select.Option>
+        <Select.Option value="7">{convertBussTypeText(7)}</Select.Option>
+        <Select.Option value="8">{convertBussTypeText(8)}</Select.Option>
+        <Select.Option value="9">{convertBussTypeText(9)}</Select.Option>
+        */
 
         return ( <Panel>
 
@@ -188,17 +197,8 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
 
                     <FormItem
                         label="类别">
-                        <Select  {...getFieldProps('bussType', {initialValue: ''})}>
-                            <Select.Option value="">全部</Select.Option>
-                            <Select.Option value="1">{convertBussTypeText(1)}</Select.Option>
-                            <Select.Option value="2">{convertBussTypeText(2)}</Select.Option>
-                            <Select.Option value="3">{convertBussTypeText(3)}</Select.Option>
+                        <Select  {...getFieldProps('bussType', {initialValue: '4'})}>
                             <Select.Option value="4">{convertBussTypeText(4)}</Select.Option>
-                            <Select.Option value="5">{convertBussTypeText(5)}</Select.Option>
-                            <Select.Option value="6">{convertBussTypeText(6)}</Select.Option>
-                            <Select.Option value="7">{convertBussTypeText(7)}</Select.Option>
-                            <Select.Option value="8">{convertBussTypeText(8)}</Select.Option>
-                            <Select.Option value="9">{convertBussTypeText(9)}</Select.Option>
                         </Select>
                     </FormItem>
                    
@@ -207,24 +207,17 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
 
         <Grid
             isLoading={this.state.isLoading}
+            isExport={false}
             toolBtns={toolBtns}
-            columns={columns}
+            columns={warnColumns}
             page={this.state.page}
             getSelectedDataFunc={this.getSelectedDataFunc}
             pageChange={this.onPageChange}
         />
-         <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
-          </PageDlog>
-
-          <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
-                           confirmFn={() => {
-                               
-                           }}
-                           cancelFn={() => {
-                              this.setState({isDeleteAlterShow:false})
-                           }}
-            />
+       
+       <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
+                    onClose={(flag:number)=>{this.setState({isPopPage:false});if(flag==1)this.search();}} >
+        </PageDlog>
         </Panel >)
     
     }

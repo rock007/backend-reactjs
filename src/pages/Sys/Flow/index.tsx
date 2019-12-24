@@ -1,15 +1,9 @@
 import * as React from 'react';
-import {Panel, Loading,Row, Col,Form,Breadcrumb } from 'tinper-bee';
+import {Panel,Tabs, Loading,Row, Col,Form,Breadcrumb } from 'tinper-bee';
 
-import SysService from '../../../services/SysService';
 import {IPageDetailProps, IPageDetailState} from '../../../services/Model/Models';
 
-import { getValidateFieldsTrim } from '../../../utils/tools';
-import { Info, Warning } from '../../../utils';
-
 import FlowPanel from '../../../components/WorkFlow';
-
-const FormItem = Form.FormItem;
 
 interface IOtherProps {
     
@@ -28,7 +22,7 @@ type IPageState = IOtherState & IPageDetailState;
     
     state:IPageState={
         isLoading:false,
-        record:{},
+        record:[],
         procId:''
     }
 
@@ -49,11 +43,13 @@ type IPageState = IOtherState & IPageDetailState;
         if(this.id!=null&&this.id!='0'){
 
             this.setState({procId:this.id});
+            //this.loadData(this.id);
         }
     }
+    /** 
     loadData=async (id)=>{
 
-        const  data=await SysService.getGridById(id);
+        const  data=await SysService.getFlowInfoBy(id);
       
         this.setState({record:data,isLoading:false});
     }
@@ -69,39 +65,35 @@ type IPageState = IOtherState & IPageDetailState;
             Warning("请检查输入数据，验证失败");
         } else {
 
-            //this.doSave(values);
             this.setState({isLoading:true});
 
-            if(values.areaId&&values.areaId!=''){
+            debugger;
+            let taskId=this.state.record[0].id;
+            values['title']=this.state.record[0].name;
+            values['content']='';//
 
-                let oo=JSON.parse(values.areaId);
-                values.areaId=oo.refpk;
-                values.areaName=oo.refname;
-            }
-            if(values.linkUid&&values.linkUid!=''){
+            values['wfProcId']=this.state.record[0].processInstanceId;
+            
+            values['bussType']='4';
+            values['refId']='';
 
-                let oo=JSON.parse(values.linkUid);
-                values.linkUid=oo.refpk;
-                values.linkUserName=oo.refname;
-            }
-
-            values['cellId']=this.id!=='0'?this.id:null;
-
-            SysService.submitGrid(values)
+            SysService.actWorkflow(taskId,values)
                 .then((resp)=>{
     
-                    Info(resp);
+                    //Info(resp);
                     this.goBack(1);
                 })
                 .catch((resp)=>{
     
+                    debugger;
                     this.setState({isLoading:false});
-                    Warning(resp.data);
+                    //Warning(resp.data);
                 });
         }
     });
 
 }
+***/
 
 goBack=(flag:number=0)=>{
     if(this.isPage()){
@@ -111,7 +103,7 @@ goBack=(flag:number=0)=>{
     }
 }
 
-  render() {
+render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         return ( <Panel>
@@ -139,6 +131,8 @@ goBack=(flag:number=0)=>{
                     <FlowPanel procId={this.state.procId} />
                 </Col>
             </Row>
+               
+
         </Panel >)
     }
 }

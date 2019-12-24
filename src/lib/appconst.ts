@@ -2,8 +2,13 @@ import { getCookie, setCookie } from "../utils";
 
 const AppConsts = {
 
-  isOpenPageModel:false,//页面加载方式，pop、page
-
+  //isOpenPageModel:false,//页面加载方式，pop、page
+  //open_model 1:page,0:pop
+  getOpenModel:()=>{
+    let openModel= getCookie('open_model');
+    if(openModel==null||openModel=='') openModel='0';
+    return openModel==='1';
+  },
   userManagement: {
     defaultAdminUserName: 'admin',
   },

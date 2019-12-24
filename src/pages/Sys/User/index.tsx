@@ -241,7 +241,7 @@ type IPageState = IOtherState & IListPageState;
             value:'新增',
             bordered:false,
             colors:'primary',
-            onClick:()=>{this.go2Page('/user-edit/0','新增帐号',AppConsts.isOpenPageModel)}
+            onClick:()=>{this.go2Page('/user-edit/0','新增帐号',AppConsts.getOpenModel())}
         },{
             value:'修改',
             iconType:'uf-edit',
@@ -258,7 +258,7 @@ type IPageState = IOtherState & IListPageState;
                 Info('编辑记录只能选择一条');
                 return;
               }
-              this.go2Page('/user-edit/'+this.state.checkedRows[0].id,'编辑帐号',AppConsts.isOpenPageModel)
+              this.go2Page('/user-edit/'+this.state.checkedRows[0].id,'编辑帐号',AppConsts.getOpenModel())
              
             }
 

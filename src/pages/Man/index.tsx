@@ -2,10 +2,8 @@ import React from 'react';
 
 import {Panel,Breadcrumb,Select,FormControl,Row, Col,Form} from 'tinper-bee';
 import { Link } from 'react-router-dom';
-import loadsh from  'lodash';
 
 import Grid from '../../components/Grid';
-import PopDialog from '../../components/Pop';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 
@@ -226,7 +224,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             colors:'primary',
             onClick:() => {
 
-                this.go2Page('/man-edit/0',"档案新增",false);
+                this.go2Page('/man-edit/0',"档案新增",AppConsts.getOpenModel());
 
             }
         },{
@@ -241,7 +239,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-edit/'+this.state.checkedRows[0].manId,"档案修改",false);
+                    this.go2Page('/man-edit/'+this.state.checkedRows[0].manId,"档案修改",AppConsts.getOpenModel());
 
                 }else{
                     Info('请选择要编辑的记录');
@@ -269,7 +267,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-buss-modify/'+this.state.checkedRows[0].manId,"社戒修改",false);
+                    this.go2Page('/man-buss-modify/'+this.state.checkedRows[0].manId,"社戒修改",AppConsts.getOpenModel());
 
                 }else{
                     Info('请选择要编辑的记录');
@@ -288,7 +286,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-contact/'+this.state.checkedRows[0].manId,"六保一",false,'xlg');
+                    this.go2Page('/man-contact/'+this.state.checkedRows[0].manId,"六保一",AppConsts.getOpenModel(),'xlg');
 
                 }else{
                     Info('请选择要查看戒毒人员');
@@ -307,7 +305,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-relate/'+this.state.checkedRows[0].manId,"亲属关系",false,'xlg');
+                    this.go2Page('/man-relate/'+this.state.checkedRows[0].manId,"亲属关系",AppConsts.getOpenModel(),'xlg');
 
                 }else{
                     Info('请选择要查看亲属关系的戒毒人员');
@@ -325,19 +323,19 @@ export  class Man extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/man-work/'+this.state.checkedRows[0].manId,"工作经历",false);
+                    this.go2Page('/man-work/'+this.state.checkedRows[0].manId,"工作经历",AppConsts.getOpenModel());
 
                 }else{
                     Info('请选择要查看的戒毒人员');
                 }
             }
-        },{
+        },/**{
             value:'测试',
             onClick:()=>{
                 //this.setState({isPopPage:true});
                 this.go2Page('/test-pop',"测试",false);
             }
-        },{
+        },**/{
             value:'打印',
             iconType:'uf-print',
             disabled:this.state.checkedRows.length>1?true:false,

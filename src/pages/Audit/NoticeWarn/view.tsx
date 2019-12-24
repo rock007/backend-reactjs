@@ -5,9 +5,11 @@ import {getValidateFieldsTrim, Info, Warning} from "../../../utils";
 
 import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
 import BussService from '../../../services/BussService';
+import SysService from '../../../services/SysService';
+
 import { convertWarnTypeText } from '../../../utils/tools';
 
-import FormError from '../../../components/FormError';
+import AppConsts from '../../../lib/appconst';
 const FormItem = Form.FormItem;;
 
 interface IOtherProps {
@@ -15,7 +17,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-    selectedValue:any
+    flowTasks:Array<any>
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -26,12 +28,14 @@ type IPageState = IOtherState & IPageDetailState;
  */
 class NoticeWarnView extends React.Component<IPageProps,IPageState> {
     
-    id:string='';
+    id:string=''
+
+    content:string=''
 
     state:IPageState={
-        selectedValue:'',
         isLoading:false,
         record:{},
+        flowTasks:[]
     }
     isPage=()=>{
 
@@ -60,7 +64,9 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
 
         if(result!=null){
 
-            this.setState({record:result,isLoading:false});
+            const  flowTasks=await SysService.getFlowInfoBy(result.wfProcId);
+
+            this.setState({record:result,flowTasks:flowTasks,isLoading:false});
         }
 
     }
@@ -79,14 +85,21 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
 
             if (!err) {
 
-                values.registDate = values.registDate!=null?values.registDate.format('YYYY-MM-DD'):"";
-
-                values['id']=this.id;
                 this.setState({isLoading:true});
 
-                BussService.submitWarn(values).then(()=>{
+                let taskId=this.state.flowTasks[0].id;
+                values['title']=this.state.flowTasks[0].name;
+                values['content']=this.content;
+    
+                values['wfProcId']=this.state.record.wfProcId;
+                
+                values['bussType']='4';
+                values['refId']=this.id;
 
-                    Info('操作成功');
+                SysService.actWorkflow(taskId,values)
+                .then(()=>{
+
+                    //Info('操作成功');
                     this.goBack(1)
                 })
                 .catch((err)=>{
@@ -100,13 +113,116 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
             }
         } );
     }
+
+    renderAction=()=>{
+
+        const { getFieldProps, getFieldError } = this.props.form;
+        const curTask=this.state.flowTasks!=null&&this.state.flowTasks.length>0?this.state.flowTasks[0]:null;
+    
+        const isAssignee=curTask==null?false: curTask.assignee===AppConsts.session.userId;
+    
+        if(isAssignee){
+    
+            let taskDefinitionKey=curTask.taskDefinitionKey;
+    
+            if(taskDefinitionKey==='usertask_accept'){
+                //民警接收
+                this.content="民警接收通知函";
+                return (
+                    <FormItem style={{'paddingLeft':'106px'}}>
+                            <Button colors="primary"  onClick={this.handler_submit}>接收通知函</Button>
+                    </FormItem>
+                )
+    
+            }else if(taskDefinitionKey==='usertask_doback'){
+                //强戒
+                this.content="戒毒人员被执行强戒";
+                return (
+                    <React.Fragment>
+                            <FormItem>
+                                <Label>说明</Label>
+                                <FormControl placeholder="请输入审批说明" 
+                                    {
+                                    ...getFieldProps('remarks', {
+                                        initialValue: ''
+                                    }) 
+                                }/>
+                            </FormItem>
+                            <FormItem style={{'paddingLeft':'106px'}}>
+                               
+                                <Button colors="primary"  onClick={this.handler_submit}>已执行强戒</Button>
+                            </FormItem>
+                    </React.Fragment>
+                );
+            }else if(taskDefinitionKey==='usertask_resp'){
+                //回复
+                this.content="通知函操作回复";
+                return (
+                    <React.Fragment>
+                            <FormItem>
+                                <Label>说明</Label>
+                                <FormControl placeholder="请输入审批说明" 
+                                    {
+                                    ...getFieldProps('remarks', {
+                                        initialValue: ''
+                                    }) 
+                                }/>
+                            </FormItem>
+                            <FormItem style={{'paddingLeft':'106px'}}>
+                               
+                                <Button colors="primary"  onClick={this.handler_submit}>提交</Button>
+                            </FormItem>
+                        
+                    </React.Fragment>
+                )
+            }else if(taskDefinitionKey==='usertask_send'){
+                //社工发送
+    
+            }else if(taskDefinitionKey==='usertask_action'){
+                //民警操作
+                this.content="民警对通知函选择操作类型";
+               return (<React.Fragment>
+                    <FormItem>
+                        <Label>说明</Label>
+                        <FormControl placeholder="请输入审批说明" 
+                            {
+                            ...getFieldProps('remarks', {
+                                initialValue: ''
+                            }) 
+                        }/>
+                    </FormItem>
+                    <FormItem>
+                    <Label>状态</Label>
+                    <Radio.RadioGroup
+                        {
+                        ...getFieldProps('act', {
+                            rules: [{ required: true }]
+                        }) }>
+                        <Radio value="0">回复</Radio>
+                        <Radio value="1">强戒</Radio>
+                    </Radio.RadioGroup>
+                    <span className='error'>
+                        {getFieldError('act')}
+                    </span>
+                    </FormItem>
+                    <FormItem style={{'paddingLeft':'106px'}}>
+                        <Button colors="primary"  onClick={this.handler_submit}>提交</Button>
+                    </FormItem>
+                </React.Fragment>);
+    
+            }else{
+    
+                //未定义 
+            }
+        }
+    
+        return null;
+    }
     
     render() {
-      const me=this;
-      let {getFieldProps, getFieldError} = this.props.form;
 
-        return (
-   <Panel>
+    return (
+        <Panel>
         {
 				this.isPage()?<Breadcrumb>
 			    <Breadcrumb.Item href="#">
@@ -121,7 +237,7 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
 			    <Breadcrumb.Item active>
                   查看
 			    </Breadcrumb.Item>
-                <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
+                <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
 			</Breadcrumb>
 			:null}
 
@@ -152,45 +268,13 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
                         <Label>社区</Label>
                         <strong>{this.state.record.orgName}</strong>
                 </FormItem>
-                <FormItem>
-                    <Label>审核</Label>
-                    <Radio.RadioGroup {...getFieldProps('status', {
-                                initialValue: '',
-                                rules: [{
-                                    required: true, message: '请选择审核结果',
-                                }],
-                            })}>
-                            <Radio value="1">同意</Radio>
-                            <Radio value="-1">不同意</Radio>
-                        </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('status')}/>
-                </FormItem>
-                
-                <FormItem>
-                    <Label>回复</Label>
-                    <FormControl 
-                                 {...getFieldProps('respContent', {
-                                     validateTrigger: 'onBlur',
-                                     initialValue: '',
-                                     rules: [{
-                                         type: 'string',
-                                         required: true,
-                                         pattern: /\S+/ig,
-                                         message: '请输入审批回复',
-                                     }],
-                                 })}
-                    />
-                    <FormError errorMsg={getFieldError('respContent')}/>
-                </FormItem>
+                {this.renderAction()}
             </Form> 
-            <div style={{'textAlign':'center'}}>
-                    <Button shape="border" style={{"marginRight":"8px"}} onClick={this.goBack} >取消</Button>
-                    <LoadingState  colors="primary" show={ this.state.isLoading } >保存</LoadingState>
-            </div>
+          
             </Col>
         </Row>
     </Panel>);
     }
 }
-//onClick={this.handler_submit}
+
 export default Form.createForm()(NoticeWarnView);

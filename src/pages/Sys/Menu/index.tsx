@@ -198,7 +198,7 @@ type IPageState = IOtherState & IListPageState;
           
           const toolBtns = [{
               value:'新增',
-              onClick:()=>{this.go2Page('/permission-edit/0','新增权限',AppConsts.isOpenPageModel)},
+              onClick:()=>{this.go2Page('/permission-edit/0','新增权限',AppConsts.getOpenModel())},
               bordered:false,
               colors:'primary'
             },{
@@ -217,7 +217,7 @@ type IPageState = IOtherState & IListPageState;
                   return;
                 }
                 //this.gotoEdit(this.selected[0].id);
-                this.go2Page('/permission-edit/'+this.state.checkedRows[0].id,'编辑权限',AppConsts.isOpenPageModel)
+                this.go2Page('/permission-edit/'+this.state.checkedRows[0].id,'编辑权限',AppConsts.getOpenModel())
                 //this.setState({isEditPop:true});
               },
             },
