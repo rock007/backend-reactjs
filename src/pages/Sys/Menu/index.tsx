@@ -177,7 +177,7 @@ type IPageState = IOtherState & IListPageState;
             { title: '名称', dataIndex: 'name', key: 'name',textAlign:'center', width: 100 },
             { title: '类型', dataIndex: 'type', key: 'type',textAlign:'center', width: 100 ,render(text,record,index) {
 
-              return text==1?'菜单':(text==2?'模块':(text==3?'操作':'未知'));
+              return text==0?'模块':(text==1?'菜单':(text==2?'操作':'未知'));
             }},
             { title: '图标', dataIndex: 'icon', key: 'icon',textAlign:'center', width: 80 },
             { title: 'URL', dataIndex: 'url', key: 'url',textAlign:'center', width: 150 },
@@ -198,11 +198,13 @@ type IPageState = IOtherState & IListPageState;
           
           const toolBtns = [{
               value:'新增',
+              attr:'act_permission_add',
               onClick:()=>{this.go2Page('/permission-edit/0','新增权限',AppConsts.getOpenModel())},
               bordered:false,
               colors:'primary'
             },{
               value:'编辑',
+              attr:'act_permission_update',
               disabled:this.state.checkedRows.length>1?true:false ,//permissionEditStore.selectedRows!=null?permissionEditStore.selectedRows!.length==1?false:true:true,
               onClick:()=>{
                
@@ -223,6 +225,7 @@ type IPageState = IOtherState & IListPageState;
             },
             {
               value:'删除',
+              attr:'act_permission_delete',
               onClick:this.alertDel 
             }
           ];
@@ -242,7 +245,7 @@ type IPageState = IOtherState & IListPageState;
 
             <Row>
                 <Col md="2">
-                    <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} showRoot={true}  allowType={[1,2]}/>
+                    <MenuPanel onSelected={this.onTreeSelectedChange} isCheckbox={false} showRoot={true}  allowType={[0,1]}/>
                 </Col>
                 <Col md="10">
                 <SearchPanel
@@ -269,9 +272,9 @@ type IPageState = IOtherState & IListPageState;
                     >
                         <Select {...getFieldProps('type', {initialValue: ''})}>
                             <Select.Option value="">请选择</Select.Option>
+                            <Select.Option value="0">模块</Select.Option>
                             <Select.Option value="1">菜单</Select.Option>
-                            <Select.Option value="2">模块</Select.Option>
-                            <Select.Option value="3">操作</Select.Option>
+                            <Select.Option value="2">操作</Select.Option>
                         </Select>
                     </FormItem>
                 </FormList>
@@ -289,7 +292,7 @@ type IPageState = IOtherState & IListPageState;
               </Col>
             </Row>
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
-                    onClose={()=>this.setState({isPopPage:false})} >
+                    onClose={(flag:number)=>{this.setState({isPopPage:false});if(flag==1)this.search();}} >
             </PageDlog>
         </Panel >)
     }

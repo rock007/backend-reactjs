@@ -152,15 +152,18 @@ type IPageState = IOtherState & IListPageState;
         
           const toolBtns = [{
                 value:'新增',
+                attr:'act_role_add',
                 bordered:false,
                 colors:'primary',
                 onClick:()=>{
                     this.go2Page('/role-edit/0',"角色新增",false);
                 }
             },
-            {value:'修改',
-            disabled:this.state.checkedRows.length>1?true:false,
-            onClick:()=>{
+            {
+                value:'修改',
+                attr:'act_role_update',
+                disabled:this.state.checkedRows.length>1?true:false,
+                onClick:()=>{
                 
                 if(this.state.checkedRows.length>1){
 
@@ -177,6 +180,7 @@ type IPageState = IOtherState & IListPageState;
             },
             {
                 value:'删除',
+                attr:'act_role_delete',
                 onClick:()=>{
 
                 if(this.state.checkedRows.length==0){
@@ -190,6 +194,7 @@ type IPageState = IOtherState & IListPageState;
             },
             {
                 value:'权限',
+                attr:'act_role_permission',
                 disabled:this.state.checkedRows.length>1?true:false,
                 onClick:()=>{
                     if(this.state.checkedRows.length>1){

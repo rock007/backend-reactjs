@@ -170,6 +170,7 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
 
           const toolBtns = [{
             value:'无效',
+            attr:'act_dayoff_valid',
             bordered:false,
             colors:'primary',
             onClick:()=>{

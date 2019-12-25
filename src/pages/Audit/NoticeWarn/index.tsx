@@ -158,45 +158,8 @@ type IPageState = IOtherState & IListPageState;
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }
           ];
         
-          const toolBtns = [{
-                    value:'操作',
-                    bordered:false,
-                    colors:'primary',
-                    disabled:this.state.checkedRows.length>1?true:false,
-                    onClick:()=>{
-                        
-                        if(this.state.checkedRows.length>1){
-        
-                            Info('操作只能选择一条记录');
-        
-                        }else if(this.state.checkedRows.length==1){
-        
-                            this.go2Page('/audit/warn-view/'+this.state.checkedRows[0].id,"通知函操作",false);
-        
-                        }else{
-                            Info('请选择要操作的记录');
-                        }
-                    }
-                },{
-                    value:'回复',
-                    disabled:this.state.checkedRows.length>1?true:false,
-                    onClick:()=>{
-                        
-                        if(this.state.checkedRows.length>1){
-        
-                            Info('回复只能选择一条记录');
-        
-                        }else if(this.state.checkedRows.length==1){
-        
-                            this.go2Page('/forhelp-edit/'+this.state.checkedRows[0].id,"通知函回复",false);
-        
-                        }else{
-                            Info('请选择要回复的记录');
-                        }
-                    }
-            }];
+        const toolBtns = [];
 
-       
         return ( <Panel>
 
             <Breadcrumb>
@@ -285,6 +248,7 @@ type IPageState = IOtherState & IListPageState;
 
                 <Grid
                     isLoading={this.state.isLoading}
+                    isExport={false}
                     toolBtns={toolBtns}
                     columns={columns}
                     page={this.state.page}

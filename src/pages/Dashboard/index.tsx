@@ -27,7 +27,7 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
         }/*,{
             id: 1,
             name: 'visitor',
-            title: "走访查询",
+            title: "待完善",
             component:()=> ()=>{return this.getScene('visitor')}
         },{
             id: 2,

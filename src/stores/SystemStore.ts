@@ -47,6 +47,9 @@ class SystemStore {
     this.orgName=data.orgName;
   
     this._permissions=data.permission;
+    
+    AppConsts.permissions=data.permission;
+
     this.roles=data.roles;
 
     this._getMenus();
@@ -71,11 +74,12 @@ class SystemStore {
 
     if(this._permissions===null||this._permissions.length===0) return [];
 
-    const mm= this._permissions.filter((v,i,array)=>v.parentId===parentId)
+    const mm= this._permissions.filter((v,i,array)=>v.parentId===parentId&&v.type==1)
               .sort((m1,m2)=>{
-                  if (m2.index||0 > m1.index||0) return 1;
-                  if (m2.index||0 < m1.index||0) return -1;
-                  return 0;
+               
+                  //if (m2.index||0 > m1.index||0) return 1;
+                  //if (m2.index||0 < m1.index||0) return -1;
+                  return m2.index||0  - m1.index||0;
                 }
               )
               .map((v,i,arr)=>{

@@ -155,6 +155,7 @@ interface IPageState {
        
           const toolBtns = [{
             value:'回复',
+            attr:'act_help_resp',
             bordered:false,
             colors:'primary',
             disabled:this.state.checkedRows.length>1?true:false,

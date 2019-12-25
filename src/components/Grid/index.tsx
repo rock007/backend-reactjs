@@ -9,6 +9,7 @@ import BeeGridStore from '../../stores/BeeGridStore';
 
 import './index.scss'
 import { PageModel } from "../../services/Model/Models";
+import AppConsts from "../../lib/appconst";
 
 interface IComponentProps {
     //paginationObj :any,
@@ -187,10 +188,16 @@ class Grid extends Component<IComponentProps,IComponentState> {
             }
         }
 
+        const actBtns= toolBtns.filter((m,i)=>{
+
+            if(m.attr!=null) return AppConsts.isGranted(m.attr);
+            return true;
+        });
+
         return (
             <div className='bs-grid-wrapper'>
                 
-                <BeeGrid.GridToolBar toolBtns={toolBtns} btnSize='sm' />
+                <BeeGrid.GridToolBar toolBtns={actBtns} btnSize='sm' />
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={this.props.multiSelect}

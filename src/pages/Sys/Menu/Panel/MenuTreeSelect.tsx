@@ -39,7 +39,7 @@ interface IPanelState {
     
       if(data==null||data.length==0) return;
 
-        const loop = data => data.map((item) => {
+        const loop = data => data.filter((m,i)=>this.props.allowType.includes(m.type||0)).map((item) => {
 
           if (item.childs!=null&&item.childs.length>0) {
             return (
@@ -56,7 +56,7 @@ interface IPanelState {
   }
 
   onSelect=(m, label, extra) =>{
-    console.log('onSelect', extra);
+    //console.log('onSelect', extra);
     this.setState({value: m})
     if(this.props.onSelected!=null){
       this.props.onSelected.call(this,m,label)

@@ -5,7 +5,7 @@ import SysService from '../../services/SysService';
 import './index.scss';
 
 interface IPanelProps {
-  
+  handlerOnChange?:(rec:string)=>void
 }
 interface IPanelState {
   data:any[],
@@ -23,6 +23,9 @@ export default class ManCateSelect extends React.Component<IPanelProps,IPanelSta
   }
   onChange = (m, label, extra) => {
     
+    if(this.props.handlerOnChange!=null){
+       this.props.handlerOnChange(m);
+    }
     this.setState({value: m})
   }
 

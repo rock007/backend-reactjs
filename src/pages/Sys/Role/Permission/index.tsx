@@ -106,7 +106,7 @@ export  class RolePermissionPage extends React.Component<IPageProps,IPageState> 
                         <MenuPanel  onChecked={this.onMenuTreeClick}  
                         isCheckbox={true} 
                         defaultCheckedKeys={roleIds}
-                        allowType={[1,2,3]}></MenuPanel>:null
+                        allowType={[0,1,2]}></MenuPanel>:null
                     }
 
                 </Col>

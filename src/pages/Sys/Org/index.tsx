@@ -190,6 +190,7 @@ type IPageState = IOtherState & IListPageState;
           
           const toolBtns = [{
             value:'新增',
+            attr:'act_org_add',
             bordered:false,
             colors:'primary',
             onClick:()=>{
@@ -197,6 +198,7 @@ type IPageState = IOtherState & IListPageState;
             }
         },{
             value:'修改',
+            attr:'act_org_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
                 
@@ -215,6 +217,7 @@ type IPageState = IOtherState & IListPageState;
 
         },{
             value:'删除',
+            attr:'act_org_delete',
             onClick:()=>{
 
                 if(this.state.checkedRows.length==0){

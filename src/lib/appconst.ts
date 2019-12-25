@@ -2,6 +2,7 @@ import { getCookie, setCookie } from "../utils";
 
 const AppConsts = {
 
+  permissions:Array,
   //isOpenPageModel:false,//页面加载方式，pop、page
   //open_model 1:page,0:pop
   getOpenModel:()=>{
@@ -26,12 +27,12 @@ const AppConsts = {
     setCookie('login_token','');
   },
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
-  //remoteServiceBaseUrl: 'https://localhost:10000',
-  remoteServiceBaseUrl: 'https://219.138.150.225:10000',
-  //uploadUrl: 'http://localhost:10007/',
-  uploadUrl: 'http://219.138.150.225:10002/',
-  //websocketUrl: 'http://localhost:10008/',
-  websocketUrl: 'http://219.138.150.225:10008/',
+  remoteServiceBaseUrl: 'https://localhost:10000',
+  //remoteServiceBaseUrl: 'https://219.138.150.225:10000',
+  uploadUrl: 'http://localhost:10007/',
+  //uploadUrl: 'http://219.138.150.225:10002/',
+  websocketUrl: 'http://localhost:10008/',
+  //websocketUrl: 'http://219.138.150.225:10008/',
   session:{
     userId:'',
     userName:'',
@@ -43,7 +44,16 @@ const AppConsts = {
   },
 
   isGranted(permissionName: string): boolean {
-    return true;
-  }
+
+    if(this.permissions==null||this.permissions.length==0) return false;
+
+    let  list=this.permissions as Array<any>
+    
+    return list.find((m,i)=>m.attr===permissionName)!=null;
+  },
+
+  //人员分类
+  MAN_CATE_TYPE_SHEJIE:"101001",
+	MAN_CATE_TYPE_SHEKANG:"101002"
 };
-export default AppConsts;
+export default  AppConsts;

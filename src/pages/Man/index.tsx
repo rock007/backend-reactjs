@@ -222,6 +222,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
             value:'新增',
             bordered:false,
             colors:'primary',
+            attr:'act_man_add',
             onClick:() => {
 
                 this.go2Page('/man-edit/0',"档案新增",AppConsts.getOpenModel());
@@ -230,6 +231,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'编辑',
             colors:'default',
+            attr:'act_man_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -248,6 +250,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'删除',
             colors:'default',
+            attr:'act_man_delete',
             onClick:() => {
                 if(this.state.checkedRows.length>0){
                     this.setState({isDeleteAlterShow:true});
@@ -258,6 +261,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'社戒变更',
             iconType:'uf-personin-o',
+            attr:'act_man_buss',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -277,6 +281,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'六保一',
             colors:'default',
+            attr:'act_man_contact',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -296,6 +301,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'亲属关系',
             colors:'default',
+            attr:'act_man_relate',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -314,6 +320,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },{
             value:'工作经历',
             colors:'default',
+            attr:'act_man_work',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -338,6 +345,7 @@ export  class Man extends React.Component<IPageProps,IPageState> {
         },**/{
             value:'打印',
             iconType:'uf-print',
+            attr:'act_man_print',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
 

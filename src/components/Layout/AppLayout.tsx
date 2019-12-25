@@ -129,6 +129,7 @@ handlerLogoff=()=>{
   setCookie('login_token','');
   //AppConsts.authorization.token='';
   window.location.href='/#/account/login';
+  window.location.reload(true);
 }
 render() {
  

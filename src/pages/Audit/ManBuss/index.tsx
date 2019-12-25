@@ -175,6 +175,7 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
           
           const toolBtns = [{
             value:'审批',
+            attr:'act_man_buss_audit',
             bordered:false,
             colors:'primary',
             disabled:this.state.checkedRows.length>1?true:false,

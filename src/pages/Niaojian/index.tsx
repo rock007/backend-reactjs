@@ -176,6 +176,7 @@ interface IPageState {
         
           const toolBtns = [{
             value:'新增',
+            attr:'act_niaojian_add',
             bordered:false,
             colors:'primary',
             onClick:()=>{
@@ -183,6 +184,7 @@ interface IPageState {
             }
         },{
             value:'编辑',
+            attr:'act_niaojian_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
                 
@@ -200,6 +202,7 @@ interface IPageState {
             }
         },{
             value:'删除',
+            attr:'act_niaojian_delete',
             onClick:()=>{
 
                 if(this.state.checkedRows.length==0){
@@ -235,8 +238,7 @@ interface IPageState {
 
                 <FormList size="sm">
                     <FormItem
-                        label="姓名"
-                    >
+                        label="姓名">
                         <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
                     </FormItem>
 
@@ -284,8 +286,7 @@ interface IPageState {
                     </FormItem>
 
                     <FormItem
-                        label="尿检时间"
-                    >
+                        label="尿检时间">
                          <DatePicker.RangePicker {...getFieldProps('testDate', {initialValue: ''})}
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}

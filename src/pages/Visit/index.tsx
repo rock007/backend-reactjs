@@ -173,6 +173,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
        
           const toolBtns = [{
             value:'新增',
+            attr:'act_visit_add',
             bordered:false,
             disabled:this.state.checkedRows.length>1?true:false,
             colors:'primary',
@@ -181,6 +182,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'修改',
+            attr:'act_visit_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{
                 
@@ -198,6 +200,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'删除',
+            attr:'act_visit_delete',
             onClick:()=>{
 
                 if(this.state.checkedRows.length==0){
@@ -210,6 +213,7 @@ class VisitPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'打印',
+            attr:'act_visit_print',
             iconType:'uf-print',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:()=>{

@@ -150,6 +150,7 @@ handler_delete=async ()=>{
       
           const toolBtns = [{
             value:'添加',
+            attr:'act_area_add',
             bordered:false,
             colors:'primary',       
             onClick:()=>{
@@ -158,6 +159,7 @@ handler_delete=async ()=>{
             }
           },{
             value:'修改',
+            attr:'act_area_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -176,6 +178,7 @@ handler_delete=async ()=>{
             }
         },{
             value:'删除',
+            attr:'act_area_delete',
             onClick:()=>{
 
                 if(this.state.checkedRows.length==0){

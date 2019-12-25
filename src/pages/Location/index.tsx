@@ -106,10 +106,6 @@ interface IPageState {
       }
   }
 
-  export = ()=>{
-      console.log('export=======');
-  }
-
   render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
@@ -143,6 +139,7 @@ interface IPageState {
       
           const toolBtns = [{
             value:'查看轨迹',
+            attr:'act_location_map',
             bordered:false,
             colors:'primary',
             disabled:this.state.checkedRows.length>1?true:false,
@@ -161,10 +158,6 @@ interface IPageState {
                 }
 
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
 
         return ( <Panel>

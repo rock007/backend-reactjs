@@ -227,8 +227,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
           const toolBtns = [{
             value:'社区报到',
             disabled:this.state.checkedRows.length>1?true:false,
+            attr:'act_process_regist',
             onClick:() => {
-                //this.setState({isViewerShow:true});
 
                 if(this.state.checkedRows.length>1){
 
@@ -244,6 +244,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'尿检计划',
+            attr:'act_process_plan',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -262,6 +263,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         },{
             value:'发告诫书',
             colors:'default',
+            attr:'act_process_note',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -279,6 +281,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'发通知函',
+            attr:'act_process_warn',
             disabled:this.state.checkedRows.length>1?true:false,
             colors:'default',
             onClick:() => {
@@ -297,6 +300,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'社区转移',
+            attr:'act_process_trans',
             disabled:this.state.checkedRows.length>1?true:false,
             colors:'default',
             onClick:() => {
@@ -316,6 +320,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'解除戒毒',
+            attr:'act_process_release',
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
@@ -334,6 +339,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             }
         },{
             value:'执行强戒',
+            attr:'act_process_back',
             colors:'default',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {

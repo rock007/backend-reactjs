@@ -71,8 +71,8 @@ type IPageState = IOtherState & IListPageState;
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
             }
-            values['deptIdSelected']=this.orgId;
-            console.log('Search:'+JSON.stringify(values));
+            values['orgSelected']=this.orgId;
+            //console.log('Search:'+JSON.stringify(values));
 
             //let queryParam = deepClone(this.props.queryParam);
          
@@ -158,7 +158,7 @@ type IPageState = IOtherState & IListPageState;
         await SysService.deleteAccount(arr.join(','))
           .then((resp)=>{
   
-            Info(resp);
+            //Info(resp);
             this.search();
   
           }).catch((err)=>{
@@ -239,11 +239,13 @@ type IPageState = IOtherState & IListPageState;
       
           const toolBtns = [{
             value:'新增',
+            attr:'act_account_add',
             bordered:false,
             colors:'primary',
             onClick:()=>{this.go2Page('/user-edit/0','新增帐号',AppConsts.getOpenModel())}
         },{
             value:'修改',
+            attr:'act_account_update',
             iconType:'uf-edit',
             disabled:this.state.checkedRows.length>1?true:false ,
             onClick:()=>{
@@ -264,6 +266,7 @@ type IPageState = IOtherState & IListPageState;
 
         },{
             value:'密码重置',
+            attr:'act_account_reset',
             disabled:this.state.checkedRows.length>1?true:false ,
             onClick:()=>{
              
@@ -283,6 +286,7 @@ type IPageState = IOtherState & IListPageState;
             }
         },{
             value:'删除',
+            attr:'act_account_delete',
             iconType:'uf-delete',
             onClick:this.alertDel 
         }];

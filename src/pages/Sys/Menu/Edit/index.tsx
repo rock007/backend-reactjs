@@ -109,7 +109,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
             .then((resp)=>{
 
                 Info(resp);
-                this.goBack();
+                this.goBack(1);
             })
             .catch((resp)=>{
 
@@ -166,7 +166,7 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                                 }],
                             })}    
                              //defaultValue={this.state.record.parentId}  
-                             allowType={[1,2]} showRoot={true}>
+                             allowType={[0,1]} showRoot={true}>
                         </MenuTreeSelect>
                         <span className='error'>
                             {getFieldError('parentId')}
@@ -182,9 +182,9 @@ export  class PermissionEditPage extends React.Component<IPageProps,IPageState> 
                                     }],
                                 })}
                         >
+                            <Select.Option value={0}>模块</Select.Option>
                             <Select.Option value={1}>菜单</Select.Option>
-                            <Select.Option value={2}>模块</Select.Option>
-                            <Select.Option value={3}>操作</Select.Option>
+                            <Select.Option value={2}>操作</Select.Option>
                         </Select>
                         <span className='error'>
                             {getFieldError('type')}

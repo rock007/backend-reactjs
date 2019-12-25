@@ -171,6 +171,7 @@ interface IPageState {
         
           const toolBtns = [{
             value:'审核',
+            attr:'act_dayoff_audit',
             bordered:false,
             colors:'primary',
             disabled:this.state.checkedRows.length>1?true:false,
@@ -189,12 +190,7 @@ interface IPageState {
                 }
             }
 
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
         }];
-
        
         return ( <Panel>
 

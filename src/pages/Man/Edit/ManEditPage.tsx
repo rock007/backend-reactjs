@@ -38,7 +38,9 @@ interface IPageProps {
 interface IPageState {
     record:any,
     activeKey:string,
-    isLoading:boolean
+    isLoading:boolean,
+
+    manCateSelect:string
 }
 
 const format = "YYYY-MM-DD";
@@ -51,7 +53,8 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
     state:IPageState={
         record:{},
         activeKey:'1',
-        isLoading:false
+        isLoading:false,
+        manCateSelect:''
     }
     
     constructor(args) {
@@ -99,6 +102,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
         this.props.form.validateFields((err, _values) => {
             let values = getValidateFieldsTrim(_values);
             
+            debugger;
             if (!err) {
 
                 values.birthday = values.birthday!=null?values.birthday.format(format):"";
@@ -164,6 +168,10 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
             this.avatar='';
         }
     }
+    handler_cate_change=(rec:string)=>{
+
+        this.setState({manCateSelect:rec});
+    }
     renderProcess(){
 
         if(this.state.record['manId']!=null) return null;
@@ -203,10 +211,13 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
            <FormItem
                    required
                    label="人员分类" >
-                   <ManCateSelect {...getFieldProps('cateType', {
+                   <ManCateSelect 
+                   handlerOnChange={this.handler_cate_change}
+                   {...getFieldProps('cateType', {
                         initialValue: this.state.record.cateType,
+                        onChange:this.handler_cate_change,
                         rules: [{
-                            required: true, message: '请选择网格单元',
+                            required: true, message: '请选择人员分类',
                         }]
                     })}/>
                    <FormError errorMsg={getFieldError('cateType')}/>
@@ -224,7 +235,10 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                     }/>
                    <FormError errorMsg={getFieldError('level')}/>
            </FormItem>
-           <FormItem
+           {
+               this.state.manCateSelect===AppConsts.MAN_CATE_TYPE_SHEJIE||
+               this.state.manCateSelect===AppConsts.MAN_CATE_TYPE_SHEKANG?
+            <FormItem
                 className="time"
                 required
                 label="报到截止时间" >
@@ -236,7 +250,9 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                                 })}
                 />
                 <FormError errorMsg={getFieldError('registSetDate')}/>
-            </FormItem>
+            </FormItem>:null
+           }
+           
            <FormItem
                label="备注" >
                <FormControl 

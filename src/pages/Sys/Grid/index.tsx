@@ -156,6 +156,7 @@ interface IPageState {
       
           const toolBtns = [{
             value:'添加',
+            attr:'act_grid_add',
             bordered:false,
             colors:'primary',      
             onClick:() => {
@@ -165,6 +166,7 @@ interface IPageState {
             }        
           },{
             value:'修改',
+            attr:'act_grid_update',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
@@ -183,6 +185,7 @@ interface IPageState {
             }
         },{
             value:'删除',
+            attr:'act_grid_delete',
             onClick:()=>{
 
                 if(this.state.checkedRows.length==0){

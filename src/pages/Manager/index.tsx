@@ -225,13 +225,6 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
 
 
             }
-        },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:()=>{
-                //this.setState({isPopPage:true});
-                this.go2Page('/test-pop',"测试",false);
-            }
         }];
 
         return (

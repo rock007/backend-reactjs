@@ -59,13 +59,13 @@ interface IPanelState {
     
       if(data==null||data.length==0) return;
 
-        const loop = data => data.map((item) => {
+        const loop = data => data.filter((m,i)=>this.props.allowType.includes(m.type||0)).map((item) => {
 
-        const icon=item.type==2?(<Icon type="uf-4square-3"  />):(item.type==3?(<Icon type="uf-pencil"  />):null);
+        const icon=item.type==2?(<Icon type="uf-pencil"  />):null;
         
           if (item.childs!=null&&item.childs.length>0) {
 
-            console.log('menu tree:'+item.id);
+            //console.log('menu tree:'+item.id);
             this.defaultExpandedKeys.push(item.id);
             return (
               <Tree.TreeNode key={item.id} title={item.name} isLeaf={item.isLeaf} ext={item} icon={icon|| <Icon type="uf-treefolder"  />}>
