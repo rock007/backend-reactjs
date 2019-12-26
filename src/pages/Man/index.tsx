@@ -405,8 +405,8 @@ export  class Man extends React.Component<IPageProps,IPageState> {
                         label="性别">
                         <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem

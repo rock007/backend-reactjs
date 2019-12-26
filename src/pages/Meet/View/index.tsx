@@ -47,7 +47,7 @@ class MeetView extends React.Component<IPageProps,IPageState> {
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/checkin-detail/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/meet-detail/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -60,7 +60,7 @@ class MeetView extends React.Component<IPageProps,IPageState> {
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await ManService.findCheckinById(id);
+        let result = await ManService.getMeetById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -125,24 +125,8 @@ class MeetView extends React.Component<IPageProps,IPageState> {
                         <UploadFile disabled={true} defaultFileList={[{'uid':new Date().getTime(),'url':AppConsts.uploadUrl+ this.state.record.photo}]} ></UploadFile>
                     </div>
                 </FormItem>
-                <FormItem>
-                    <Label>是否有校</Label>
-                    <Radio.RadioGroup {...getFieldProps('status', {
-                                initialValue: '',
-                                rules: [{
-                                    required: true, message: '请选择审核结果',
-                                }],
-                            })}>
-                            <Radio value="1">有效</Radio>
-                            <Radio value="0">无效</Radio>
-                        </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('status')}/>
-                </FormItem>
                 </Form>
-                <div style={{'textAlign':'center'}}>
-                    <Button shape="border" style={{"marginRight":"8px"}} onClick={this.goBack} >取消</Button>
-                    <LoadingState  colors="primary" show={ this.state.isLoading } onClick={this.handler_submit}>保存</LoadingState>
-                </div>
+               
                 </Col>
                 <Col md={6} >
                     <MapView width={370} height={300}/>

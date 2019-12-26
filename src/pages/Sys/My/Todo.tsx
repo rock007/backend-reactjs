@@ -16,6 +16,7 @@ import { convertBussTypeText, convertWarnTypeText } from '../../../utils/tools';
 import PopDialog from '../../../components/Pop';
 import AppConsts from '../../../lib/appconst';
 import FlowPanel from '../../../components/WorkFlow';
+import { isArray } from 'util';
 
 const FormItem = FormListItem;
 interface IOtherProps {
@@ -135,11 +136,20 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
                 return convertWarnTypeText(text);
               }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+            { title: '节点', dataIndex: 'tasks', key: 'tasks',textAlign:'center', width: 150,render(text,record,index) {
                   
-                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
-
+                if(isArray(text)&&text.length>0){
+                    
+                    return <Tag colors="info">{text[0].name}</Tag>
+                }
+                return <Tag colors="info">{text}</Tag>
+    
             } },
+            { title: '流程', dataIndex: 'wfProcId', key: 'wfProcId',textAlign:'center', width: 100 ,render(text,record,index) {
+
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/sys/flow/'+text,'跟踪',false)}}>跟踪</Label>;
+                
+            }},
             { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
             { title: '民警', dataIndex: 'mjName', key: 'mjName',textAlign:'center', width: 150 },
             { title: '创建时间', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 200 }

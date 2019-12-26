@@ -14,6 +14,7 @@ import {PageModel, IPageCommProps, IListPageState, PopPageModel} from '../../../
 import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
 import PageDlog from '../../../components/PageDlg';
 import { Info } from '../../../utils';
+import { isArray } from 'util';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -142,9 +143,14 @@ type IPageState = IOtherState & IListPageState;
                 return convertWarnTypeText(text);
               }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+            { title: '节点', dataIndex: 'taskStatus', key: 'taskStatus',textAlign:'center', width: 150,render(text,record,index) {
                   
-                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
+                //if(text==null||text===''||text.length==0) return "";
+                if(isArray(text)&&text.length>0){
+                    
+                    return <Tag colors="info">{text[0].name}</Tag>
+                }
+                return <Tag colors="info">{text}</Tag>
 
             } },
             { title: '流程', dataIndex: 'wfProcId', key: 'wfProcId',textAlign:'center', width: 100 ,render(text,record,index) {

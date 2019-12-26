@@ -1,9 +1,12 @@
 import * as React from 'react';
-import {Panel, Breadcrumb } from 'tinper-bee';
+import {Panel, Breadcrumb,Col,Label,Form,Row} from 'tinper-bee';
 
-import CmsService from '../../../services/CmsService';
-import {PageModel, PopPageModel,IPageDetailProps,IPageDetailState} from '../../../services/Model/Models';
+import ReportService from '../../../services/ReportService';
+import {IPageDetailProps,IPageDetailState} from '../../../services/Model/Models';
+import UploadFile from '../../../components/UploadFile';
+import { convertFile } from '../../../utils/tools';
 
+const FormItem = Form.FormItem;
 interface IOtherProps {
     
 } 
@@ -15,7 +18,7 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageDetailProps;
 type IPageState = IOtherState & IPageDetailState;
 
- class ArticleViewPage extends React.Component<IPageProps,IPageState> {
+ class WorkerPage extends React.Component<IPageProps,IPageState> {
 
     id:string='';
 
@@ -32,7 +35,7 @@ type IPageState = IOtherState & IPageDetailState;
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/articles/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/manager/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -45,7 +48,7 @@ type IPageState = IOtherState & IPageDetailState;
     loadData=async (id)=>{
 
         this.setState({isLoading:true});
-        let result = await CmsService.findArticleById(id);
+        let result = await ReportService.findWorkDescById(id);
 
         this.setState({record:result,isLoading:false});
     }
@@ -56,7 +59,6 @@ type IPageState = IOtherState & IPageDetailState;
             this.props.handlerBack(0);
         }
     }
-    
 
   render() {
 
@@ -70,7 +72,7 @@ type IPageState = IOtherState & IPageDetailState;
 			            工作台
 			        </Breadcrumb.Item>
                     <Breadcrumb.Item href="#">
-                        信息发布
+                        社工管理
 			        </Breadcrumb.Item>
                     <Breadcrumb.Item active>
                         查看
@@ -80,13 +82,60 @@ type IPageState = IOtherState & IPageDetailState;
                 :null
             }
             
-            <div>
+            <Row>
+                <Col md="6">
+                <Form className='edit_form_pop'>
+                    <FormItem style={{display:'flex'}}>
+                        <Label>头像</Label>
+                        <div style={{display:'inline-block',width:'auto'}}>
+                            <UploadFile defaultFileList={ convertFile(this.state.record.avatar)}  disabled={true}/>
+                        </div>
+                    </FormItem>
+                    <FormItem>
+                        <Label>用户名</Label>
+                        <strong>{this.state.record.userName}</strong>
+                    </FormItem>
+                    <FormItem>
+                        <Label>姓名</Label>
+                        <strong>{this.state.record.trueName}</strong>
+                    </FormItem>
+                    <FormItem>
+                        <Label>性别</Label>
+                        <strong>{this.state.record.sex==1?'男':this.state.record.sex==0?'女':this.state.record.sex}</strong>
+                    </FormItem>
+                    <FormItem>
+                        <Label>手机号</Label>
+                        <strong>{this.state.record.mobile}</strong>
+                    </FormItem>
+                    <FormItem>
+                        <Label>组织部门</Label>
+                        <strong>{this.state.record.orgName}</strong>
+                    </FormItem>
+                    <FormItem>
+                        <Label>角色</Label>
+                        <strong>{this.state.record.roles}</strong>
+                    </FormItem>
+                </Form>
+                </Col>
+                <Col md="6">
+                <ul>
+                    <li>关联戒毒人员数量:<span>120</span> </li>
+                    <li>社区戒毒人员:<span>120</span> </li>
+                    <li>社区康复人员:<span>120</span> </li>
+                    <li>其它人员:<span>120</span></li>
+                    <li>走访:<span>120</span></li>
+                    <li>尿检:<span>120</span></li>
+                    <li>审核请假:<span>120</span> </li>
+                    <li>回复求助:<span>120</span> </li>
+                    <li>标记签到:<span>120</span> </li>
+                    <li>见面（人次）:<span>120</span> </li>
 
-                this is a 内容
-            </div>
+                </ul>
+                </Col>   
+                </Row> 
 
         </Panel >)
     }
 }
 
-export default ArticleViewPage;
+export default WorkerPage;

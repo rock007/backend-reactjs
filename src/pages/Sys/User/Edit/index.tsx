@@ -120,13 +120,12 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                 SysService.submitAccount(values)
                     .then((resp)=>{
     
-                        Info(resp);
                         this.goBack(1);
                     })
                     .catch((resp)=>{
     
                         this.setState({isLoading:false});
-                        Warning(resp.data);
+                       // Warning(resp.data);
                 });
             }
         });
@@ -217,11 +216,11 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                                 initialValue: this.state.record.sex+'',
                                 rules: [{ required: true }]
                             }
-                            ) }
-                        >
+                            ) }>
                             <Radio value="1" >男</Radio>
                             <Radio value="0" >女</Radio>
                         </Radio.RadioGroup>
+                        <FormError errorMsg={getFieldError('sex')}/>
                     </FormItem>
                     <FormItem>
                         <Label>手机号</Label>
@@ -274,13 +273,12 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                             {
                             ...getFieldProps('status', {
                                 initialValue: this.state.record.status+'',
-                             
                                 rules: [{ required: true }]
-                            }
-                            ) }>
+                            }) }>
                             <Radio value="1" >正常</Radio>
                             <Radio value="0" >禁用</Radio>
                         </Radio.RadioGroup>
+                        <FormError errorMsg={getFieldError('status')}/>
                     </FormItem>
                     <FormItem style={{'paddingLeft':'106px'}}>
                         <Button shape="border"  onClick={this.goBack.bind(this,1)} style={{"marginRight":"8px"}}>取消</Button>

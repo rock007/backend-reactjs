@@ -181,7 +181,7 @@ type IPageState = IOtherState & IListPageState;
             { title: '排序', dataIndex: 'deptSort',isShow:false, key: 'deptSort',textAlign:'center', width: 80 },
             { title: '状态', dataIndex: 'isDisable', key: 'isDisable',textAlign:'center', width: 100,
             render: (text, record, index) => {
-                return text==null||text==1?(<Tag colors={"dange"}>受限</Tag>):(
+                return text==null||text==1?(<Tag colors={"danger"}>受限</Tag>):(
                   <Tag colors={"success"}>正常</Tag>
                 );
             } }

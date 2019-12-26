@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import 'ac-multi-tabs/dist/index.css';
 
-import { Panel,Loading ,Breadcrumb,SearchPanel, FormControl,Row, Col,Label,Form,Radio,Menu  } from 'tinper-bee';
+import { Panel,Loading ,Breadcrumb,Row, Col,Label,Form } from 'tinper-bee';
 import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
 import SysService from '../../../services/SysService';
 import AppConsts from '../../../lib/appconst';

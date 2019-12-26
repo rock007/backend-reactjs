@@ -7,9 +7,9 @@ import 'ref-tree/lib/index.css';
 import SysService from '../../services/SysService';
 import { convertOrgTreeNode } from '../../utils/tools';
 
-interface IComponentProps {
-    
-   
+interface IOtherProps {
+ 
+   flag?:number,
 }
 interface IComponentState {
     loading:boolean,
@@ -19,7 +19,8 @@ interface IComponentState {
     matchData?:any,
     value?:string
 }
-export  class RefOrgTreeSelect extends React.Component<any,IComponentState> {
+type IComponentProps = IOtherProps & any;
+export  class RefOrgTreeSelect extends React.Component<IComponentProps,IComponentState> {
 
     state:IComponentState={
         loading:false,
@@ -38,7 +39,7 @@ export  class RefOrgTreeSelect extends React.Component<any,IComponentState> {
     }
     canClickGoOn = async () =>{
        
-        let data = await SysService.getDetpTree();
+        let data = await SysService.getDetpTree(this.props.flag||0);
         let treeData=convertOrgTreeNode(data);
         
         this.setState({treeData:treeData.key!=='0'?[treeData]:treeData.children});

@@ -24,6 +24,11 @@ class ReportService {
     let result = await http.post('/rest/worker-search',args,{params:{pageIndex:pageIndex,pageSize:pageSize}});
     return result;
   }
+  public async findWorkDescById(id:string): Promise<any> {
+    let result = await http.get('/rest/worker-get',{params:{id:id}});
+    return result;
+  }
+
 }
 
 export default new ReportService();

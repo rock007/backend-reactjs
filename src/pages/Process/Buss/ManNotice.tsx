@@ -79,7 +79,7 @@ class ManNotice extends React.Component<IPageProps,IPageState> {
     }
     handler_uploadChange=(files:Array<any>,where:string)=>{
 
-        let ids=files.map(m=>m.fileId);
+        let ids=files.map(m=>m.uid);
         this.setState({fileIds:ids});
     }
     handler_submit=()=>{

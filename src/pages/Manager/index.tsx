@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Panel,Breadcrumb,Select,FormControl,Row, Col,Form} from 'tinper-bee';
+import {Panel,Breadcrumb,Select,Icon,Label,FormControl,Row, Col,Form} from 'tinper-bee';
 import { Link } from 'react-router-dom';
 import loadsh from  'lodash';
 
@@ -39,7 +39,8 @@ interface IPageState {
     isPopPage:boolean,
     pageModel: PopPageModel,
 
-    checkedRows:any[];
+    checkedRows:any[],
+    isPopLinkDailog:boolean
 }
 
 //社工管理（业务统计）
@@ -64,7 +65,8 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
         isPopPage:false,
         pageModel:new PopPageModel(),
 
-        checkedRows:[]
+        checkedRows:[],
+        isPopLinkDailog:false
     }
 
     async componentDidMount() {
@@ -144,40 +146,62 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
         const {Option} = Select;
         const format = "YYYY";
 
+        const me=this;
         const columns = [
-            { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+            { title: '姓名', dataIndex: 'trueName', key: 'trueName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Link to={'/manager-view/'+record.manId}>{text}</Link>;
+                //return <Link to={'/manager/'+record.userId}>{text}</Link>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/manager/'+record.userId,'社工详细',false)}}>{text}</Label>;
+             
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
             },
-            { title: '红黄牌(张)', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-                sorter: (pre, after) => {return pre.c - after.c}
+            { 
+                title: '红黄牌(张)',
+                width:200,
+                children: [
+                    {
+                        title: "警告",
+                        dataIndex: "cardWarn",
+                        key: "cardWarn",
+                        width: 100
+                    },{
+                        title: "黄牌",
+                        dataIndex: "cardYellow",
+                        key: "cardYellow",
+                        width: 100
+                    },{
+                        title: "红牌",
+                        dataIndex: "cardRed",
+                        key: "cardRed",
+                        width: 100
+                    }
+              ]
             },
-            { title: '尿检(次)', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160,
+            { title: '尿检(次)', dataIndex: 'niaojian', key: 'niaojian',textAlign:'center', width: 160,
              sorter: (pre, after) => {return pre.c - after.c}},
-            { title: '走访(次)', dataIndex: 'nation', key: 'nation',textAlign:'center', width: 100 },
+            { title: '走访(次)', dataIndex: 'vistorNum', key: 'vistorNum',textAlign:'center', width: 100 },
             {
                 title: "关联社戒人员",
                 width:300,
                 children: [
                   {
                     title: "社区戒毒",
-                    dataIndex: "key1",
-                    key: "key1",
+                    dataIndex: "manShejie",
+                    key: "manShejie",
                     width: 100
                   },{
                     title: "社区康复",
-                    dataIndex: "key2",
-                    key: "key2",
+                    dataIndex: "manShekan",
+                    key: "manShekan",
                     width: 100
                   },{
                     title: "其它",
-                    dataIndex: "key3",
-                    key: "key3",
+                    dataIndex: "manOther",
+                    key: "manOther",
                     width: 100
                   }
                 ]
@@ -191,18 +215,18 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
                 children: [
                   {
                     title: "高风险",
-                    dataIndex: "key4",
-                    key: "key4",
+                    dataIndex: "level3",
+                    key: "level3",
                     width: 100
                   },{
                     title: "中风险",
-                    dataIndex: "key5",
-                    key: "key5",
+                    dataIndex: "level2",
+                    key: "level2",
                     width: 100
                   },{
                     title: "低风险",
-                    dataIndex: "key6",
-                    key: "key6",
+                    dataIndex: "level1",
+                    key: "level1",
                     width: 100
                   }
                 ]
@@ -223,7 +247,15 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
             bordered:false,
             onClick:() => {
 
+                if(this.state.checkedRows.length==0){
 
+                    Info('请选择要关联的社工');
+
+                }else{
+
+                    let ids=this.state.checkedRows.map(m=>m.userId).join(',');
+                    this.go2Page('/manager-link/'+ids,"关联戒毒人员",false);
+                }
             }
         }];
 
@@ -235,7 +267,7 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-                    社区人员管理
+                  社工管理
 			    </Breadcrumb.Item>
 			    </Breadcrumb>
 
@@ -291,7 +323,6 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
                     <FormItem
                         label="网格" >
                         <RefGridTreeTableSelect {...getFieldProps('cellId', {initialValue: ''})}/>
-                        
                     </FormItem>
                     <FormItem
                         label="创建时间">
@@ -318,7 +349,6 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
                 </Col>
             </Row>
  
-
             <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
             </PageDlog>

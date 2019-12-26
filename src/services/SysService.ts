@@ -4,10 +4,10 @@ import AppConsts from '../lib/appconst';
 
 class SysService {
 
-  public async getDetpTree(): Promise<any> {
+  public async getDetpTree(flag:number=0): Promise<any> {
    
     //let result = await http.get('/rest/getDeptTreeByUid',{params:{uid:AppConsts.session.userId}});
-    let result = await http.get('/rest/getOrgTree');
+    let result = await http.get('/rest/getOrgTree',{params:{flag:flag}});
     
     return result;
   }

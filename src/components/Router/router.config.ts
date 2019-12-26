@@ -310,7 +310,7 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Checkin/View'))
   },{
-    path: '/meet/:id',
+    path: '/meet-detail/:id',
     title: '见面-查看',
     name: 'meet_view',
     showInMenu: false,
@@ -438,6 +438,13 @@ export const appRouters: any = [
     name: 'manager_detail',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/Manager/View'))
+  },
+  {
+    path: '/manager-link/:id',
+    title: '社工管理-关联',
+    name: 'manager_link',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Manager/Link'))
   },
   {
     path: '/manager/',

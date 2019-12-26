@@ -137,7 +137,7 @@ class MeetPage extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Label  className='link-go' onClick={()=>{me.go2Page('/checkin-detail/'+record.id,'签到详细',false)}}>{text}</Label>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/meet-detail/'+record.id,'见面详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
@@ -202,8 +202,8 @@ class MeetPage extends React.Component<IPageProps,IPageState> {
                         label="性别">
                         <Select {...getFieldProps('sex', {initialValue: ''})}>
                             <Option value="">(请选择)</Option>
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem

@@ -68,7 +68,7 @@ type IPageState = IOtherState & IListPageState;
     loadData=async (args:any)=>{
         
         args['orderby']=this.orderBy;
-        let page = await ManService.searchBack(args,this.pageIndex,this.pageSize) as PageModel<any>;
+        let page = await ManService.searchRelease(args,this.pageIndex,this.pageSize) as PageModel<any>;
         
         this.setState({page:page,isLoading:false});
     }

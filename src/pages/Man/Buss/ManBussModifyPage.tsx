@@ -169,7 +169,7 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                     </FormItem>
                    <FormItem>
                       <Label>组织社区</Label>
-                      <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})} />
+                      <RefOrgTreeSelect flag={1} {...getFieldProps('orgId', {initialValue: ''})} />
                       <FormError errorMsg={getFieldError('orgId')}/>
                   </FormItem>
                   </React.Fragment>

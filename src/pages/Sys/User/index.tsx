@@ -71,7 +71,7 @@ type IPageState = IOtherState & IListPageState;
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
             }
-            values['orgSelected']=this.orgId;
+            values['orgIdSelected']=this.orgId;
             //console.log('Search:'+JSON.stringify(values));
 
             //let queryParam = deepClone(this.props.queryParam);

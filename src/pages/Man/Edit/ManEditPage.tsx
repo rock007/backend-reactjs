@@ -102,7 +102,6 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
         this.props.form.validateFields((err, _values) => {
             let values = getValidateFieldsTrim(_values);
             
-            debugger;
             if (!err) {
 
                 values.birthday = values.birthday!=null?values.birthday.format(format):"";

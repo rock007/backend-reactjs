@@ -1,9 +1,13 @@
 import * as React from 'react';
-import {Panel,Tabs, Loading,Row, Col,Form,Breadcrumb } from 'tinper-bee';
+import {Panel,Tabs,Timeline, Loading,Row, Col,Form,Breadcrumb } from 'tinper-bee';
+import moment from 'moment'
 
 import {IPageDetailProps, IPageDetailState} from '../../../services/Model/Models';
 
 import FlowPanel from '../../../components/WorkFlow';
+import SysService from '../../../services/SysService';
+
+moment.locale('zh-cn');
 
 interface IOtherProps {
     
@@ -43,57 +47,16 @@ type IPageState = IOtherState & IPageDetailState;
         if(this.id!=null&&this.id!='0'){
 
             this.setState({procId:this.id});
-            //this.loadData(this.id);
+            this.loadData(this.id);
         }
     }
-    /** 
-    loadData=async (id)=>{
+    
+loadData=async (id)=>{
 
-        const  data=await SysService.getFlowInfoBy(id);
+    const  data=await SysService.getFlowInfoBy(id);
       
-        this.setState({record:data,isLoading:false});
-    }
-
-    submit=(e)=>{
-
-        this.props.form.validateFields((err, _values) => {
-
-        let values = getValidateFieldsTrim(_values);
-       
-        if (err) {
-            console.log('校验失败', values);
-            Warning("请检查输入数据，验证失败");
-        } else {
-
-            this.setState({isLoading:true});
-
-            debugger;
-            let taskId=this.state.record[0].id;
-            values['title']=this.state.record[0].name;
-            values['content']='';//
-
-            values['wfProcId']=this.state.record[0].processInstanceId;
-            
-            values['bussType']='4';
-            values['refId']='';
-
-            SysService.actWorkflow(taskId,values)
-                .then((resp)=>{
-    
-                    //Info(resp);
-                    this.goBack(1);
-                })
-                .catch((resp)=>{
-    
-                    debugger;
-                    this.setState({isLoading:false});
-                    //Warning(resp.data);
-                });
-        }
-    });
-
+    this.setState({record:data,isLoading:false});
 }
-***/
 
 goBack=(flag:number=0)=>{
     if(this.isPage()){
@@ -105,6 +68,23 @@ goBack=(flag:number=0)=>{
 
 render() {
         const { getFieldProps, getFieldError } = this.props.form;
+
+        const dateRang=(dateStr1:string,dateStr2:string):string=>{
+
+            const date1=moment(dateStr1);
+            const date2=moment(dateStr2);
+            const date3=date2.diff(date1,'minute');
+
+            if(date3<60) return date3+'分钟';
+
+            const h=Math.floor(date3/60);//相差的小时数
+
+            if(h<24) return h+'小时';
+
+            const d=Math.floor(date3/(60*24));//相差的小时数
+            
+            return d+'天';
+        };
 
         return ( <Panel>
             <Loading container={this} show={this.state.isLoading}/>
@@ -122,13 +102,40 @@ render() {
                   <Breadcrumb.Item active>
                     查看
                   </Breadcrumb.Item>
-                  <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack} >返回</a>
+                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
               </Breadcrumb>:null
               }
            
             <Row>
                 <Col md="12">
-                    <FlowPanel procId={this.state.procId} />
+
+                <Tabs
+                        defaultActiveKey="1">
+                    <Tabs.TabPane tab='处理过程' key="1">
+                    <Loading show={this.state.isLoading} container={this} /> 
+            {this.props.children} 
+            <Timeline>
+                {
+                    this.state.record.map((item,index)=>{
+
+                       return (<Timeline.Item >
+                         <p>
+                            <ul>
+                                <li>时间：{item.time} {item.activityName}</li>
+                                <li>操作者:{item.assignee}</li>
+                                <li>耗时:{dateRang(item.startTime, item.endTime)}</li>
+                            </ul>
+                         </p>   
+                        </Timeline.Item>)
+                    })
+                }
+            </Timeline>
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab='图示' key="2">
+                        <FlowPanel procId={this.state.procId} />
+                    </Tabs.TabPane>
+                </Tabs>
+                    
                 </Col>
             </Row>
                
