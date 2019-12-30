@@ -1,4 +1,5 @@
 import { getCookie, setCookie } from "../utils";
+import { isArray } from "util";
 
 const AppConsts = {
 
@@ -27,8 +28,8 @@ const AppConsts = {
     setCookie('login_token','');
   },
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
-  //remoteServiceBaseUrl: 'https://localhost:10000',
-  remoteServiceBaseUrl: 'https://219.138.150.225:10000',
+  //remoteServiceBaseUrl: 'https://localhost:8843',
+  remoteServiceBaseUrl: 'http://219.138.150.225:10000',
   //uploadUrl: 'http://localhost:10007/',
   uploadUrl: 'http://219.138.150.225:10002/',
   //websocketUrl: 'http://localhost:10008/',
@@ -46,6 +47,8 @@ const AppConsts = {
   isGranted(permissionName: string): boolean {
 
     if(this.permissions==null||this.permissions.length==0) return false;
+
+    if(!isArray(this.permissions)) return false;
 
     let  list=this.permissions as Array<any>
     

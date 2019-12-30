@@ -129,9 +129,11 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
     }
     render() {
 
+        const dataNumList=[ 10, 20, 50, 100];
+
         let paginationObj = {
             activePage:this.pageIndex,
-            items:5,//一页显示多少条
+            items:this.props.page.dataCount ? Math.ceil(this.props.page.dataCount / dataNumList[this.state.dataNumIndex]) : 1,//一页显示多少条
             dataNumSelect: [ "10", "20", "50", "100"],
             dataNum:this.state.dataNumIndex,
             total:this.props.page.dataCount,//总共多少条、

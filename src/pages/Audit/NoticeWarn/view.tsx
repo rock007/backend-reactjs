@@ -262,7 +262,7 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem>
                         <Label>状态</Label>
-                        <strong>{ this.state.record.status==0?<Tag colors="danger">未接收</Tag>: this.state.record.status==1?<Tag colors="info">进行中</Tag>: this.state.record.status==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>}</strong>
+                        <strong>{ this.state.record.status==0?<Tag colors="danger">未接收</Tag>: this.state.record.status==1?<Tag colors="info">进行中</Tag>: this.state.record.status==100?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>}</strong>
                 </FormItem>
                 <FormItem>
                         <Label>社区</Label>

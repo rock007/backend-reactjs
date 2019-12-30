@@ -1,0 +1,11 @@
+.select-schedule-template{
+    display: flex;
+    flex-direction: column;
+    max-width:300px;
+}
+
+.select-schedule-template >.items{
+    min-width:300px;
+    width: auto;
+    position: relative;
+}

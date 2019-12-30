@@ -27,7 +27,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-
+    roles:Array<any>,
     isResetAlterShow:boolean
 }
 
@@ -56,14 +56,15 @@ type IPageState = IOtherState & IListPageState;
         isPopPage:false,
       
         isDeleteAlterShow:false,
-        isResetAlterShow:false
+        isResetAlterShow:false,
+        roles:[]
     }
     componentDidMount() {
         this.search();
     }
 
-    search=()=>{
-
+    search=async ()=>{
+      
         this.props.form.validateFields((err, _values) => {
 
             let values = getValidateFieldsTrim(_values);
@@ -89,7 +90,9 @@ type IPageState = IOtherState & IListPageState;
         this.setState({isLoading:true});
         let page = await SysService.searchAccount(args,this.pageIndex,this.pageSize) as PageModel<any>;
 
-        this.setState({page:page,isLoading:false});
+        const  rolePage=await SysService.searchRole({}) as PageModel<any>;
+
+        this.setState({page:page,roles:rolePage.data,isLoading:false});
       }
 
       onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
@@ -360,12 +363,10 @@ type IPageState = IOtherState & IListPageState;
                     <FormItem
                         label="角色">
                          <Select {...getFieldProps('roleIds', {initialValue: ''})}>
-                                <Option value=''>(请选择)</Option>
-                                <Option value='1'>系统管理员</Option>
-                                <Option value='2'>社区管理员</Option>
-                                <Option value='3'>专职社工</Option>
-                                <Option value='4'>社区民警</Option>
-                                <Option value='5'>社区医生</Option>
+                            
+                                {
+                                  this.state.roles.map((m,i)=> <Option value={m.id}>{m.roleName}</Option>)
+                                }
                         </Select>
                        
                     </FormItem>

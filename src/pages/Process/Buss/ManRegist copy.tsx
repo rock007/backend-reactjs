@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Form,Label,Breadcrumb,Panel,Loading,Icon,Select,Step,Button} from 'tinper-bee';
+import {Form,Label,Breadcrumb,Panel,Loading,Icon, Step,Button} from 'tinper-bee';
 
 import {getValidateFieldsTrim, Warning, Info} from "../../../utils";
 
@@ -10,7 +10,6 @@ import UploadFile from '../../../components/UploadFile';
 import { convertFiles } from '../../../utils/tools';
 import { IPageDetailProps, IPageDetailState } from '../../../services/Model/Models';
 import ManService from '../../../services/ManService';
-import SelectScheduleTemplate from '../../../components/SelectScheduleTemplate';
 
 /**
  * 社区报到
@@ -151,111 +150,7 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
             return ( <Panel><Loading container={this} show={true}/></Panel>)
         }
 
-        const steps = [{
-            title: '上传报到文书',
-            content: <Form className='edit_form_pop'>
-            <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>社区戒毒协议书</Label></div>
-               <div>
-                   <UploadFile   maxSize={3}  from="fileIds0" uploadChange={this.handler_uploadChange}/>
-               </div>
-           </FormItem>
-           <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>担保书</Label></div>
-               <div>
-                   <UploadFile   maxSize={3}    from="fileIds1" uploadChange={this.handler_uploadChange} />
-               </div>
-           </FormItem>
-           <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>社区康复决定书</Label></div>
-               <div>
-                   <UploadFile   maxSize={3}    from="fileIds2" uploadChange={this.handler_uploadChange} />
-               </div>
-           </FormItem>
-           <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>人员分类审批表</Label></div>
-               <div>
-                   <UploadFile  maxSize={3}  from="fileIds3" uploadChange={this.handler_uploadChange} />
-               </div>
-           </FormItem>
-       </Form>,
-        }, {
-            title: '安排检查计划',
-            content: <Form className='edit_form_pop'>
-           <FormItem>
-               <Label>报到时间</Label>
-               <DatePicker  format={format}
-                       {   ...getFieldProps('registDate', {
-                           initialValue:   this.state.record.registDate,
-                           validateTrigger: 'onBlur',
-                           rules: [{required: true, message: '请选择报到时间'}],
-                       })}
-                />
-               <span className='error'>
-                   {getFieldError('registDate')}
-               </span>
-           </FormItem>
-           <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>尿检计划</Label></div>
-               <div>
-                    <SelectScheduleTemplate  {   ...getFieldProps('scheduleNiaojianDate', {
-                           initialValue:   '',
-                           rules: [{required: true, message: '请选择尿检计划'}],
-                       })}/>
-                    <span className='error'>
-                        {getFieldError('scheduleNiaojianDate')}
-                    </span>
-               </div>
-           </FormItem>
-           <FormItem>
-               <div style={{ width: '100px', float: 'left'}}><Label>走访计划</Label></div>
-               <div>
-                   <SelectScheduleTemplate  {   ...getFieldProps('scheduleVisitDate', {
-                           initialValue:   '',
-                           rules: [{required: true, message: '请选择尿检计划'}],
-                       })}/>
-                  <span className='error'>
-                        {getFieldError('scheduleVisitDate')}
-                  </span>
-               </div>
-           </FormItem>
-       </Form>
-        }, {
-            title: '提交',
-            content: 
-            <ul>
-                <li style={{paddingBottom:'10px'}}>
-                    <Label>报到时间</Label>
-                    <strong>{this.state.record.registDate}</strong>
-                </li>
-                <li  style={{paddingBottom:'10px'}}>
-                    <ul style={{display:'flex'}}>
-                        <li><Label>尿检计划</Label></li>
-                        <li> 
-                            <strong>共执行三年</strong>
-                            <ul>
-                                <li>第一年每月检查一次</li>
-                                <li>第二年每两月检查一次</li>
-                                <li>第三年每三月检查一次</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li  style={{paddingBottom:'10px'}}>
-                    <ul style={{display:'flex'}}>
-                        <li><Label>走访计划</Label></li>
-                        <li> 
-                            <strong>共执行三年</strong>
-                            <ul>
-                                <li>第一年每月检查一次</li>
-                                <li>第二年每两月检查一次</li>
-                                <li>第三年每三月检查一次</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        }];
+        const isDisable=this.state.record.status==1;
 
         return (<div>
              	{
@@ -272,32 +167,57 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
                 <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack()} >返回</a>
 			</Breadcrumb>
 			:null}
-
-        <div>
-        <Steps current={this.state.current}>
-          {steps.map(item => <Step key={item.title} title={item.title} />)}
-        </Steps>
-        <div className="steps-content">{steps[this.state.current].content}</div>
-        <div className="steps-action">
-          {
-            this.state.current > 0
-            &&
-            <Button bordered style={{ marginRight: 8 }} onClick={() => this.prev()}>
-              上一步
-            </Button>
-          }
-          {
-            this.state.current < steps.length - 1
-            &&
-            <Button colors="primary" onClick={() => this.next()}>下一步</Button>
-          }
-          {
-            this.state.current === steps.length - 1
-            &&
-            <Button colors="primary" onClick={()=>{}}>完成</Button>
-          }
-        </div>
-      </div>
+            <Form className='edit_form_pop'>
+            <FormItem>
+               <div style={{ width: '100px', float: 'left'}}><Label>社区戒毒协议书</Label></div>
+               <div>
+                   <UploadFile disabled={isDisable}  maxSize={3}  from="fileIds0" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files0)}/>
+               </div>
+           </FormItem>
+           <FormItem>
+               <div style={{ width: '100px', float: 'left'}}><Label>担保书</Label></div>
+               <div>
+                   <UploadFile disabled={isDisable}  maxSize={3}    from="fileIds1" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files1)}/>
+               </div>
+           </FormItem>
+           <FormItem>
+               <div style={{ width: '100px', float: 'left'}}><Label>社区康复决定书</Label></div>
+               <div>
+                   <UploadFile disabled={isDisable}  maxSize={3}    from="fileIds2" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files2)}/>
+               </div>
+           </FormItem>
+           <FormItem>
+               <div style={{ width: '100px', float: 'left'}}><Label>人员分类审批表</Label></div>
+               <div>
+                   <UploadFile disabled={isDisable} maxSize={3}  from="fileIds3" uploadChange={this.handler_uploadChange} defaultFileList={convertFiles(this.state.record.files3)}/>
+               </div>
+           </FormItem>
+           <FormItem>
+               <Label>报到时间</Label>
+               {
+                   this.state.record.status==1?
+                   <strong>{this.state.record.registDate}</strong>:
+                   <DatePicker  format={format} disabled={isDisable} 
+                       {   ...getFieldProps('registDate', {
+                           initialValue:   this.state.record.registDate,
+                           validateTrigger: 'onBlur',
+                           rules: [{required: true, message: '请选择报到时间'}],
+                       })}
+                   />
+               }
+              
+               <span className='error'>
+                   {getFieldError('registDate')}
+               </span>
+           </FormItem>
+           {
+               this.state.record.status==1?null:
+               <FormItem style={{'paddingLeft':'106px'}}>
+                   <Button shape="border"   onClick={this.goBack} style={{"marginRight":"8px"}}>取消</Button>
+                   <Button colors="primary"  onClick={this.submit}>保存</Button>
+               </FormItem>
+           }
+       </Form>
                  
         </div >)
     }

@@ -264,6 +264,20 @@ class SysService {
     return result;
   }
 
+  //计划模板
+  public async getAllScheduleTemplate(): Promise<any> {
+   
+    let result = await http.get('/rest/getAllScheduleTemplate');
+   
+    return result;
+  }
+  public async getScheduleTemplateById(id:string): Promise<any> {
+   
+    let result = await http.get('/rest/getScheduleTemplateById',{params:{id:id}});
+   
+    return result;
+  }
+
 }
 
 export default new SysService();
