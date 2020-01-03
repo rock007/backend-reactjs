@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Tag,Breadcrumb } from 'tinper-bee';
+import {Panel,Radio,Tag,Breadcrumb,ButtonGroup,Button } from 'tinper-bee';
 
 import Alert from '../../../components/Alert';
 import DataGrid from '../../../components/DataGrid';
@@ -16,10 +16,10 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-    page2:PageModel<any>,
+    page1:PageModel<any>,
     pageModel:PopPageModel,
     isPopPage:boolean,
-
+    //examType:number,
     isAlterShow:boolean
 }
 
@@ -30,18 +30,20 @@ type IPageState = IOtherState & IPageDetailState;
 
     id:string='';
 
+    examType:string=''
+
     pageIndex=1
     pageSize=10
     orderBy=[]
 
     state:IPageState={
-        page2:new PageModel<any>(),
+        page1:new PageModel<any>(),
         isLoading:false,
         pageModel:new PopPageModel(),
         isPopPage:false,
 
         record:{},
-
+        //examType:0,
         isAlterShow:false
     }
 
@@ -76,9 +78,10 @@ type IPageState = IOtherState & IPageDetailState;
         this.setState({isLoading:true});
         
         args['orderby']=this.orderBy;
-        let page = await ManService.searchNiaojianPlan(args, this.pageIndex,this.pageSize) as PageModel<any>;
+        args['examType']=this.examType;
+        let page1 = await ManService.searchNiaojianPlan(args, this.pageIndex,this.pageSize) as PageModel<any>;
 
-        this.setState({page2:page,isLoading:false});
+        this.setState({page1:page1,isLoading:false});
     }
 
     onPageChange=(pageIndex:number,pageSize:number,orderBy:Array<any>)=>{
@@ -88,7 +91,7 @@ type IPageState = IOtherState & IPageDetailState;
         this.orderBy=orderBy;
         this.search();
     }
-    
+   
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
         
         if(isPage){
@@ -101,11 +104,6 @@ type IPageState = IOtherState & IPageDetailState;
             this.setState({isPopPage:true,pageModel:model});
         }
     }
-    
-    export = ()=>{
-        console.log('export=======');
-    }
-   
     
     handler_gengrate=async ()=>{
 
@@ -138,7 +136,7 @@ type IPageState = IOtherState & IPageDetailState;
                 render(text,record,index) {
 
                     if(text==0) return "未到";
-                    if(text==1) return <Tag colors="warning">待尿检</Tag>;
+                    if(text==1) return <Tag colors="warning">待操作</Tag>;
                     if(text==2) return <Tag colors="success">已完成</Tag>;
                     if(text==3) return <Tag colors="danger">已过期</Tag>;
 
@@ -156,10 +154,6 @@ type IPageState = IOtherState & IPageDetailState;
                 
                this.setState({isAlterShow:true});
             }
-        },{
-            value:'导出',
-            iconType:'uf-search',
-            onClick:this.export
         },{
             value:'打印',
             iconType:'uf-print',
@@ -182,25 +176,39 @@ type IPageState = IOtherState & IPageDetailState;
 			    </Breadcrumb.Item>
 			</Breadcrumb>):null}
             
-        <DataGrid
-          isLoading={this.state.isLoading}
-          multiSelect={{type:'none'}}
-          toolBtns={toolBtns} 
-          columns={columns}
-          page={this.state.page2}
-          pageChange={this.onPageChange}/>
+            <Panel>
+            <Radio.RadioGroup
+                defaultValue="0"
+                onChange={(v)=>{this.examType=v;this.search();}}>
+                <Radio value="0" >尿检计划</Radio>
+                <Radio value="2" >走访计划</Radio>
+            </Radio.RadioGroup>
+            <ButtonGroup style={{ margin: 10 }}>
+                <Button colors="primary" onClick={()=>this.setState({isAlterShow:true})}>重新生成</Button>
+                <Button colors="default" onClick={()=>
+                    openPage("report/niaojianAll?ids="+this.id+'&uid='+AppConsts.session.userId)
+                } >打印</Button>
+            </ButtonGroup>
+            </Panel>
+            <DataGrid
+                        isLoading={this.state.isLoading}
+                        multiSelect={{type:'none'}}
+                        //toolBtns={toolBtns} 
+                        columns={columns}
+                        page={this.state.page1}
+                        pageChange={this.onPageChange}/>
 
         <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
         </PageDlog>
-        <Alert show={this.state.isAlterShow} context="确定要重新生成尿检计划吗?"
+        <Alert show={this.state.isAlterShow} context="确定要重新生成计划吗?"
                            confirmFn={() => {
                                this.handler_gengrate();
                            }}
                            cancelFn={() => {
                               this.setState({isAlterShow:false})
                            }}
-            />
+        />
         </Panel >)
     }
 }

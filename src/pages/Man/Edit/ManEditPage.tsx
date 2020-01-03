@@ -211,6 +211,7 @@ class ManEditPage extends React.Component<IPageProps,IPageState> {
                    required
                    label="人员分类" >
                    <ManCateSelect 
+                   isSelectLeaf={true}
                    handlerOnChange={this.handler_cate_change}
                    {...getFieldProps('cateType', {
                         initialValue: this.state.record.cateType,

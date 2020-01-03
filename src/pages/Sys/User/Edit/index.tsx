@@ -145,7 +145,29 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
 
         const roleOptions=this.state.roles.map(
             (item,index)=>{
-               return  { label:item.roleName,'value':item.id}
+
+                if(AppConsts.session.roles.indexOf('系统管理员')!==-1){
+
+                    return  { label:item.roleName,'value':item.id, disabled: false}
+
+                }else if(AppConsts.session.roles.indexOf('社区管理员')!==-1){
+
+                    if(item.roleName==='系统管理员'){
+                        return  { label:item.roleName,'value':item.id, disabled: true}
+                    }else{
+                        return  { label:item.roleName,'value':item.id, disabled: false}
+                    }
+
+                }else{
+
+                    if(AppConsts.session.roles.indexOf( item.roleName)!==-1){
+                        return  { label:item.roleName,'value':item.id, disabled: false}
+                    }else{
+                        return  { label:item.roleName,'value':item.id, disabled: true}
+                    }
+                }
+
+               //return  { label:item.roleName,'value':item.id, disabled: false}
             });
 
         return ( <Panel>
@@ -159,7 +181,7 @@ export  class UserEditPage extends React.Component<IPageProps,IPageState> {
                     系统管理
                   </Breadcrumb.Item>
                   <Breadcrumb.Item href="#">
-                      用户管理
+                    用户管理
                   </Breadcrumb.Item>
                   <Breadcrumb.Item active>
                     {this.id==='0'?"添加":"编辑"}

@@ -28,6 +28,10 @@ class ReportService {
     let result = await http.get('/rest/worker-get',{params:{id:id}});
     return result;
   }
+  public async submitWorkerLink(args:any): Promise<any> {
+    let result = await http.post('/rest/worker-link',args);
+    return result;
+  }
 
 }
 

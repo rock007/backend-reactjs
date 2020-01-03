@@ -184,7 +184,7 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                  <FormItem>
                   <Label>人员分类</Label>
                   
-                    <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})} />
+                    <ManCateSelect isSelectLeaf={true} {...getFieldProps('cateType', {initialValue: ''})} />
                     <FormError errorMsg={getFieldError('cateType')}/>
                 </FormItem>
                 </React.Fragment>

@@ -8,6 +8,7 @@ import SysService from '../../../services/SysService';
 import AppConsts from '../../../lib/appconst';
 import UploadFile from '../../../components/UploadFile';
 import { convertFile } from '../../../utils/tools';
+import ReportService from '../../../services/ReportService';
 
 const FormItem = Form.FormItem;
 
@@ -17,7 +18,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-
+    report:any;
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -28,6 +29,7 @@ export  class MyProfile extends React.Component<IPageProps,IPageState> {
     state:IPageState={
         isLoading:false,
         record:{},
+        report:{}
     }
 
     isPage=()=>{
@@ -42,8 +44,14 @@ export  class MyProfile extends React.Component<IPageProps,IPageState> {
     loadData=async ()=>{
 
         const  data=await SysService.getAccountById(AppConsts.session.userId);
-      
-        this.setState({record:data,isLoading:false});
+
+        let result ={};
+ 
+        if(!(data.roles.indexOf('系统管理员')==-1||data.roles.indexOf('社区管理员')==-1)){
+            result = await ReportService.findWorkDescById(AppConsts.session.userId);
+        }
+
+        this.setState({record:data,report:result,isLoading:false});
     }
     goBack=(flag:number=0)=>{
         if(this.isPage()){
@@ -103,19 +111,21 @@ export  class MyProfile extends React.Component<IPageProps,IPageState> {
                 </Form>
                 </Col>
                 <Col md="6">
-                <ul>
-                    <li>关联戒毒人员数量:<span>120</span> 排行第12位</li>
-                    <li>社区戒毒人员:<span>120</span> 排行第12位</li>
-                    <li>社区康复人员:<span>120</span> 排行第12位</li>
-                    <li>其它人员:<span>120</span> 排行第12位</li>
-                    <li>走访:<span>120</span> 排行第12位</li>
-                    <li>尿检:<span>120</span> 排行第12位</li>
-                    <li>审核请假:<span>120</span> 排行第12位</li>
-                    <li>回复求助:<span>120</span> 排行第12位</li>
-                    <li>标记签到:<span>120</span> 排行第12位</li>
-                    <li>见面（人次）:<span>120</span> 排行第12位</li>
-
-                </ul>
+                    {this.state.report.userId?
+                    <ul>
+                        <li>关联戒毒人员数量:<span>{this.state.report.ingNum||0}</span> </li>
+                        <li>社区戒毒人员:<span>{this.state.report.manShejie||0}</span> </li>
+                        <li>社区康复人员:<span>{this.state.report.manShejie||0}</span> </li>
+                        <li>其它人员:<span>{this.state.report.manOther||0}</span></li>
+                        <li>走访:<span>{this.state.report.vistorNum||0}</span></li>
+                        <li>尿检:<span>{this.state.report.niaojian||0}</span></li>
+                        <li>审核请假:<span>{this.state.report.dayoff||0}</span> </li>
+                        <li>回复求助:<span>{this.state.report.helpNum||0}</span> </li>
+                        <li>标记签到:<span>{this.state.report.checkin||0}</span> </li>
+                        <li>见面（人次）:<span>{this.state.report.manShejie||0}</span> </li>
+                    </ul>:null
+                    }
+                
                 </Col>   
                 </Row> 
             </Panel>)

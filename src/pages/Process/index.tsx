@@ -20,7 +20,7 @@ import PageDlog from '../../components/PageDlg';
 import { getValidateFieldsTrim ,deepClone} from '../../utils/tools';
 
 import './index.scss';
-import { Info } from '../../utils';
+import { Info, Warning } from '../../utils';
 
 const FormItem = FormListItem;
 
@@ -236,6 +236,12 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status!=0){
+
+                        Warning('改戒毒人员已报到，不能操作');
+                        return;
+                    }
+
                     this.go2Page('/process-regist/'+this.state.checkedRows[0].processId,"社区报到",false);
 
                 }else{
@@ -243,7 +249,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                 }
             }
         },{
-            value:'尿检计划',
+            value:'检查计划',
             attr:'act_process_plan',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
@@ -273,6 +279,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status==2){
+
+                        Warning('改戒毒人员社戒过程已结束，不能操作');
+                        return;
+                    }
                     this.go2Page('/process-notice/'+this.state.checkedRows[0].processId,"发告诫书",false);
 
                 }else{
@@ -292,6 +303,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status==2){
+
+                        Warning('改戒毒人员社戒过程已结束，不能操作');
+                        return;
+                    }
                     this.go2Page('/process-warn/'+this.state.checkedRows[0].processId,"发通知函",false);
 
                 }else{
@@ -311,6 +327,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status==2){
+
+                        Warning('改戒毒人员社戒过程已结束，不能操作');
+                        return;
+                    }
                     this.go2Page('/process-trans/'+this.state.checkedRows[0].processId,"变更社区",false);
 
                 }else{
@@ -331,6 +352,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status==2){
+
+                        Warning('改戒毒人员社戒过程已结束，不能操作');
+                        return;
+                    }
                     this.go2Page('/process-release/'+this.state.checkedRows[0].processId,"解除戒毒",false);
 
                 }else{
@@ -350,6 +376,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
 
                 }else if(this.state.checkedRows.length==1){
 
+                    if(this.state.checkedRows[0].status==2){
+
+                        Warning('改戒毒人员社戒过程已结束，不能操作');
+                        return;
+                    }
                     this.go2Page('/process-reback/'+this.state.checkedRows[0].processId,"执行强戒",false);
 
                 }else{

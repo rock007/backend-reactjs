@@ -5,7 +5,8 @@ import SysService from '../../services/SysService';
 import './index.scss';
 
 interface IPanelProps {
-  handlerOnChange?:(rec:string)=>void
+  handlerOnChange?:(rec:string)=>void,
+  isSelectLeaf?:boolean
 }
 interface IPanelState {
   data:any[],
@@ -39,7 +40,7 @@ export default class ManCateSelect extends React.Component<IPanelProps,IPanelSta
 
       if (item.childs!=null&&item.childs.length>0) {
         return (
-          <TreeSelect.TreeNode key={item.cateId} value={item.cateId} title={item.cateName} isLeaf={item.isLeaf} ext={item}>
+          <TreeSelect.TreeNode key={item.cateId}  disabled={this.props.isSelectLeaf||false}  value={item.cateId} title={item.cateName} isLeaf={item.isLeaf} ext={item}>
             {loop(item.childs)}
           </TreeSelect.TreeNode>
         );

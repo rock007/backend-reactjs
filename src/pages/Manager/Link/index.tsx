@@ -4,6 +4,7 @@ import {Panel, Breadcrumb,Col,Label,Select,Icon,Form,Row,Button,LoadingState} fr
 import ReportService from '../../../services/ReportService';
 import {IPageDetailProps,IPageDetailState} from '../../../services/Model/Models';
 import RefManTreeTableSelect from '../../../components/RefViews/RefManTreeTableSelect';
+import { getValidateFieldsTrim, Warning } from '../../../utils';
 
 const FormItem = Form.FormItem;
 interface IOtherProps {
@@ -34,7 +35,7 @@ type IPageState = IOtherState & IPageDetailState;
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/manager/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/manager-link/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
@@ -51,17 +52,46 @@ type IPageState = IOtherState & IPageDetailState;
 
         this.setState({record:result,isLoading:false});
     }
-    goBack=()=>{
+    goBack=(flag:number=0)=>{
         if(this.isPage()){
             this.props.history.goBack();
         }else{
-            this.props.handlerBack(0);
+            this.props.handlerBack(flag);
         }
     }
 
     handler_submit=()=>{
 
-    }
+        this.props.form.validateFields((err, _values) => {
+            let values = getValidateFieldsTrim(_values);
+
+            if (!err) {
+
+                debugger;
+                 //戒毒人员
+                 if(values.manIds&&values.manIds!=''){
+
+                    let oo=JSON.parse(values.manIds);
+                    values.manIds=oo.refpk.replace(/;/g,',');
+                    values.manNames=oo.refname.replace(/;/g,',');
+                }
+                values['userId']=this.id;
+                ReportService.submitWorkerLink(values).then(()=>{
+ 
+                    debugger;
+                    this.goBack(1);
+                 })
+                 .catch((err)=>{
+                     Error('关联戒毒人员失败');
+                 }).finally(()=>{
+                     this.setState({isLoading:false});
+                 });
+
+            }else{
+                Warning('输入验证不通过，请检查');
+            }
+        });
+}
 
   render() {
     let {getFieldProps, getFieldError} = this.props.form;
@@ -80,7 +110,7 @@ type IPageState = IOtherState & IPageDetailState;
                     <Breadcrumb.Item active>
                         查看
 			        </Breadcrumb.Item>
-                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack} >返回</a>
+                    <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
                 </Breadcrumb>)
                 :null
             }
@@ -91,11 +121,13 @@ type IPageState = IOtherState & IPageDetailState;
         <FormItem>
             <Label>职务</Label>
             <Select
-              style={{ width: 200, marginRight: 6 }}>
+              style={{ width: 200, marginRight: 6 }}
+                {...getFieldProps('postion', {
+                    rules: [{ required: true ,
+                        message: <span><Icon type="uf-exc-t"></Icon><span>请选择职务</span></span>}]
+                })}>
               <Select.Option value="4">专（兼）职社工</Select.Option>
-             
               <Select.Option value="5">社区民警</Select.Option>
-             
             </Select>
             <span className='error'>
                  {getFieldError('postion')}
@@ -105,7 +137,7 @@ type IPageState = IOtherState & IPageDetailState;
         <FormItem>
             <Label>姓名</Label>
             <RefManTreeTableSelect  {
-                            ...getFieldProps('toUid', {
+                            ...getFieldProps('manIds', {
                                 validateTrigger: 'onBlur',
                                 //initialValue: JSON.stringify({refpk:this.state.record.toUid,refname:this.state.record.toUser}),
                                 rules: [{ required: true ,
@@ -115,7 +147,7 @@ type IPageState = IOtherState & IPageDetailState;
             }/>
             
             <span className='error'>
-                 {getFieldError('name')}
+                 {getFieldError('manIds')}
             </span>
         </FormItem>
         <FormItem style={{'paddingLeft':'106px'}}>

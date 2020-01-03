@@ -114,6 +114,10 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
                 values['fileIds3']=this.state.fileIds3.join(',');
 
                 values['processId']=this.id;
+
+                //values['niaojianTemplateNo']='';
+                //values['visitTemplateNo']='';
+
                 this.setState({isLoading:true});
 
                 ManService.submitRegist(values).then(()=>{
@@ -183,7 +187,8 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
             title: '安排检查计划',
             content: <Form className='edit_form_pop'>
            <FormItem>
-               <Label>报到时间</Label>
+                <div style={{ width: '100px', float: 'left'}}><Label>报到时间</Label></div>
+                <div>
                <DatePicker  format={format}
                        {   ...getFieldProps('registDate', {
                            initialValue:   this.state.record.registDate,
@@ -194,67 +199,34 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
                <span className='error'>
                    {getFieldError('registDate')}
                </span>
+               </div>
            </FormItem>
+        
            <FormItem>
                <div style={{ width: '100px', float: 'left'}}><Label>尿检计划</Label></div>
                <div>
-                    <SelectScheduleTemplate  {   ...getFieldProps('scheduleNiaojianDate', {
+                    <SelectScheduleTemplate  {   ...getFieldProps('niaojianTemplateNo', {
                            initialValue:   '',
-                           rules: [{required: true, message: '请选择尿检计划'}],
+                           rules: [{required: true, message: '请选择尿检计划模板'}],
                        })}/>
                     <span className='error'>
-                        {getFieldError('scheduleNiaojianDate')}
+                        {getFieldError('niaojianTemplateNo')}
                     </span>
                </div>
            </FormItem>
            <FormItem>
                <div style={{ width: '100px', float: 'left'}}><Label>走访计划</Label></div>
                <div>
-                   <SelectScheduleTemplate  {   ...getFieldProps('scheduleVisitDate', {
+                   <SelectScheduleTemplate  {   ...getFieldProps('visitTemplateNo', {
                            initialValue:   '',
-                           rules: [{required: true, message: '请选择尿检计划'}],
+                           rules: [{required: true, message: '请选择尿检计划模板'}],
                        })}/>
                   <span className='error'>
-                        {getFieldError('scheduleVisitDate')}
+                        {getFieldError('visitTemplateNo')}
                   </span>
                </div>
            </FormItem>
        </Form>
-        }, {
-            title: '提交',
-            content: 
-            <ul>
-                <li style={{paddingBottom:'10px'}}>
-                    <Label>报到时间</Label>
-                    <strong>{this.state.record.registDate}</strong>
-                </li>
-                <li  style={{paddingBottom:'10px'}}>
-                    <ul style={{display:'flex'}}>
-                        <li><Label>尿检计划</Label></li>
-                        <li> 
-                            <strong>共执行三年</strong>
-                            <ul>
-                                <li>第一年每月检查一次</li>
-                                <li>第二年每两月检查一次</li>
-                                <li>第三年每三月检查一次</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li  style={{paddingBottom:'10px'}}>
-                    <ul style={{display:'flex'}}>
-                        <li><Label>走访计划</Label></li>
-                        <li> 
-                            <strong>共执行三年</strong>
-                            <ul>
-                                <li>第一年每月检查一次</li>
-                                <li>第二年每两月检查一次</li>
-                                <li>第三年每三月检查一次</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
         }];
 
         return (<div>
@@ -294,7 +266,7 @@ class ManRegistPage extends React.Component<IPageProps,IPageState> {
           {
             this.state.current === steps.length - 1
             &&
-            <Button colors="primary" onClick={()=>{}}>完成</Button>
+            <Button colors="primary" onClick={this.submit}>完成</Button>
           }
         </div>
       </div>

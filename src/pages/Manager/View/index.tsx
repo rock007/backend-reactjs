@@ -119,17 +119,16 @@ type IPageState = IOtherState & IPageDetailState;
                 </Col>
                 <Col md="6">
                 <ul>
-                    <li>关联戒毒人员数量:<span>120</span> </li>
-                    <li>社区戒毒人员:<span>120</span> </li>
-                    <li>社区康复人员:<span>120</span> </li>
-                    <li>其它人员:<span>120</span></li>
-                    <li>走访:<span>120</span></li>
-                    <li>尿检:<span>120</span></li>
-                    <li>审核请假:<span>120</span> </li>
-                    <li>回复求助:<span>120</span> </li>
-                    <li>标记签到:<span>120</span> </li>
-                    <li>见面（人次）:<span>120</span> </li>
-
+                    <li>关联戒毒人员数量:<span>{this.state.record.ingNum||0}</span> </li>
+                    <li>社区戒毒人员:<span>{this.state.record.manShejie||0}</span> </li>
+                    <li>社区康复人员:<span>{this.state.record.manShejie||0}</span> </li>
+                    <li>其它人员:<span>{this.state.record.manOther||0}</span></li>
+                    <li>走访:<span>{this.state.record.vistorNum||0}</span></li>
+                    <li>尿检:<span>{this.state.record.niaojian||0}</span></li>
+                    <li>审核请假:<span>{this.state.record.dayoff||0}</span> </li>
+                    <li>回复求助:<span>{this.state.record.helpNum||0}</span> </li>
+                    <li>标记签到:<span>{this.state.record.checkin||0}</span> </li>
+                    <li>见面（人次）:<span>{this.state.record.manShejie||0}</span> </li>
                 </ul>
                 </Col>   
                 </Row> 
