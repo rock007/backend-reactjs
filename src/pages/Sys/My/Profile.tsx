@@ -54,6 +54,7 @@ export  class MyProfile extends React.Component<IPageProps,IPageState> {
         this.setState({record:data,report:result,isLoading:false});
     }
     goBack=(flag:number=0)=>{
+      
         if(this.isPage()){
             this.props.history.goBack();
         }else{
@@ -72,7 +73,7 @@ export  class MyProfile extends React.Component<IPageProps,IPageState> {
                   <Breadcrumb.Item active>
                     个人信息
                   </Breadcrumb.Item>
-                  <a style={{float:'right'}}  className='btn-link' onClick={()=>this.goBack} >返回</a>
+                  <a style={{float:'right'}}  className='btn-link' onClick={this.goBack.bind(this,0)} >返回</a>
               </Breadcrumb>:null
               }
                <Row>

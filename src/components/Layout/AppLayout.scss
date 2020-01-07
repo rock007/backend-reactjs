@@ -38,5 +38,14 @@
 
       }
   }
+
+  .u-menu-item-selected{
+    color: #004898 !important;
+    background-color:#cbe6ff !important;
+  }
+
+  .u-menu-vertical .u-menu-item:after, .u-menu-vertical-left .u-menu-item:after, .u-menu-vertical-right .u-menu-item:after, .u-menu-inline .u-menu-item:after {
+        border-right: 3px solid #2c62b2 !important;
+  }
   
 }

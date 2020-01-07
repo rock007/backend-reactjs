@@ -158,7 +158,7 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                         <Radio value="2" >人员分类</Radio>
                         <Radio value="3" >风险等级</Radio>
                         <Radio value="4" >所属网格</Radio>
-                        <Radio value="5" >报到时间</Radio>
+
                     </Radio.RadioGroup>
                 </FormItem>
                 {this.state.selectedValue==1?(
@@ -218,35 +218,15 @@ class ManBussModifyPage extends React.Component<IPageProps,IPageState> {
                 </React.Fragment>
                ):null}
                
-               {this.state.selectedValue==5?(
-                    <React.Fragment>
-                    <FormItem>
-                        <Label>当前报到时间</Label>
-                        <strong>{this.state.record.registDate}</strong>
-                    </FormItem>
-                    <FormItem>
-                        <Label>社区报到时间</Label>
-                        <DatePicker  format={'YYYY-MM-DD'} 
-                               {...getFieldProps('registDate', {
-                                   initialValue: '',
-                                   validateTrigger: 'onBlur',
-                                   rules: [{required: true, message: '请选择申请时间'}],
-                               })}
-                        />
-                    </FormItem>
-                    </React.Fragment>
-               ):null}
-               
                 <FormItem>
                     <Label>原因</Label>
-                    <Select {...getFieldProps('reason')}
-                        showSearch={true}
-                        allowClear={true} >
-          <Select.Option value="">(请选择)</Select.Option>
-          <Select.Option value="不是我们社区的人员">不是我们社区的人员</Select.Option>
-          <Select.Option value="执行强戒，终止社区戒毒">执行强戒，终止社区戒毒</Select.Option>
-          <Select.Option value="其它">其它</Select.Option>
-        </Select>
+                    <FormControl 
+                                {...getFieldProps('reason', {
+                                        initialValue: ''
+                                    }
+                                )}
+                   />
+                   <FormError errorMsg={getFieldError('reason')}/>
                </FormItem>
                <FormItem>
                     <Label>备注</Label>

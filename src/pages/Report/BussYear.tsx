@@ -162,7 +162,8 @@ render() {
           { title: '走访(次)', dataIndex: 'visit', key: 'visit',textAlign:'center', width: 100 },
           { title: '尿检(次)', dataIndex: 'niaojian', key: 'niaojian',textAlign:'center', width: 100 },
           { title: '请假(条)', dataIndex: 'dayoff', key: 'dayoff',textAlign:'center', width: 100 },
-          { title: '求助(条)', dataIndex: 'checkin', key: 'checkin',textAlign:'center', width: 100 }
+          { title: '求助(条)', dataIndex: 'help', key: 'help',textAlign:'center', width: 100 },
+          { title: '签到(人)', dataIndex: 'checkin', key: 'checkin',textAlign:'center', width: 100 }
           ];
       
           const toolBtns = [];

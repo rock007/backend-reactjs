@@ -160,6 +160,11 @@ class SysService {
     let result = await http.post('/rest/role-permission-submit', args);
     return result;
   }
+  public async getMyMenu(): Promise<any> {
+   
+    let result = await http.get('/rest/manager/get-permission');
+    return result;
+  }
 
   public async getAllMenu(): Promise<any> {
    

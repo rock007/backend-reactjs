@@ -12,6 +12,7 @@ import * as serviceWorker from './serviceWorker';
 import initializeStores from './stores/StoreInitializer';
 
 import "tinper-bee/assets/theme/tinper-bee-indigo.css";
+//import './css/tinper-bee-theme.css'
 
 const stores = initializeStores();
 

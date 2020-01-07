@@ -1,75 +1,158 @@
-import './index.scss';
 
 import * as React from 'react';
 
-import { Avatar, Col, Icon, Row, Menu ,SubMenu} from 'tinper-bee';
-import AppConsts from '../../lib/appconst';
+import { Icon,Menu ,Loading} from 'tinper-bee';
+import { MenuModel,PermissionModel } from '../../services/dto/SystemModel';
 
-import { appRouters } from '../../components/Router/router.config';
-
-export interface ISiderMenuProps {
+interface ISiderMenuProps {
   path: any;
   collapsed: boolean;
-  onCollapse: any;
-  history: any;
+  onCollapse: ()=>void;
+  
+  permissions:Array<PermissionModel>,
+  handleSelect:(item:MenuModel)=>void,
+  isLoading:boolean
 }
 
-export default class SiderMenu extends React.Component<ISiderMenuProps> {
+interface ISiderMenuState{
 
-  componentDidMount() {
+}
 
+ class SiderMenu extends React.Component<ISiderMenuProps,ISiderMenuState> {
+
+  static defaultProps= {
+    path: '/',
+    collapsed: false,
+    onCollapse: ()=>{} ,
+    isLoading:true
   }
+
+  state:ISiderMenuState={
+    //permissions:[],
+    //menus:[],
+    //isLoading:false
+}
+
+private _getMenuChild(parentId:number):Array<MenuModel>{
+
+    if(this.props.permissions===null||this.props.permissions.length===0) return [];
+
+    const mm= this.props.permissions.filter((v,i,array)=>v.parentId===parentId&&v.type==1)
+              .sort((m1,m2)=>{
+               
+                  //if (m2.index||0 > m1.index||0) return 1;
+                  //if (m2.index||0 < m1.index||0) return -1;
+                  return m2.index||0  - m1.index||0;
+                }
+              )
+              .map((v,i,arr)=>{
+                return {
+                  id:v.id,
+                  name: v.name,
+                  icon: v.icon,
+                  url:v.url,
+                  attr:v.attr,
+                  children:this._getMenuChild(v.id),
+                  page:null//appRouters.appRouters[2]
+
+                } as MenuModel;
+            });
+
+      return mm;
+  }
+ 
+   getPermissonByUrl(url:string):PermissionModel{
+
+    const list= this.props.permissions.filter((v,i,array)=>v.url===url)
+            .map((v,i,arr)=>{
+            return v as PermissionModel;
+          });
+
+     if(list.length>0) return list[0];
+     
+     return null;
+}
+
+ getPermissonById(id:number):PermissionModel{
+
+  const one= this.props.permissions.find((v,i,array)=>v.id===id);
+  return one;
+}
+
+initMenuChilds=(route:MenuModel)=>{
+
+  return (
+    <Menu.SubMenu key={route.id} 
+        title={route.name}  >
+   
+        {route.children
+          .map((route: any, index: number) => {
+              return this.initMenuItem(route);
+          })}
+    </Menu.SubMenu>)
+}
+
+ initMenuItem=(route:MenuModel)=>{
+
+  if(route.children!=null&&route.children.length>0){
+
+    return this.initMenuChilds(route);
+  }
+
+  return (
+    <Menu.Item key={route.id} onClick={this.props.handleSelect.bind(this,route)}>
+      {route.icon==null||route.icon==''?'':<Icon type={'uf-'+route.icon} />} 
+      <span>{route.name}</span>
+    </Menu.Item>
+  );
+
+}
+
 
   render() {
+    
+    if(this.props.isLoading){
 
-    const { collapsed, history, onCollapse } = this.props;
+      return ( <div><Loading container={this} show={true}/></div>)
+    }
 
-    let initMenuChilds=(route:any)=>{
-  
-      return (<SubMenu key={route.path} 
-        title={<span> <Icon type={route.icon} /> <span>{route.title}</span> </span>}  >
-         
-          {route.childs
-            .filter((item: any) => !item.isLayout && item.showInMenu)
-            .map((route: any, index: number) => {
-  
-              return initMenuItem(route);
-  
-            })}
-        </SubMenu>)
+  const menus=this._getMenuChild(0);
+
+  const permission= this.getPermissonByUrl(this.props.path);
+
+  let defaultOpenKey='';
+  let defaultSelectedKey='';
+
+  if(permission!=null){
+
+     defaultSelectedKey=permission.id+'';
+
+     const permissionParent= this.getPermissonById(permission.parentId);
+
+     if(permissionParent!=null){
+
+      defaultOpenKey=permissionParent.id+'';
     }
-    
-    let initMenuItem=(route:any)=>{
-    
-      if (route.permission && !AppConsts.isGranted(route.permission)) return null;
-    
-      if(route.childs!=null&&route.childs.length>0){
-    
-        return initMenuChilds(route.childs);
-    
-      }
-    
-      return (
-        <Menu.Item key={route.path} onClick={() => history.push(route.path)}>
-          <Icon type={route.icon} />
-          <span>{route.title}</span>
-        </Menu.Item>
-      );
-    
-    }
-  
+  }
+
     return (
-      
-        <Menu  mode="inline">
-          {appRouters
-            .filter((item: any) => !item.isLayout && item.showInMenu)
-            .map((route: any, index: number) => {
-  
-              return initMenuItem(route);
+      <Menu theme="light"  mode="inline" 
+          defaultOpenKeys={[defaultOpenKey]}  
+          defaultSelectedKeys={[defaultSelectedKey]}>
+           {
+            menus.map((route: MenuModel, index: number) => {
+
+                if(route.children!=null&&route.children.length>0){
+
+                  return this.initMenuChilds(route);
+                  
+                }else{
+
+                  return this.initMenuItem(route);
+                }
             })}
-        </Menu>
-      
-    );
+    </Menu>)
   }
 }
 
+export default SiderMenu;

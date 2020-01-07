@@ -10,7 +10,7 @@ class SystemStore {
   
   @observable data: any ;
 
-  @observable menus: Array<MenuModel> =[];
+  //@observable menus: Array<MenuModel> =[];
 
   @observable title: string ;
 
@@ -20,7 +20,7 @@ class SystemStore {
 
   @observable unReadNum: number ;
 
-  private _permissions:Array<PermissionModel>=[];
+  //private _permissions:Array<PermissionModel>=[];
 
   roles:Array<RoleModel>=[];
 
@@ -46,16 +46,16 @@ class SystemStore {
     this.unReadNum=data.unReadNum;
     this.orgName=data.orgName;
   
-    this._permissions=data.permission;
+    //this._permissions=data.permission;
     
-    AppConsts.permissions=data.permission;
+    //AppConsts.permissions=data.permission;
 
     this.roles=data.roles;
 
-    this._getMenus();
+   // this._initMenu();
   };
-
-  private _getMenus=()=>{
+/** 
+  private _initMenu=()=>{
 
     if(this.menus.length===0&&this._permissions!=null&&this._permissions.length>0){
 
@@ -98,6 +98,29 @@ class SystemStore {
       return mm;
   }
 
+  public getPermissonByUrl(url:string):PermissionModel{
+
+      const list= this._permissions.filter((v,i,array)=>v.url===url)
+              .map((v,i,arr)=>{
+              return v as PermissionModel;
+            });
+
+       if(list.length>0) return list[0];
+       
+       return null;
+  }
+
+  public getPermissonById(id:number):PermissionModel{
+
+    const one= this._permissions.find((v,i,array)=>v.id===id);
+    return one;
+  }
+
+  public getMenuArray():Array<MenuModel>{
+
+    return  loadsh.cloneDeep(this.menus);
+  }
+***/
 }
 
 export default SystemStore;

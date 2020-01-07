@@ -21,9 +21,9 @@ import MsgPanel from '../../pages/Sys/Msg/Panel';
 import { getCookie, setCookie} from '../../utils/index';
 import SystemStore from '../../stores/SystemStore';
 import Store from '../../stores/StoreIdentifier';
-import { MenuModel } from '../../services/dto/SystemModel';
-
-const SubMenu = Menu.SubMenu;
+import { MenuModel,PermissionModel } from '../../services/dto/SystemModel';
+import SiderMenu from '../SiderMenu';
+import SysService from '../../services/SysService';
 
 interface IPageProps {
   history:any,
@@ -34,8 +34,10 @@ interface IPageProps {
 interface IPageState {
   collapsed:boolean,
   showRightDrawer:boolean,
-  data:any,
-  isLogoffAlert:boolean
+  data:Array<any>,
+  isLoading:boolean,
+  isLogoffAlert:boolean,
+
 }
 
 @inject(Store.SystemStore)
@@ -45,7 +47,8 @@ class AppLayout extends React.Component<IPageProps,IPageState> {
   state:IPageState={
     collapsed: false,
     showRightDrawer:false,
-    data:{},
+    data:[],
+    isLoading:true,
     isLogoffAlert:false
 }
 
@@ -63,15 +66,23 @@ componentDidMount() {
     window.location.href='/#/account/login';
 
   }else{
-    //AppConsts.authorization.token=token;
+
     this.props.systemStore.loadData();
+    this.loadData();
   }
+
+}
+
+loadData=async ()=>{
+
+  let result = await SysService.getMyMenu();
+
+  AppConsts.permissions=result;
+  this.setState({data:result,isLoading:false});
 }
 
 go2Page=async (item)=>{
  
-  //this.props.history.push('/forhelp');
-  
   const route=appRouters.find((v,i)=>v.title===item.name);
   if(route!=null){
     console.log('go2Page:'+route.path);
@@ -79,7 +90,6 @@ go2Page=async (item)=>{
   }else{
     this.props.history.push('/exception?code=404');
   }
- 
 }
 
 pushPage=(url:string)=>{
@@ -89,36 +99,6 @@ pushPage=(url:string)=>{
   this.props.history.push(url);
 }
 
-initMenuChilds=(route:MenuModel)=>{
-
-  return (
-      <SubMenu key={route.name} 
-          title={<span> {route.icon==null||route.icon===''?'': <Icon type={route.icon} />} <span>{route.name}</span> </span>}  >
-     
-          {route.children
-            .map((route: any, index: number) => {
-                return this.initMenuItem(route);
-            })}
-      </SubMenu>)
-}
-
-
-initMenuItem=(route:MenuModel)=>{
-  
-  if(route.children!=null&&route.children.length>0){
-
-    return this.initMenuChilds(route);
-
-  }
-
-  return (
-    <Menu.Item key={route.name} onClick={this.go2Page.bind(this,route)}>
-      {route.icon==null||route.icon==''?'':<Icon type={'uf-'+route.icon} />} 
-      <span>{route.name}</span>
-    </Menu.Item>
-  );
-
-}
 handlerLogoff=()=>{
 
   this.setState({isLogoffAlert:false});
@@ -127,7 +107,7 @@ handlerLogoff=()=>{
   //setCookie('login_pwd','');
 
   setCookie('login_token','');
-  //AppConsts.authorization.token='';
+
   window.location.href='/#/account/login';
   window.location.reload(true);
 }
@@ -151,20 +131,9 @@ render() {
     <PageLayout>
         <PageLayout.Content>
             <PageLayout.LeftContent md="2">
-
-            <Menu  mode="inline" defaultOpenKeys={['process_mg']} >
-              {this.props.systemStore.menus
-                  .map((route: MenuModel, index: number) => {
-
-                      if(route.children!=null&&route.children.length>0){
-
-                        return this.initMenuChilds(route);
-                      }else{
-
-                        return this.initMenuItem(route);
-                      }
-                   })}
-            </Menu>
+            <SiderMenu handleSelect={this.go2Page} isLoading={this.state.isLoading}
+              permissions={this.state.data} path={pathname}></SiderMenu>
+         
             </PageLayout.LeftContent>
             <PageLayout.RightContent md="10">
             

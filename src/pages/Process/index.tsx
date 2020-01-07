@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import {Tag ,Panel,Breadcrumb, Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
+//import { Link } from 'react-router-dom';
+import {Tag ,Panel,Breadcrumb, Label,Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
@@ -197,7 +197,8 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         const columns = [
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
-                return <Link to={'/process-view/'+record.processId}>{text}</Link>;
+                //return <Link to={'/process-view/'+record.processId}>{text}</Link>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/process-view/'+record.processId,'社戒详细',false)}}>{text}</Label>;
               }
             },
             { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },

@@ -3,7 +3,7 @@ export interface MenuModel {
   name: string
   icon: string
   url:string
-  attr:string
+  attr:string,
   children:Array<MenuModel>
   page:any
 }
