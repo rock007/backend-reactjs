@@ -265,12 +265,20 @@ class AuditManBussModifyPage extends React.Component<IPageProps,IPageState> {
                             <Select.Option value="">(请选择)</Select.Option>
  
                             <Select.Option value="1" >转移社区</Select.Option>
-                            <Select.Option value="2" >修改人员分类</Select.Option>
-                            <Select.Option value="3" >修改风险等级</Select.Option>
-                            <Select.Option value="4" >修改所属网格</Select.Option>
-                            <Select.Option value="5" >修改报到时间</Select.Option>
+                            <Select.Option value="2" >人员分类</Select.Option>
+                            <Select.Option value="3" >风险等级</Select.Option>
+                            <Select.Option value="4" >所属网格</Select.Option>
 
                         </Select>
+                    </FormItem>
+                    <FormItem
+                        label="状态">
+                        <Radio.RadioGroup  {...getFieldProps('status', {initialValue: ''})}>
+                            <Radio value="">全部</Radio>
+                            <Radio value="0">未处理</Radio>
+                            <Radio value="1">已通过</Radio>
+                            <Radio value="-1">已拒绝</Radio>
+                        </Radio.RadioGroup>
                     </FormItem>
                 </FormList>
                 </SearchPanel>

@@ -4,7 +4,9 @@ import DatePicker from "bee-datepicker";
 import {
     BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   } from 'recharts';
-  
+
+import moment from "moment";
+
 import Grid from '../../components/Grid';
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
@@ -13,8 +15,8 @@ import ReportService from '../../services/ReportService';
 import {PageModel, PopPageModel,IPageCommProps,IListPageState} from '../../services/Model/Models';
 
 import PageDlog from '../../components/PageDlg';
-import { getValidateFieldsTrim } from '../../utils/tools';
-import { Info } from '../../utils';
+import { getValidateFieldsTrim ,getHeight,getWidth} from '../../utils/tools';
+import { Info, Warning } from '../../utils';
 
 const FormItem = FormListItem;
 
@@ -56,6 +58,11 @@ type IPageState = IOtherState & IListPageState;
           
           if(values.orgId){
               values.orgId=JSON.parse(values.orgId).refpk;
+          }
+
+          if(values.yyyymmdd ==null||values.yyyymmdd ===''){
+            Warning('时间不能为空');
+            return;
           }
 
           values.yyyymmdd = values.yyyymmdd!=null?values.yyyymmdd.format('YYYYMMDD'):"";
@@ -113,7 +120,8 @@ type IPageState = IOtherState & IListPageState;
  handleChange=(value)=>{
     this.setState({displayType:value})
  }
-  render() {
+ 
+ render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const data = [
@@ -144,7 +152,7 @@ type IPageState = IOtherState & IListPageState;
             { title: '时间', dataIndex: 'yyyymmdd', key: 'yyyymmdd',textAlign:'center', width: 100 },
             { title: '社区', dataIndex: 'orgName', key: 'orgName', textAlign:'center',width: 150 },
       
-            { title: '建档(人)', dataIndex: 'chargeNan', key: 'chargeNan',textAlign:'center', width: 120 },
+            { title: '建档(人)', dataIndex: 'manSum', key: 'manSum',textAlign:'center', width: 120 },
             { title: '社戒(人)', dataIndex: 'manShejieAdd', key: 'manShejieAdd',textAlign:'center', width: 100 },
             { title: '社康(人)', dataIndex: 'manShekanAdd', key: 'manShekanAdd',textAlign:'center', width: 120 },
             { title: '其他(人)', dataIndex: 'manOtherAdd', key: 'manOtherAdd',textAlign:'center', width: 120 },
@@ -176,11 +184,10 @@ type IPageState = IOtherState & IListPageState;
                
                 <Col md="12">
                 <SearchPanel
-                reset={this.clear}
-                onCallback={()=>{}}
-                search={this.search}
-                searchOpen={true}
-              >
+                  reset={this.clear}
+                  onCallback={()=>{}}
+                  search={this.search}
+                  searchOpen={true}>
                 <FormList size="sm">
                     <FormItem
                         label="社区">
@@ -188,7 +195,7 @@ type IPageState = IOtherState & IListPageState;
                     </FormItem>
                     <FormItem
                         label="时间">
-                        <DatePicker {...getFieldProps('yyyymmdd', {initialValue: ''})}
+                        <DatePicker {...getFieldProps('yyyymmdd', {initialValue: moment().add(-1, 'days')})}
                         />
                     </FormItem>
                     <FormItem
@@ -214,20 +221,28 @@ type IPageState = IOtherState & IListPageState;
                 />
                 :
                 <BarChart
-                        width={500}
-                        height={430}
-                        data={data}
+                        width={getWidth()}
+                        height={getHeight()}
+                        data={this.state.page.data}
                         margin={{
-                          top: 5, right: 30, left: 20, bottom: 5,
+                          top: 5, right: 3, left: 3, bottom: 5,
                         }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey="orgName" />
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="pv" fill="#8884d8" />
-                        <Bar dataKey="uv" fill="#82ca9d" />
+                        <Bar dataKey="manSum" name={<Label>建档(人)</Label>}  fill="#8884d8" />
+                        <Bar dataKey="manShejieAdd" name="社戒(人)" fill="#82ca9d" />
+                        <Bar dataKey="manShekanAdd" name="社康(人)"  fill="#77ca9d" />
+                        <Bar dataKey="manOtherAdd" name="其他(人)"  fill="#16ca9d" />
+                        <Bar dataKey="visit" name="走访"  fill="#25ca9d" />
+                        <Bar dataKey="niaojian" name="尿检"  fill="#34ca9d" />
+                        <Bar dataKey="dayoff" name="请假"  fill="#43ca9d" />
+                        <Bar dataKey="help" name="求助"  fill="#52ca9d" />
+                        <Bar dataKey="checkin" name="签到"  fill="#61ca9d" />
+
                       </BarChart>
                }
                 </Col>

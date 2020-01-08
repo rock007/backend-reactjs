@@ -6,7 +6,6 @@ import { Redirect, Route, Switch,HashRouter } from 'react-router-dom';
 
 import { Row } from 'tinper-bee';
 import DocumentTitle from 'react-document-title';
-import Footer from '../Footer';
 
 import { userRouter } from '../Router/router.config';
 import utils from '../../utils/utils';

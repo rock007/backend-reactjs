@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import { Icon,Menu ,Loading} from 'tinper-bee';
+import { Icon,Menu,Panel,Loading} from 'tinper-bee';
 import { MenuModel,PermissionModel } from '../../services/dto/SystemModel';
 
 interface ISiderMenuProps {
@@ -113,7 +113,7 @@ initMenuChilds=(route:MenuModel)=>{
     
     if(this.props.isLoading){
 
-      return ( <div><Loading container={this} show={true}/></div>)
+      return ( <Panel><Loading container={this} show={true}/></Panel>)
     }
 
   const menus=this._getMenuChild(0);

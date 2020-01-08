@@ -80,6 +80,12 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
 
     handler_submit=()=>{
 
+        if(this.state.flowTasks.length==0){
+
+            Warning('参数错误，获得任务信息失败');
+            return;
+        }
+
         this.props.form.validateFields((err, _values) => {
             let values = getValidateFieldsTrim(_values);
 
@@ -87,7 +93,7 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
 
                 this.setState({isLoading:true});
 
-                let taskId=this.state.flowTasks[0].id;
+                let taskId=this.state.flowTasks[this.state.flowTasks.length-1].taskId;
                 values['title']=this.state.flowTasks[0].name;
                 values['content']=this.content;
     
@@ -117,13 +123,13 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
     renderAction=()=>{
 
         const { getFieldProps, getFieldError } = this.props.form;
-        const curTask=this.state.flowTasks!=null&&this.state.flowTasks.length>0?this.state.flowTasks[0]:null;
+        const curTask=this.state.flowTasks!=null&&this.state.flowTasks.length>0?this.state.flowTasks[this.state.flowTasks.length-1]:null;
     
         const isAssignee=curTask==null?false: curTask.assignee===AppConsts.session.userId;
     
         if(isAssignee){
     
-            let taskDefinitionKey=curTask.taskDefinitionKey;
+            let taskDefinitionKey=curTask.activityId;
     
             if(taskDefinitionKey==='usertask_accept'){
                 //民警接收

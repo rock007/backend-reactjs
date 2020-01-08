@@ -3,25 +3,36 @@ import BeeGrid from "bee-complex-grid";
 import 'bee-complex-grid/build/Grid.css';
 import loadsh from  'lodash';
 
+import { inject, observer } from 'mobx-react';
+import Store from '../../stores/StoreIdentifier';
+import BeeGridStore from '../../stores/BeeGridStore';
+
 import './index.scss'
 import { PageModel } from "../../services/Model/Models";
+import AppConsts from "../../lib/appconst";
 
 interface IComponentProps {
+    //paginationObj :any,
     isLoading?:boolean
     columns:any,
     page:PageModel<any>,
+    //exportData?:any[],
     toolBtns?:any[],
     pageChange?:(pageIndex:number,pageSize:number,orderBy?:Array<any>)=>void
     getSelectedDataFunc:(selectData, record, index)=>void,
    
-    multiSelect?:any
+    beeGridStore:BeeGridStore,
+    multiSelect?:any,
+    isExport?:boolean
 }
 interface IComponentState {
     dataNumIndex:number,
-    page:PageModel<any>,
 }
 
-class DataGrid extends Component<IComponentProps,IComponentState> {
+//share one grid sam@20200108 
+@inject(Store.BeeGridStore)
+@observer
+class Grid extends Component<IComponentProps,IComponentState> {
    
     pageIndex:number=1
     pageSize:number=10
@@ -31,17 +42,15 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
     static defaultProps: Partial<IComponentProps> = {
         pageChange: (index,size,orderBy)=>{console.log('pageChange>> index'+index+',size:'+size+',orderBy'+JSON.stringify(orderBy))},
         isLoading:false,
-        multiSelect:{type:"checkbox"}
+        multiSelect:{type:"checkbox"},
+        isExport:true
     }
     state:IComponentState={
         dataNumIndex:0,
-        page: new PageModel<any>(),
     }
 
     constructor(props) {
         super(props);
-
-        this.setState({page:props.page});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,8 +60,7 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
         // 判断是否 btnFlag新弹框状态  currentIndex当前选中行
         if (nextpage !== page) {
 
-            //this.props.beeGridStore.initData(nextpage);
-            this.setState({page:nextpage});
+            this.props.beeGridStore.initData(nextpage);
         }
 
     }
@@ -99,8 +107,9 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
     getSelectedDataFunc = (selectData, record, index) => {
         
         //console.log("data", JSON.stringify(data));
- 
-       let  tableData  = this.state.page.data;
+       //  this.setState({checkedRows:data});
+
+       let  tableData  = this.props.beeGridStore.page.data;
        let _tableData = loadsh.cloneDeep(tableData);
        if (index != undefined) {
            _tableData[index]['_checked'] = !_tableData[index]['_checked'];
@@ -119,17 +128,16 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
                });
            }
        }
+       this.props.beeGridStore.selected(_tableData,selectData);
       
       if(this.props.getSelectedDataFunc!=null){
         this.props.getSelectedDataFunc(selectData,record,index);
       }
     
-      const oo=this.state.page;
-      oo.data=_tableData;
-      this.setState({page:oo});
+
     };
-    
     sortFun = (sortParam)=>{
+        //console.info(sortParam);
 
         this.props.pageChange(this.pageIndex,this.pageSize,sortParam);
     }
@@ -139,19 +147,19 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
 
         let paginationObj = {
             activePage:this.pageIndex,
-            items:this.state.page.dataCount ? Math.ceil(this.state.page.dataCount / dataNumList[this.state.dataNumIndex]) : 1,//一页显示多少条
+            items:this.props.page.dataCount ? Math.ceil(this.props.page.dataCount / dataNumList[this.state.dataNumIndex]) : 1,//一页显示多少条
             dataNumSelect: [ "10", "20", "50", "100"],
             dataNum:this.state.dataNumIndex,
-            total:this.state.page.dataCount,//总共多少条、
+            total:this.props.beeGridStore.page.dataCount,//总共多少条、
             freshData:this.freshata,//点击下一页刷新的数据
             onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
             showJump:true,
             noBorder:true
           }
 
-        const {columns,   ...otherProps } = this.props;
+        const {columns, beeGridStore,   ...otherProps } = this.props;
         
-        let _exportData =  this.props.page.data;
+        let _exportData =  beeGridStore.page.data;
  
         let sortObj = {
             mode:'single',
@@ -159,19 +167,44 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
             sortFun:this.sortFun
         };
 
-        const pageData= this.state.page.data;
+        const pageData= beeGridStore.page.data;
         pageData.forEach(element => {
           element['key']=element.id||element.processId||element.manId;
         });
 
+        let toolBtns=this.props.toolBtns;
+        if(this.props.isExport){
+
+            if(toolBtns==null){
+
+                toolBtns=[{
+                    value:'导出',
+                    iconType:'uf-export',
+                    onClick:this.exportExcel
+                }];
+            }else{
+                toolBtns.push({
+                    value:'导出',
+                    iconType:'uf-export',
+                    onClick:this.exportExcel
+                });
+            }
+        }
+
+        const actBtns= toolBtns.filter((m,i)=>{
+
+            if(m.attr!=null) return AppConsts.isGranted(m.attr);
+            return true;
+        });
+
         return (
-            <div className='bs-datatable-wrapper'>
+            <div className='bs-grid-wrapper'>
                 
-                <BeeGrid.GridToolBar toolBtns={this.props.toolBtns} btnSize='sm' />
+                <BeeGrid.GridToolBar toolBtns={actBtns} btnSize='sm' />
                 <BeeGrid
-                    className="ucf-bs-datatable"
+                    className="ucf-bs-grid"
                     multiSelect={this.props.multiSelect}
-                    data={pageData}
+                    data={beeGridStore.page.data}
                     loading={this.props.isLoading}
                     columns={columns}
                     {...otherProps}
@@ -188,4 +221,4 @@ class DataGrid extends Component<IComponentProps,IComponentState> {
     }
 }
 
-export default DataGrid;
+export default Grid;

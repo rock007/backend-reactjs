@@ -6,6 +6,7 @@ import './index.scss';
 import SysService from '../../../../services/SysService';
 import { PageModel } from '../../../../services/Model/Models';
 import { Info } from '../../../../utils';
+import { convertBussTypeText } from '../../../../utils/tools';
 
 interface IPanelProps {
     unReadNum:number,
@@ -28,7 +29,7 @@ export  class MsgPanel extends React.Component<IPanelProps,IPanelState> {
     }
     loadData= async ()=>{
         this.setState({isLoading:true});
-        let page = await SysService.searchMessage({state:0},1,20) ;
+        let page = await SysService.searchMessage({status:0},1,20) ;
         this.setState({page:page,isLoading:false});
     }
 
@@ -96,16 +97,14 @@ function MsgItem(param){
     });
   ***/
     const handler_mouseEnter=()=>{
-        console.log('mouseEnter');
         setIsShowAct(true);
     }
     const handler_mouseLeave=()=>{
-        console.log('mouseLeave');
         setIsShowAct(false);
     }
 
     return (
-        <Panel header={item.createDate+','+'尿检'} onMouseEnter ={handler_mouseEnter}  onMouseLeave={handler_mouseLeave} >
+        <Panel header={item.createDate+','+convertBussTypeText(item.msgType) } onMouseEnter ={handler_mouseEnter}  onMouseLeave={handler_mouseLeave} >
                                 {item.content}
                                 {isShowAct?(<p >
                                     <Label className='link-go' onClick={onRead.bind(this,item.id)}>已读</Label>

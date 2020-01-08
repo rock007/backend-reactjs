@@ -317,3 +317,28 @@ export function openPage(url:string):Window{
 
     return window.open(AppConsts.remoteServiceBaseUrl+"/web/"+url, winName,  strWindowFeatures);
 }
+
+export function  getHeight (){
+
+    let clientHeight = Math.min(window.innerHeight, document.body.clientHeight, document.documentElement.clientHeight),
+      scrollHeight = Math.min(window.innerHeight, document.body.scrollHeight, document.documentElement.scrollHeight),
+      offsetHeight = document.documentElement.offsetHeight,
+      scrollTop = document.documentElement.scrollTop,
+      height = 0,
+      pageHeadHeight = 68;
+
+    let showHeight = (clientHeight < scrollHeight) && clientHeight || scrollHeight;
+    height = showHeight - pageHeadHeight - scrollTop;
+
+    return height;
+}
+
+export function getWidth  () {
+
+    let clientWidth = Math.min(window.innerWidth, document.documentElement.clientWidth, document.body.clientWidth),
+      treeWidth = 250,
+      width = 1;
+
+    width = clientWidth - treeWidth;
+    return width;
+  }

@@ -12,25 +12,23 @@ import { PageModel } from "../../services/Model/Models";
 import AppConsts from "../../lib/appconst";
 
 interface IComponentProps {
-    //paginationObj :any,
     isLoading?:boolean
     columns:any,
     page:PageModel<any>,
-    //exportData?:any[],
     toolBtns?:any[],
     pageChange?:(pageIndex:number,pageSize:number,orderBy?:Array<any>)=>void
     getSelectedDataFunc:(selectData, record, index)=>void,
    
-    beeGridStore:BeeGridStore,
+    //beeGridStore:BeeGridStore,
     multiSelect?:any,
     isExport?:boolean
 }
 interface IComponentState {
     dataNumIndex:number,
+    page:PageModel<any>,
 }
 
-@inject(Store.BeeGridStore)
-@observer
+
 class Grid extends Component<IComponentProps,IComponentState> {
    
     pageIndex:number=1
@@ -46,20 +44,21 @@ class Grid extends Component<IComponentProps,IComponentState> {
     }
     state:IComponentState={
         dataNumIndex:0,
+        page: new PageModel<any>(),
     }
 
     constructor(props) {
         super(props);
+        this.setState({page:props.page});
     }
 
     componentWillReceiveProps(nextProps) {
        
         let {page} = this.props;
         let {page: nextpage, isShow: nextIsShow} = nextProps;
-        // 判断是否 btnFlag新弹框状态  currentIndex当前选中行
         if (nextpage !== page) {
 
-            this.props.beeGridStore.initData(nextpage);
+            this.setState({page:nextpage});
         }
 
     }
@@ -108,7 +107,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
         //console.log("data", JSON.stringify(data));
        //  this.setState({checkedRows:data});
 
-       let  tableData  = this.props.beeGridStore.page.data;
+       let  tableData  = this.state.page.data;
        let _tableData = loadsh.cloneDeep(tableData);
        if (index != undefined) {
            _tableData[index]['_checked'] = !_tableData[index]['_checked'];
@@ -127,8 +126,11 @@ class Grid extends Component<IComponentProps,IComponentState> {
                });
            }
        }
-       this.props.beeGridStore.selected(_tableData,selectData);
-      
+       //this.props.beeGridStore.selected(_tableData,selectData);
+       const oo=this.state.page;
+       oo.data=_tableData;
+       this.setState({page:oo});
+
       if(this.props.getSelectedDataFunc!=null){
         this.props.getSelectedDataFunc(selectData,record,index);
       }
@@ -146,19 +148,19 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
         let paginationObj = {
             activePage:this.pageIndex,
-            items:this.props.page.dataCount ? Math.ceil(this.props.page.dataCount / dataNumList[this.state.dataNumIndex]) : 1,//一页显示多少条
+            items:this.state.page.dataCount ? Math.ceil(this.state.page.dataCount / dataNumList[this.state.dataNumIndex]) : 1,//一页显示多少条
             dataNumSelect: [ "10", "20", "50", "100"],
             dataNum:this.state.dataNumIndex,
-            total:this.props.beeGridStore.page.dataCount,//总共多少条、
+            total:this.state.page.dataCount,//总共多少条、
             freshData:this.freshata,//点击下一页刷新的数据
             onDataNumSelect:this.onDataNumSelect, //每页大小改变触发的事件
             showJump:true,
             noBorder:true
           }
 
-        const {columns, beeGridStore,   ...otherProps } = this.props;
+        const {columns,   ...otherProps } = this.props;
         
-        let _exportData =  beeGridStore.page.data;
+        let _exportData =  this.state.page.data;
  
         let sortObj = {
             mode:'single',
@@ -166,7 +168,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
             sortFun:this.sortFun
         };
 
-        const pageData= beeGridStore.page.data;
+        const pageData= this.state.page.data;
         pageData.forEach(element => {
           element['key']=element.id||element.processId||element.manId;
         });
@@ -203,7 +205,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
                 <BeeGrid
                     className="ucf-bs-grid"
                     multiSelect={this.props.multiSelect}
-                    data={beeGridStore.page.data}
+                    data={this.state.page.data}
                     loading={this.props.isLoading}
                     columns={columns}
                     {...otherProps}

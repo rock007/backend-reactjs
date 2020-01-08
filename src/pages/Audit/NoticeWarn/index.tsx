@@ -145,10 +145,9 @@ type IPageState = IOtherState & IListPageState;
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
             { title: '节点', dataIndex: 'taskStatus', key: 'taskStatus',textAlign:'center', width: 150,render(text,record,index) {
                   
-                //if(text==null||text===''||text.length==0) return "";
                 if(isArray(text)&&text.length>0){
                     
-                    return <Tag colors="info">{text[0].name}</Tag>
+                    return <Tag colors="info">{text[text.length-1].activityName}</Tag>
                 }
                 return <Tag colors="info">{text}</Tag>
 
@@ -246,7 +245,7 @@ type IPageState = IOtherState & IListPageState;
                         <Radio.RadioGroup {...getFieldProps('status', {initialValue: '0'})}>
                            <Radio value="0">待接收</Radio>
                             <Radio value="1">处理中</Radio>
-                            <Radio value="2">已完成</Radio>
+                            <Radio value="100">已完成</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                 </FormList>

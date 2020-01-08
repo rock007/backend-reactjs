@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Tag ,Panel,Breadcrumb, Label,Select, FormControl,Row, Col,Form,Radio } from 'tinper-bee';
 
 import Grid from '../../components/Grid';
+
 import {FormList ,FormListItem}from '../../components/FormList';
 import SearchPanel from '../../components/SearchPanel';
 import OrgPanel from '../../pages/Sys/Org/Panel';
@@ -195,6 +196,11 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
         const {Option} = Select;
 
         const columns = [
+            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 120 , render(text,record,index) {
+
+                return text==0?<Tag colors="danger">未报到</Tag>:(text==1?<Tag colors="success">执行中</Tag>:(text==2?<Tag colors="info">已完成</Tag>:<Tag colors="warning">未知状态</Tag>));
+
+                }},
             { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
 
                 //return <Link to={'/process-view/'+record.processId}>{text}</Link>;
@@ -215,11 +221,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
             { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 160 },
             { title: '所属社工', dataIndex: 'linkSgName', key: 'linkSgName',textAlign:'center', width: 120 },
             { title: '所属民警', dataIndex: 'linkMjName', key: 'linkMjName',textAlign:'center', width: 120 },
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 120 , render(text,record,index) {
-
-                return text==0?<Tag colors="danger">未报到</Tag>:(text==1?<Tag colors="success">执行中</Tag>:(text==100?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知状态</Tag>));
-
-                }},
+           
             { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
             { title: '创建时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 }
            
@@ -479,7 +481,7 @@ export  class ProcessPage extends React.Component<IPageProps,IPageState> {
                             <Radio value="">全部</Radio>
                             <Radio value="0">未报到</Radio>
                             <Radio value="1">执行中</Radio>
-                            <Radio value="100">已完成</Radio>
+                            <Radio value="2">已完成</Radio>
                         </Radio.RadioGroup>
                     </FormItem>
                 </FormList>

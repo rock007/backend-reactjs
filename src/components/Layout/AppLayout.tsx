@@ -6,7 +6,7 @@ import { Redirect, Switch,HashRouter } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 
-import { PageLayout,Icon,Menu ,Drawer } from 'tinper-bee';
+import { PageLayout,Icon, Drawer } from 'tinper-bee';
 
 import Alert from '../../components/Alert';
 import ProtectedRoute from '../../components/Router/ProtectedRoute';
@@ -21,7 +21,7 @@ import MsgPanel from '../../pages/Sys/Msg/Panel';
 import { getCookie, setCookie} from '../../utils/index';
 import SystemStore from '../../stores/SystemStore';
 import Store from '../../stores/StoreIdentifier';
-import { MenuModel,PermissionModel } from '../../services/dto/SystemModel';
+
 import SiderMenu from '../SiderMenu';
 import SysService from '../../services/SysService';
 

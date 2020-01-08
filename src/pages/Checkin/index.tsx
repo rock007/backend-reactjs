@@ -257,6 +257,7 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
         <Grid
           toolBtns={toolBtns}
           columns={columns}
+          isLoading={this.state.isLoading}
           page={this.state.page}
           getSelectedDataFunc={this.getSelectedDataFunc}
           pageChange={this.onPageChange}

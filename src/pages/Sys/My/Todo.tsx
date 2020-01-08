@@ -140,7 +140,7 @@ export  class ToDoPage extends React.Component<IPageProps,IPageState> {
                   
                 if(isArray(text)&&text.length>0){
                     
-                    return <Tag colors="info">{text[0].name}</Tag>
+                    return <Tag colors="info">{text[text.length-1].activityName}</Tag>
                 }
                 return <Tag colors="info">{text}</Tag>
     
