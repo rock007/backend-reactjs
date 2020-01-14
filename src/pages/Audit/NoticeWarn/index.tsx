@@ -143,7 +143,7 @@ type IPageState = IOtherState & IListPageState;
                 return convertWarnTypeText(text);
               }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
-            { title: '节点', dataIndex: 'taskStatus', key: 'taskStatus',textAlign:'center', width: 150,render(text,record,index) {
+            { title: '节点', dataIndex: 'tasks', key: 'tasks',textAlign:'center', width: 150,render(text,record,index) {
                   
                 if(isArray(text)&&text.length>0){
                     

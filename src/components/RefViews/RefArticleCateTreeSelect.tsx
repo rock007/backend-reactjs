@@ -7,9 +7,8 @@ import 'ref-tree/lib/index.css';
 import CmsService from '../../services/CmsService';
 import { convertArticleCateTreeNode } from '../../utils/tools';
 
-interface IComponentProps {
-    
-   
+interface IOtherProps {
+   isShowRoot:boolean
 }
 interface IComponentState {
     loading:boolean,
@@ -19,7 +18,12 @@ interface IComponentState {
     matchData?:any,
     value?:string
 }
-export  class RefArticleCateTreeSelect extends React.Component<any,IComponentState> {
+type IComponentProps = IOtherProps & any;
+export  class RefArticleCateTreeSelect extends React.Component<IComponentProps,IComponentState> {
+
+    static defaultProps = {
+        isShowRoot: false
+    }
 
     state:IComponentState={
         loading:false,
@@ -40,8 +44,13 @@ export  class RefArticleCateTreeSelect extends React.Component<any,IComponentSta
        
         let data = await CmsService.getArticleCateTree();
         let treeData=convertArticleCateTreeNode(data);
-        
-        this.setState({treeData: treeData.children});
+
+        if(this.props.isShowRoot){
+            this.setState({treeData:[treeData]});
+        }else{
+            this.setState({treeData:treeData.key!=='0'?[treeData]:treeData.children});
+        }
+
         return true;//必须要有
     }
    

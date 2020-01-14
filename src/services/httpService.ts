@@ -1,6 +1,5 @@
 import axios from 'axios';
 import AppConsts from './../lib/appconst';
-import { Modal ,Message} from 'tinper-bee';
 import {JsonBody} from './Model/Models';
 import { Warning ,Info,Error} from '../utils';
 

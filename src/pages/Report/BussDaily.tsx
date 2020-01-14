@@ -233,7 +233,7 @@ type IPageState = IOtherState & IListPageState;
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="manSum" name={<Label>建档(人)</Label>}  fill="#8884d8" />
+                        <Bar dataKey="manSum" name={"建档(人)"}  fill="#8884d8" />
                         <Bar dataKey="manShejieAdd" name="社戒(人)" fill="#82ca9d" />
                         <Bar dataKey="manShekanAdd" name="社康(人)"  fill="#77ca9d" />
                         <Bar dataKey="manOtherAdd" name="其他(人)"  fill="#16ca9d" />

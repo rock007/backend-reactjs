@@ -62,13 +62,16 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
         this.setState({isLoading:true});
         let result = await BussService.findWarnById(id);
 
+        /** 
         if(result!=null){
 
             const  flowTasks=await SysService.getFlowInfoBy(result.wfProcId);
 
             this.setState({record:result,flowTasks:flowTasks,isLoading:false});
         }
+        **/
 
+        this.setState({record:result,flowTasks:result.tasks,isLoading:false});
     }
     goBack=(flag:number=0)=>{
         if(this.isPage()){
@@ -267,8 +270,10 @@ class NoticeWarnView extends React.Component<IPageProps,IPageState> {
                         <strong>{this.state.record.content}</strong>
                 </FormItem>
                 <FormItem>
-                        <Label>状态</Label>
-                        <strong>{ this.state.record.status==0?<Tag colors="danger">未接收</Tag>: this.state.record.status==1?<Tag colors="info">进行中</Tag>: this.state.record.status==100?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>}</strong>
+                        <Label>节点</Label>
+                        <strong>{ 
+                          this.state.record.tasks&&this.state.record.tasks.length > 0?<Tag colors="info">{this.state.record.tasks[this.state.record.tasks.length-1].activityName}</Tag>: null
+                        }</strong>
                 </FormItem>
                 <FormItem>
                         <Label>社区</Label>

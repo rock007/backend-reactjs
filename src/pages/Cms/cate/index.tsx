@@ -3,37 +3,28 @@ import {Panel, Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadc
 import { Link } from 'react-router-dom';
 
 import Grid from '../../../components/Grid';
+import Alert from '../../../components/Alert';
 
-import {FormList ,FormListItem}from '../../../components/FormList';
-import SearchPanel from '../../../components/SearchPanel';
-import ManService from '../../../services/ManService';
-import {PageModel, PopPageModel} from '../../../services/Model/Models';
-import SelectDict from '../../../components/SelectDict';
-import ManCateSelect from '../../../components/ManCateSelect';
-import {RefOrgTreeSelect} from '../../../components/RefViews/RefOrgTreeSelect';
+import CmsService from '../../../services/CmsService';
+import {PageModel, PopPageModel, IPageCommProps, IListPageState} from '../../../services/Model/Models';
 import PageDlog from '../../../components/PageDlg';
-import DatePicker from "bee-datepicker";
 
 import { getValidateFieldsTrim } from '../../../utils/tools';
 import { Info } from '../../../utils';
+import ArticleCatePanel from './Panel';
+import AppConsts from '../../../lib/appconst';
+import defaultPic from '../../../images/pic_holder.png';
 
-const FormItem = FormListItem;
-const {Option} = Select;
+interface IOtherProps {
+    
+} 
 
-interface IPageProps {
-    form:any,
-    history:any,
+interface IOtherState {
+
 }
 
-interface IPageState {
-    page:PageModel<any>,
-    isLoading:boolean,
-    checkedRows:Array<any>,
-
-    pageModel: PopPageModel,
-    isPopPage:boolean,
-}
-
+type IPageProps = IOtherProps & IPageCommProps;
+type IPageState = IOtherState & IListPageState;
 /**
  * 文章分类
  */
@@ -47,8 +38,11 @@ interface IPageState {
         page:new PageModel<any>(),
         isLoading:false,
         checkedRows:[],
+      
         pageModel:new PopPageModel(),
         isPopPage:false,
+      
+        isDeleteAlterShow:false
     }
 
     componentDidMount() {
@@ -76,7 +70,7 @@ interface IPageState {
   loadData=async (args:any)=>{
       
       args['orderby']=this.orderBy;
-      let page = await ManService.searchProces(args,this.pageIndex,this.pageSize) as PageModel<any>;
+      let page = await CmsService.searchCate(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
       this.setState({page:page,isLoading:false});
   }
@@ -109,65 +103,96 @@ interface IPageState {
       }
   }
 
-  export = ()=>{
-      console.log('export=======');
-  }
+  onTreeClick=(records:any)=>{
+
+    if(records!=null&&records.length>0){
+
+        //this.orgId=records[0];
+        this.search();
+    }
+}
+
+handler_delete=async ()=>{
+
+    this.setState({isLoading:true,isDeleteAlterShow:false});
+
+    let ids:string='';
+    this.state.checkedRows.map((item,index)=>{
+        ids=ids+','+item.id;
+    });
+   await CmsService.deleteCateByIds(ids).then(()=>{
+
+        Info('删除操作成功');
+        this.search();
+    })
+    .catch((err)=>{
+        Error('删除操作失败');
+    }).finally(()=>{
+        this.setState({isLoading:false});
+    });
+}
 
   render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
         const me=this;
         const columns = [
-          { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
+            { title: '编号', dataIndex: 'cateId', key: 'cateId',textAlign:'center', width: 100 },
+            { title: '名称', dataIndex: 'title', key: 'title', textAlign:'center',width: 150 },
+            { title: '封面', dataIndex: 'logo', key: 'logo',textAlign:'center', width: 160 ,render(text,record,index) {
+             
+                return text!==null&&text!==''?
+                    ( 
+                     <img id="image" width={60} height={60} src={AppConsts.uploadUrl+text} alt="封面"/>
+                   ):
+                 (<img id="image" width={60} height={60} src={defaultPic} alt="封面"/>);
+            }},
+            { title: '排序', dataIndex: 'index', key: 'index',textAlign:'center', width: 80 },
+            { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 150 }
 
-            return <Label  className='link-go' onClick={()=>{me.go2Page('/location-man/'+record.id,'人员轨迹查看',false)}}>{text}</Label>;
-            
-          }
-        },
-        { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
-        { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
-            sorter: (pre, after) => {return pre.c - after.c},
-        },
-        { title: '身份证号', dataIndex: 'idsNo', key: 'idsNo',textAlign:'center', width: 180 ,
-            sorter: (pre, after) => {return pre.c - after.c}
-        },
-        { title: '出生年月', dataIndex: 'birthday', key: 'birthday',textAlign:'center', width: 160 },
-
-        { title: '备注', dataIndex: 'remarks', key: 'remarks',textAlign:'center', width: 200 },
-        { title: '上报时间 ', dataIndex: 'locationUpdateDate', key: 'locationUpdateDate',textAlign:'center', width: 150 ,sorter: (pre, after) => {return pre.c - after.c},},
-        { title: '上报地点', dataIndex: 'location', key: 'location',textAlign:'center', width: 100 },
-        { title: '来源', dataIndex: 'locationFrom', key: 'locationFrom',textAlign:'center', width: 100 },
-
-        { title: '类别', dataIndex: 'cateTypeText', key: 'cateTypeText',textAlign:'center', width: 100 ,sorter: (pre, after) => {return pre.c - after.c},},
-        { title: '社区', dataIndex: 'orgName', key: 'orgName',textAlign:'center', width: 200 ,
-        sorter: (pre, after) => {return pre.c - after.c},
-        }
           ];
       
           const toolBtns = [{
-            value:'查看轨迹',
+            value:'添加',
+            //attr:'act_cms_cate_add',
             bordered:false,
-            colors:'primary',
+            colors:'primary',       
+            onClick:()=>{
+
+                this.go2Page('/cms/cate-edit/0',"新增",false);
+            }
+          },{
+            value:'修改',
+            //attr:'act_cms_cate_modify',
             disabled:this.state.checkedRows.length>1?true:false,
             onClick:() => {
 
                 if(this.state.checkedRows.length>1){
 
-                    Info('查看轨迹只能选择一条记录');
+                    Info('修改只能选择一条记录');
 
                 }else if(this.state.checkedRows.length==1){
 
-                    this.go2Page('/location-man/'+this.state.checkedRows[0].manId,"查看人员轨迹",false);
+                    this.go2Page('/cms/cate-edit/'+this.state.checkedRows[0].cateId,"修改",false);
 
                 }else{
-                    Info('请选择要查看轨迹的记录');
+                    Info('请选择要修改的记录');
                 }
 
             }
         },{
-            value:'导出',
-            iconType:'uf-export',
-            onClick:this.export
+            value:'删除',
+            //attr:'act_cms_cate_delete',
+            onClick:()=>{
+
+                if(this.state.checkedRows.length==0){
+
+                    Info('请选择要删除的记录');
+                }else{
+
+                    this.setState({isDeleteAlterShow:true});
+                }
+            }
         }];
 
         return ( <Panel>
@@ -177,83 +202,43 @@ interface IPageState {
 			      工作台
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item>
-			      社戒管控
+			      系统管理
 			    </Breadcrumb.Item>
 			    <Breadcrumb.Item active>
-			      位置轨迹
+			      信息分类
 			    </Breadcrumb.Item>
 			</Breadcrumb>
 
-            <SearchPanel
-                reset={this.clear}
-                onCallback={()=>{}}
-                search={this.search}
-                searchOpen={true}
-              >
-                <FormList size="sm">
-                    <FormItem
-                        label="姓名">
-                        <FormControl placeholder='戒毒人员姓名' {...getFieldProps('realName', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="身份证号">
-                        <FormControl placeholder='请输入身份证号' {...getFieldProps('idsNo', {initialValue: ''})}/>
-                    </FormItem>
+            <Row>
+                <Col md="3">
 
-                    <FormItem
-                        label="联系方式"
-                    >
-                        <FormControl placeholder='请输入联系方式' {...getFieldProps('linkPhone', {initialValue: ''})}/>
-                    </FormItem>
-
-                    <FormItem
-                        label="性别"
-                    >
-                        <Select {...getFieldProps('sex', {initialValue: ''})}>
-                            <Option value="">(请选择)</Option>
-                            <Option value="男">男</Option>
-                            <Option value="女">女</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        label="人员分类">
-                            <ManCateSelect {...getFieldProps('cateType', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="风险等级">
-                        <SelectDict  type={31} {...getFieldProps('level', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="社区">
-                        <RefOrgTreeSelect {...getFieldProps('orgId', {initialValue: ''})}/>
-                    </FormItem>
-                    <FormItem
-                        label="位置上传时间">
-                        <DatePicker.RangePicker                             
-                            {...getFieldProps('locationUpdateDate', {initialValue: ''})}
-                            placeholder={'开始 ~ 结束'}
-                            dateInputPlaceholder={['开始', '结束']}
-                            showClear={true}
-                            showClose={true}
-                        />
-                    </FormItem>
-                    
-                </FormList>
-                </SearchPanel>
-
+                    <ArticleCatePanel onClick={this.onTreeClick} ></ArticleCatePanel>
+               
+                </Col>
+                <Col md="9">
+                
                 <Grid
                     isLoading={this.state.isLoading}
                     toolBtns={toolBtns}
                     columns={columns}
+                    isExport={false}
                     page={this.state.page}
                     getSelectedDataFunc={this.getSelectedDataFunc}
                     pageChange={this.onPageChange}
                 />
-        
+                </Col>
+            </Row>        
           <PageDlog  isShow={this.state.isPopPage} model={this.state.pageModel}
                     onClose={()=>this.setState({isPopPage:false})} >
           </PageDlog>
-
+          <Alert show={this.state.isDeleteAlterShow} context="确定要删除记录?"
+                           confirmFn={() => {
+                               this.handler_delete();
+                           }}
+                           cancelFn={() => {
+                              this.setState({isDeleteAlterShow:false})
+                           }}
+        />
         </Panel >)
     }
 }

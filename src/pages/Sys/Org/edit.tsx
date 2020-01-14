@@ -16,7 +16,7 @@ interface IOtherProps {
 } 
 
 interface IOtherState {
-   
+  
 }
 
 type IPageProps = IOtherProps & IPageDetailProps;
@@ -28,7 +28,7 @@ type IPageState = IOtherState & IPageDetailState;
     
     state:IPageState={
         isLoading:false,
-        record:{},
+        record:{}
     }
 
     isPage=()=>{
@@ -53,7 +53,7 @@ type IPageState = IOtherState & IPageDetailState;
     loadData=async (id)=>{
 
         const  data=await SysService.getOrgById(id);
-      
+        
         this.setState({record:data,isLoading:false});
     }
     submit=(e)=>{
@@ -148,8 +148,9 @@ goBack=(flag:number=0)=>{
                     <FormItem>
                         <Label>上一级</Label>
                         <RefOrgTreeSelect  
+                            disabled={this.state.record.id!=null}
                             {...getFieldProps('superId', {
-                            initialValue: JSON.stringify({ 'refpk':this.state.record.superId,'refname':this.state.record.superName}),
+                            initialValue: JSON.stringify({ 'refpk':this.state.record.id!=null? this.state.record.superId||'0':'','refname':this.state.record.id!=null?this.state.record.superName||'root':''}),
                             rules: [{
                                 required: true, message: '请选择组织社区',
                                 pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/

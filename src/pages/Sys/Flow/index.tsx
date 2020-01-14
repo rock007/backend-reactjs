@@ -116,7 +116,7 @@ render() {
             {this.props.children} 
             <Timeline>
                 {
-                    this.state.record.map((item,index)=>{
+                    this.state.record.filter((m,i)=>m.activityType=='userTask').map((item,index)=>{
 
                        return (<Timeline.Item >
                          <p>

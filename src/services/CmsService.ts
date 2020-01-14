@@ -1,5 +1,6 @@
 
 import http from './httpService';
+import AppConsts from '../lib/appconst';
 const qs = require('qs');
 
 class CmsService {
@@ -15,7 +16,7 @@ class CmsService {
     return result;
   }
   public async findArticleById(id:string): Promise<any> {
-    let result = await http.get('/rest/cms/article-get',{params:{id:id}});
+    let result = await http.get('/rest/cms/article-get',{params:{id:id,uid:AppConsts.session.userId}});
     return result;
   }
   
@@ -34,7 +35,7 @@ class CmsService {
     return result;
   }
   public async findCateById(id:string): Promise<any> {
-    let result = await http.get('/rest/cms/findCateById',{params:{id:id}});
+    let result = await http.get('/rest/cms/cate-get',{params:{id:id}});
     return result;
   }
   

@@ -15,7 +15,7 @@ import { getValidateFieldsTrim } from '../../../utils/tools';
 import OrgPanel from '../../../pages/Sys/Org/Panel';
 import RefOrgTreeSelect from '../../../components/RefViews/RefOrgTreeSelect';
 import AppConsts from '../../../lib/appconst';
-import { Info } from '../../../utils';
+import { Info, Warning } from '../../../utils';
 import PageDlog from '../../../components/PageDlg';
 
 const FormItem = FormListItem;
@@ -261,6 +261,11 @@ type IPageState = IOtherState & IListPageState;
               if(this.state.checkedRows.length>1){
 
                 Info('编辑记录只能选择一条');
+                return;
+              }
+
+              if(this.state.checkedRows[0].manId){
+                Warning('戒毒人员帐号不能编辑');
                 return;
               }
               this.go2Page('/user-edit/'+this.state.checkedRows[0].id,'编辑帐号',AppConsts.getOpenModel())

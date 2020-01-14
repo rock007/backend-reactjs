@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Tree,FormControl } from 'tinper-bee';
 
 import CmsService from '../../../../services/CmsService';
-import { convertOrgTreeNode } from '../../../../utils/tools';
 
 interface IPanelProps {
     onClick?:(rec:any)=>void
@@ -70,15 +69,10 @@ interface IPanelState {
 
   render() {
        
-        return ( <div className="org-tree-left" style={{padding:"10px"}}>
-            <div className='tree-head'>类别</div>
-              <FormControl
-                    value={this.state.value}
-                    onChange={this.onChange}
-                    type="search"
-                />
-                <div style={{ overflow:'auto'}}>
-                <Tree className="orgTree" 
+        return ( <div className="cms-tree-left" style={{padding:"10px"}}>
+                <div className='tree-head'>类别</div>
+                <div style={{ overflow:'hiden'}}>
+                <Tree className="cmsTree" 
                     showLine ={true}
                     checkStrictly={true}
                     defaultExpandedKeys={this.defaultExpandedKeys}

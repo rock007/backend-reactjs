@@ -24,23 +24,6 @@ class FlowPanel extends React.Component<IOtherProps,IOtherState> {
     
     }
   
-    componentDidMount() {
-    
-       
-    }
-
-    loadData=async (id)=>{
-
-        this.setState({isLoading:true});
-        let result = await CmsService.findArticleById(id);
-
-        this.setState({record:result,isLoading:false});
-    }
-  
-    handler_submit=()=>{
-
-    }
-
     render() {
 
         return (<div>

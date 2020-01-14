@@ -598,10 +598,16 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Cms/Article/edit'))
   },{
     path: '/article-cate',
-    title: '信息发布-分类',
+    title: '信息分类',
     name: 'article_cate',
-    showInMenu: false,
+    showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Cms/Cate'))
+  },{
+    path: '/cms/cate-edit/:id',
+    title: '信息分类-编辑',
+    name: 'article_cate_edit',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/Cms/Cate/Edit'))
   },{
     path: '/my-profile',
     title: '个人信息',
@@ -646,6 +652,11 @@ export const sceneRouters: any = [
     name:'mapDemo',
     title:'地图测试',
     component: LoadableComponent(() => import('../../pages/Scenes/MapDemo'))
+  },
+  {
+    name:'analysis',
+    title:'社区统计',
+    component: LoadableComponent(() => import('../../pages/Scenes/Analysis'))
   }
 ]
 

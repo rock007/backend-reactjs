@@ -10,7 +10,6 @@ interface IPageProps {
     
 }
 interface IPageState {
-    menus: any[],
     curTabName:string
 }
 
@@ -18,35 +17,9 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
     
     state:IPageState={
         curTabName:'wellcome',
-        menus:[{
-            id: 0,
-            name: 'wellcome',
-            title: "首页",
-            component:()=>{return this.getScene('wellcome')}
-            //component:sceneRouters.find((v,i)=>v.name=='wellcome').component
-        }/*,{
-            id: 1,
-            name: 'visitor',
-            title: "待完善",
-            component:()=> ()=>{return this.getScene('visitor')}
-        },{
-            id: 2,
-            name: 'articleDemo',
-            title: "富文本测试"
-        },{
-            id: 3,
-            name: 'chartDemo',
-            title: "图表测试"
-        },{
-            id: 4,
-            name: 'mapDemo',
-            title: "地图测试"
-        }**/]
-
+      
     }
-    componentDidMount() {
-
-    }
+ 
     getScene=(name:string)=>{
 
         const one=sceneRouters.find((v,i)=>v.name==name);
@@ -60,7 +33,31 @@ export class Dashboard extends React.Component<IPageProps,IPageState> {
     }
 
     render() {
-        const { menus } = this.state;
+        //const { menus } = this.state;
+
+        const menus=[{
+            id: 0,
+            name: 'wellcome',
+            title: "首页",
+            //component:()=>{return this.getScene('wellcome')}
+        },{
+            id: 1,
+            name: 'analysis',
+            title: "社区统计",
+            //component:()=>{return this.getScene('analysis')}
+        }/*,{
+            id: 2,
+            name: 'articleDemo',
+            title: "富文本测试"
+        },{
+            id: 3,
+            name: 'chartDemo',
+            title: "图表测试"
+        },{
+            id: 4,
+            name: 'mapDemo',
+            title: "地图测试"
+        }**/];
 
         let A=this.getScene(this.state.curTabName) ;
 

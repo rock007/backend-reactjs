@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {Panel, Loading,Icon,Select, FormControl,Row, Col,Label,Form,LoadingState,Button,Radio, Breadcrumb } from 'tinper-bee';
 
-import SysService from '../../../services/SysService';
-import {PageModel, PopPageModel, IPageDetailProps, IPageDetailState} from '../../../services/Model/Models';
+import CmsService from '../../../../services/CmsService';
+import {PageModel, PopPageModel, IPageDetailProps, IPageDetailState} from '../../../../services/Model/Models';
 
-import { getValidateFieldsTrim } from '../../../utils/tools';
-import { Info, Warning } from '../../../utils';
-import RefAreaTreeSelect from '../../../components/RefViews/RefAreaTreeSelect';
+import { getValidateFieldsTrim } from '../../../../utils/tools';
+import { Info, Warning } from '../../../../utils';
+import UploadFile from '../../../../components/UploadFile';
+import AppConsts from '../../../../lib/appconst';
+import { RefArticleCateTreeSelect } from '../../../../components/RefViews/RefArticleCateTreeSelect';
 
 const FormItem = Form.FormItem;
 
@@ -21,10 +23,11 @@ interface IOtherState {
 type IPageProps = IOtherProps & IPageDetailProps;
 type IPageState = IOtherState & IPageDetailState;
 
- class AreaEditPage extends React.Component<IPageProps,IPageState> {
+ class CateEditPage extends React.Component<IPageProps,IPageState> {
 
     id:string=''
-    
+    logo:string=''
+
     state:IPageState={
         isLoading:false,
         record:{},
@@ -36,27 +39,30 @@ type IPageState = IOtherState & IPageDetailState;
         return this.props.match&&this.props.history;
     }
     componentDidMount() {
+
         if(this.isPage()){
 
             this.id=this.props.match.params.id;
         }else{
             //in dailog
-            const m1=new RegExp('/sys/area-edit/:id'.replace(':id','\w?'));
+            const m1=new RegExp('/cms/cate-edit/:id'.replace(':id','\w?'));
             this.id=this.props.url.replace(m1,'');
         }
 
         if(this.id!=null&&this.id!='0'){
 
             this.loadData(this.id);
+        }else{
+            this.forceUpdate();
         }
     }
     loadData=async (id)=>{
 
-        const  data=await SysService.getAreaById(id);
+        const  data=await CmsService.findCateById(id);
         let parentItem={};
         if(data!=null){
 
-            parentItem=await SysService.getAreaById(data.superId);
+            parentItem=await CmsService.findCateById(data.parentId);
         }
         this.setState({record:data,parentItem:parentItem,isLoading:false});
     }
@@ -72,29 +78,30 @@ type IPageState = IOtherState & IPageDetailState;
         } else {
             console.log('提交成功', values);
 
-            if(values.superId!=null){
+            if(values.parentId!=null){
 
-                let supertObjSelect=JSON.parse(values.superId);
+                let supertObjSelect=JSON.parse(values.parentId);
 
                 if(supertObjSelect!=null){
-                    values.superId=supertObjSelect.refpk;
-                    values.superName=supertObjSelect.refName;
+                    values.parentId=supertObjSelect.refpk;
+                    values.parentName=supertObjSelect.refName;
                 }
             }
 
-            values['id']=this.id!=='0'?this.id:null;
+            values['cateId']=this.id!=='0'?this.id:null;
+            values['logo']=this.logo;
             this.setState({isLoading:true});
-            SysService.submitArea(values)
+            CmsService.submitCate(values)
                 .then((resp)=>{
 
-                    Info(resp);
-                    this.goBack();
+                    //Info(resp);
+                    this.goBack(1);
                 })
                 .catch((resp)=>{
-
-                    this.setState({isLoading:false});
+                    
                     Warning(resp.data);
-            });
+
+            }).finally(()=>this.setState({isLoading:false}));
         }
     });
 
@@ -108,11 +115,26 @@ goBack=(flag:number=0)=>{
     }
 }
 
-  render() {
+handler_uploadChange=(files:Array<any>)=>{
+
+    if(files.length>0){
+
+        this.logo= files[0].url.replace(AppConsts.uploadUrl,'');
+    }else{
+        this.logo='';
+    }
+}
+
+render() {
         const { getFieldProps, getFieldError } = this.props.form;
 
+        if(this.id!=='0'&&this.state.record.cateId==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
         return ( <Panel>
-            <Loading container={this} show={this.state.isLoading}/>
+
               {
                   this.isPage()?<Breadcrumb>
                   <Breadcrumb.Item href="#">
@@ -122,7 +144,7 @@ goBack=(flag:number=0)=>{
                     系统管理
                   </Breadcrumb.Item>
                   <Breadcrumb.Item href="#">
-                    地区管理
+                    信息分类
                   </Breadcrumb.Item> 
                   <Breadcrumb.Item active>
                     {this.id==='0'?"添加":"编辑"}
@@ -137,26 +159,24 @@ goBack=(flag:number=0)=>{
                 <Form className='edit_form_pop'>
                     <FormItem>
                         <Label>上一级</Label>
-                        <RefAreaTreeSelect  
-                            disabled={this.state.record.id!=null}
-                            {...getFieldProps('superId', {
-                            initialValue: JSON.stringify({ 'refpk':this.state.record.id!=null? this.state.parentItem.id||'':'','refname':this.state.record.id!=null?this.state.parentItem.disName||'root':''}),
+                        <RefArticleCateTreeSelect isShowRoot={true} 
+                        disabled={this.state.record.cateId!=null}
+                        {...getFieldProps('parentId', {
+                            initialValue: JSON.stringify({refpk:this.state.record.cateId!=null?this.state.parentItem.cateId||'':'',refname:this.state.record.cateId!=null?this.state.parentItem.title||'':''}),
                             rules: [{
-                                required: true, message: '请选择上级地区',
-                                  pattern: /[^{"refname":"","refpk":""}|{"refpk":"","refname":""}]/
+                                required: true, message: <span><span>请选择上级</span></span>,
                             }]
-                            })}
-                        />
+                        })}/>
                         <span className='error'>
-                            {getFieldError('superId')}
+                            {getFieldError('parentId')}
                         </span>
                     </FormItem>
 
                     <FormItem>
                         <Label>名称</Label>
                         <FormControl placeholder="请输入名称"
-                            {...getFieldProps('disName', {
-                                initialValue: this.state.record.disName,
+                            {...getFieldProps('title', {
+                                initialValue: this.state.record.title,
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     required: true, message: <span><Icon type="uf-exc-t"></Icon><span>请输入名称</span></span>,
@@ -164,25 +184,26 @@ goBack=(flag:number=0)=>{
                             }) }
                         />
                         <span className='error'>
-                            {getFieldError('disName')}
+                            {getFieldError('title')}
                         </span>
                     </FormItem>
                    
-                    <FormItem>
-                        <Label>说明</Label>
-                        <FormControl placeholder="请输入地区说明" 
-                            {
-                            ...getFieldProps('disDesc', {
-                                initialValue: this.state.record.disDesc
-                            }) 
-                            }/>
+                    <FormItem style={{display:'flex'}}>
+                    <Label>封面</Label>
+                        <div style={{display:'inline-block',width:'auto'}}>
+                            <UploadFile  uploadChange={this.handler_uploadChange} 
+                                defaultFileList={this.state.record.cateId!=null?[{
+                                    uid:this.state.record.cateId,
+                                    name:'封面',
+                                    url:AppConsts.uploadUrl +this.state.record.logo
+                                }]:null}/>
+                        </div>
                     </FormItem>
-                 
                     <FormItem>
                         <Label>排序值</Label>
                         <FormControl  placeholder="请输入排序值" {
-                            ...getFieldProps('disSort', {
-                                initialValue: this.state.record.disSort,
+                            ...getFieldProps('index', {
+                                initialValue: this.state.record.index,
                                 validateTrigger: 'onBlur',
                                 rules: [{
                                     pattern: /[0-9]$/, 
@@ -194,7 +215,7 @@ goBack=(flag:number=0)=>{
 
                     <FormItem style={{'paddingLeft':'106px'}}>
                         <Button shape="border" style={{"marginRight":"8px"}} onClick={this.goBack} >取消</Button>
-                        <Button colors="primary"  onClick={this.submit}>保存</Button>
+                        <LoadingState colors="primary"  onClick={this.submit}>保存</LoadingState>
                     </FormItem>
                 </Form>
             </Col>
@@ -203,4 +224,4 @@ goBack=(flag:number=0)=>{
     }
 }
 
-export default Form.createForm()(AreaEditPage);
+export default Form.createForm()(CateEditPage);

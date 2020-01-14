@@ -70,10 +70,10 @@ class SysService {
     return result;
   }
 
-  public async searchOrg(name:string,parentId:string,pageIndex:number=1,pageSize:number=20): Promise<any> {
+  public async searchOrg(args:any,pageIndex:number=1,pageSize:number=20): Promise<any> {
    
     let result = await http.post('/rest/org-search?pageIndex='+pageIndex+'&pageSize='+pageSize,
-                                {"deptName":name,"superId":parentId}
+                                args
                         );
     return result;
   }

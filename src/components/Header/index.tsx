@@ -12,7 +12,8 @@ interface IHeaderState {
   expanded:boolean,
   collapsed:boolean,
   current:any,
-  selectedkey:any
+  selectedkey:any,
+  isFullscreen:boolean
 }
 
 export interface IHeaderProps {
@@ -42,7 +43,8 @@ export class Header extends React.Component<IHeaderProps> {
     expanded:false,
     collapsed: false,
     current:null,
-    selectedkey:null
+    selectedkey:null,
+    isFullscreen:false
 }
 
 toggle = () => {
@@ -55,7 +57,7 @@ onToggle = (value) => {
   this.setState({expanded: value});
 }
 
-handleSelect = (index) => {
+handleSelect = (index,e) => {
   this.setState({selectedkey: index});
  
   if(index==3){
@@ -64,9 +66,28 @@ handleSelect = (index) => {
     this.props.go2page('/my-todo');
   }else if(index==1){
     //全屏
-   
+    if(document.fullscreen ){
+
+      document.exitFullscreen();
+      this.setState({isFullscreen:false});
+    }else{
+      document.body.requestFullscreen({navigationUI:'auto'});
+      this.setState({isFullscreen:true});
+    }
+    //this.forceUpdate();
   }
 
+}
+ full=(ele)=> {
+  if (ele.requestFullscreen) {
+      ele.requestFullscreen();
+  } else if (ele.mozRequestFullScreen) {
+      ele.mozRequestFullScreen();
+  } else if (ele.webkitRequestFullscreen) {
+      ele.webkitRequestFullscreen();
+  } else if (ele.msRequestFullscreen) {
+      ele.msRequestFullscreen();
+  }
 }
 
 onSelect=( {key} )=> {
@@ -116,7 +137,13 @@ onSelect=( {key} )=> {
 
               onSelect={this.handleSelect}>
               <Navbar.NavItem eventKey={5} className='white'><ConnectPanel/></Navbar.NavItem>
-              <Navbar.NavItem eventKey={1} className='white'>全屏</Navbar.NavItem>
+              {
+                document.fullscreenEnabled?
+                this.state.isFullscreen ? <Navbar.NavItem eventKey={1} className='white'>退出全屏</Navbar.NavItem>
+                :<Navbar.NavItem eventKey={1} className='white'>全屏</Navbar.NavItem>
+                :null
+              }
+              
               <Navbar.NavItem  eventKey={2} className='white'>
                   待办
               </Navbar.NavItem>

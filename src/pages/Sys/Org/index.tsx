@@ -94,17 +94,16 @@ type IPageState = IOtherState & IListPageState;
                 values.dept = refpk;
             }
 
-            console.log('Search:'+JSON.stringify(values));
-
-            this.loadData();
+            values['superId']=this.orgId;
+            this.loadData(values);
         });
 
     }
 
-    loadData= async ()=>{
+    loadData= async (args)=>{
     
         this.setState({isLoading:true});
-        let page = await SysService.searchOrg("",this.orgId,1,20) as PageModel<any>;
+        let page = await SysService.searchOrg(args,this.pageIndex,this.pageSize) as PageModel<any>;
         this.setState({page:page,isLoading:false});
       }
 
@@ -259,7 +258,7 @@ type IPageState = IOtherState & IListPageState;
                     <FormItem
                         label="部门 "
                     >
-                        <FormControl placeholder='模糊查询' {...getFieldProps('name', {initialValue: ''})}/>
+                        <FormControl placeholder='模糊查询' {...getFieldProps('deptName', {initialValue: ''})}/>
                     </FormItem>
 
                 </FormList>

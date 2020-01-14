@@ -60,7 +60,7 @@ type IPageState = IOtherState & IListPageState;
           let values = getValidateFieldsTrim(_values);
           
           if(values.orgId){
-              values.orgId=JSON.parse(values.orgId).refpk;
+              values.orgIdSelected=JSON.parse(values.orgId).refpk;
           }
 
           if(values.createDate){
@@ -76,6 +76,7 @@ type IPageState = IOtherState & IListPageState;
 
   loadData=async (args:any)=>{
       
+      args['uid']=AppConsts.session.userId;
       args['orderby']=this.orderBy;
       let page = await CmsService.searchArticle(args,this.pageIndex,this.pageSize) as PageModel<any>;
       
@@ -108,10 +109,6 @@ type IPageState = IOtherState & IListPageState;
 
           this.setState({isPopPage:true,pageModel:model});
       }
-  }
-
-  export = ()=>{
-      console.log('export=======');
   }
 
   handler_tree_selected=(rec)=>{

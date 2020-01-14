@@ -4,6 +4,7 @@ import ManService from '../../services/ManService';
 import BussService from '../../services/BussService';
 import { PageModel } from '../../services/Model/Models';
 import { convertWarnTypeText, convertBussModifyTypeText } from '../../utils/tools';
+import { isArray } from 'util';
 
 interface ISceneProps {
     
@@ -85,9 +86,13 @@ export default class WellcomeScene extends React.Component<ISceneProps,ISceneSta
                 return convertWarnTypeText(text);
               }},
             { title: '内容', dataIndex: 'content', key: 'content', textAlign:'center',width: 200 },
-            { title: '状态', dataIndex: 'status', key: 'status',textAlign:'center', width: 150,render(text,record,index) {
+            { title: '节点', dataIndex: 'tasks', key: 'tasks',textAlign:'center', width: 150,render(text,record,index) {
                   
-                return text==0?<Tag colors="danger">未接收</Tag>:(text==1?<Tag colors="info">进行中</Tag>:text==2?<Tag colors="success">已完成</Tag>:<Tag colors="warning">未知</Tag>);
+                if(isArray(text)&&text.length>0){
+                    
+                    return <Tag colors="info">{text[text.length-1].activityName}</Tag>
+                }
+                return <Tag colors="info">{text}</Tag>
 
             } },
             { title: '社工', dataIndex: 'linkName', key: 'linkName',textAlign:'center', width: 150 },
