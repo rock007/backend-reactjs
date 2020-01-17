@@ -35,7 +35,7 @@ export default class VisitPanel extends React.Component<IPanelProps,IPanelState>
     }
     loadData=async ()=>{
       
-      let args={manId:this.props.manId,processId:this.props.processId};
+      let args={toUid:this.props.manId,processId:this.props.processId};
       let page = await ManService.searchVisit(args,this.pageIndex,this.pageSize) as PageModel<any>;
       this.setState({page:page,isLoading:false});
     }

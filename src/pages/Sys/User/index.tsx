@@ -205,6 +205,8 @@ type IPageState = IOtherState & IListPageState;
         const columns = [
             { title: '帐号', dataIndex: 'userName', key: 'userName',textAlign:'center', width: 100 ,render(text,record,index) {
 
+                if(record.manId) return text;
+                
                 return <Label className='link-go' onClick={()=>{me.go2Page('/user-edit/'+record.id,'帐号详细',false)}}>{text}</Label>;
 
               }},

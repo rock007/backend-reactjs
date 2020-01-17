@@ -65,7 +65,7 @@ export default class ManProcessListPanel extends React.Component<IPanelProps,IPa
 					statusText='未报到';
 				}else if(one.status==1){
 					statusText='进行中';
-				}else if(one.status==100){
+				}else if(one.status==2){
 					statusText='已完成';
 				}
 			}

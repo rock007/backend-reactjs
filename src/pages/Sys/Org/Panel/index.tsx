@@ -85,14 +85,16 @@ interface IPanelState {
   }
 
   render() {
-       
+   /** 
+    <FormControl
+    value={this.state.value}
+    onChange={this.onChange}
+    type="search"
+/>
+**/
         return ( <div className="org-tree-left" style={{padding:"10px"}}>
-            <div className='tree-head'>组织机构</div>
-              <FormControl
-                    value={this.state.value}
-                    onChange={this.onChange}
-                    type="search"
-                />
+              <div className='tree-head'>组织机构</div>
+              
                 <div style={{ overflow:'auto'}}>
                 <Tree className="orgTree" 
                     showLine ={true}

@@ -31,10 +31,11 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
     }
     componentDidMount() {
 
-      this.loadData({});
+      this.loadData();
     }
-    loadData=async (args:any)=>{
+    loadData=async ()=>{
         
+      let args={manId:this.props.manId,processId:this.props.processId};
       //args['orderby']=this.orderBy;
       let page = await ManService.search4Help(args,this.pageIndex,this.pageSize) as PageModel<any>;
       this.setState({page:page,isLoading:false});
@@ -45,7 +46,7 @@ export default class ForHelpPanel extends React.Component<IPanelProps,IPanelStat
       this.pageIndex=pageIndex;
       this.pageSize=pageSize;
       //this.orderBy=orderBy;
-      //this.search();
+      this.loadData();
     }
     render() {
         

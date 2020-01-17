@@ -113,7 +113,7 @@ type IPageState = IOtherState & IPageDetailState;
                     </FormItem>
                     <FormItem>
                         <Label>角色</Label>
-                        <strong>{this.state.record.roles}</strong>
+                        <strong>{this.state.record.postion}</strong>
                     </FormItem>
                 </Form>
                 </Col>

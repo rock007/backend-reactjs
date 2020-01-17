@@ -170,7 +170,7 @@ class Grid extends Component<IComponentProps,IComponentState> {
 
         const pageData= this.state.page.data;
         pageData.forEach(element => {
-          element['key']=element.id||element.processId||element.manId;
+          element['key']=element.key|| element.id||element.processId||element.manId;
         });
 
         let toolBtns=this.props.toolBtns;

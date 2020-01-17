@@ -71,7 +71,7 @@ export default class NiaojianPanel extends React.Component<IPanelProps,IPanelSta
 		this.setState({isLoading:true});
 
 		//args['orderby']=this.orderBy;
-		let args={manId:id};
+		let args={toUid:id};
 		let page = await ManService.searchNiaojian(args,this.pageIndex,this.pageSize) as PageModel<any>;
 		this.setState({page:page,isLoading:false});
 	}

@@ -2,8 +2,10 @@ import * as React from 'react';
 import {Panel, Button,Icon} from 'tinper-bee';
 import MapView from '../../components/MapView';
 import DatePicker from "bee-datepicker";
+
 import ManService from '../../services/ManService';
 import { PageModel } from '../../services/Model/Models';
+import { Info } from '../../utils';
 
   interface IOtherProps {
     manId:string,
@@ -13,6 +15,7 @@ import { PageModel } from '../../services/Model/Models';
   interface IOtherState {
     data:Array<any>,
     isLoading:boolean,
+    dateRange?:string[],
   }
   
   type IPanelProps = IOtherProps ;
@@ -25,19 +28,39 @@ export default class LocationMapPanel extends React.Component<IPanelProps,IPanel
 
     state:IPanelState={
         data:[],
-        isLoading:false
+        isLoading:false,
+        
     }
     componentDidMount() {
-        let args={manId:this.props.manId,processId:this.props.processId};
-        this.loadData(args);
+      this.handler_search();
     }
     loadData=async (args:any)=>{
 
         //args['orderby']=this.orderBy;
         let page = await ManService.searchLocation(args,this.pageIndex,this.pageSize) as PageModel<any>;
         this.setState({data:page.data,isLoading:false});
+
+        if(page.data.length==0){
+          Info("暂无记录");
+        }
     }
-    render() {
+
+    handler_search=()=>{
+
+      var args={
+          manId:this.props.manId,
+          processId:this.props.processId,
+          createDate:this.state.dateRange==null||this.state.dateRange.length==0?"":this.state.dateRange[0]+'~'+this.state.dateRange[1]
+      };
+      this.loadData(args);
+  }
+
+  onDatePickerChange = (dates:any[],dateStr1:string,dateStr2:string[] )  => {
+
+    this.setState({dateRange:dateStr2})
+  }
+
+  render() {
         
         return (<div>
 
@@ -48,14 +71,15 @@ export default class LocationMapPanel extends React.Component<IPanelProps,IPanel
                   <DatePicker.RangePicker                             
                           placeholder={'开始 ~ 结束'}
                           dateInputPlaceholder={['开始', '结束']}
+                          onChange={this.onDatePickerChange}
                           showClear={true}
                           showClose={true}
                   />
               </li>
-              <li><Button colors="info"><Icon type='uf-search' />查询</Button></li>
+              <li><Button colors="info" onClick={this.handler_search}><Icon type='uf-search' />查询</Button></li>
           </ul>
           </div>
-          <MapView width={600} height={400}/>
+          <MapView  locations={this.state.data} width={600} height={400}/>
       </div>);
     }
 }

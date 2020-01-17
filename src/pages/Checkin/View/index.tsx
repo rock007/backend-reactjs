@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel,Radio,Form,Label,Button,LoadingState ,Col, Row } from 'tinper-bee';
+import {Panel,Radio,Form,Label,Button,Loading,LoadingState ,Col, Row } from 'tinper-bee';
 
 import {getValidateFieldsTrim,Warning,Info} from "../../../utils";
 import ManService from '../../../services/ManService';
@@ -103,6 +103,22 @@ class CheckinView extends React.Component<IPageProps,IPageState> {
         const _this = this;
         let {getFieldProps, getFieldError} = this.props.form;
 
+        if(this.id!=='0'&&this.state.record.id==null){
+
+            return ( <Panel><Loading container={this} show={true}/></Panel>)
+        }
+
+        let location={
+            id:this.state.record.id,
+            locationX:this.state.record.locationX,
+            locationY:this.state.record.locationY,
+            locationZ:this.state.record.locationZ,
+
+            locationSn:this.state.record.locationSn,
+            location:this.state.record.location,
+            from:'',
+            createDate:this.state.record.createDate
+        }
         return (<Panel >
             <Row>
                 <Col md={6} >
@@ -127,8 +143,8 @@ class CheckinView extends React.Component<IPageProps,IPageState> {
                 </FormItem>
                 <FormItem>
                     <Label>是否有校</Label>
-                    <Radio.RadioGroup {...getFieldProps('status', {
-                                initialValue: '',
+                    <Radio.RadioGroup {...getFieldProps('isValid', {
+                                initialValue: this.state.record.isValid+'',
                                 rules: [{
                                     required: true, message: '请选择审核结果',
                                 }],
@@ -136,16 +152,16 @@ class CheckinView extends React.Component<IPageProps,IPageState> {
                             <Radio value="1">有效</Radio>
                             <Radio value="0">无效</Radio>
                         </Radio.RadioGroup>
-                    <FormError errorMsg={getFieldError('status')}/>
+                    <FormError errorMsg={getFieldError('isValid')}/>
                 </FormItem>
                 </Form>
-                <div style={{'textAlign':'center'}}>
+                <div style={{'textAlign':'center' ,display:'none'}}>
                     <Button shape="border" style={{"marginRight":"8px"}} onClick={this.goBack} >取消</Button>
                     <LoadingState  colors="primary" show={ this.state.isLoading } onClick={this.handler_submit}>保存</LoadingState>
                 </div>
                 </Col>
                 <Col md={6} >
-                    <MapView width={370} height={300}/>
+                    <MapView width={370} height={300} locations={[location]}/>
                 </Col>
             </Row>
                 

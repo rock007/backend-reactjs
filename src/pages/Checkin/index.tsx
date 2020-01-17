@@ -18,6 +18,8 @@ import PageDlog from '../../components/PageDlg';
 
 import { getValidateFieldsTrim } from '../../utils/tools';
 import { Info } from '../../utils';
+import AppConsts from '../../lib/appconst';
+import defaultPic from '../../images/pic_holder.png';
 
 const FormItem = FormListItem;
 const {Option} = Select;
@@ -147,10 +149,13 @@ class CheckinPage extends React.Component<IPageProps,IPageState> {
             { title: '时间', dataIndex: 'inDay', key: 'inDay',textAlign:'center', width: 180,sorter: (pre, after) => {return pre.c - after.c},},
             { title: '位置', dataIndex: 'location', key: 'location',textAlign:'center', width: 180},
             { title: '照片', dataIndex: 'photo', key: 'photo',textAlign:'center', width: 180,render(text,record,index) {
-                  
-                return (
-                    <img id="image" width={60} height={60} src='http://design.yonyoucloud.com/static/bee.tinper.org-demo/swiper-demo-1-min.jpg' alt="Picture"/>
-                );
+
+                return text!==null&&text!==''?
+                ( 
+                 <img id="image" width={60} height={60} src={AppConsts.uploadUrl+text} alt="照片"/>
+               ):
+             (<img id="image" width={60} height={60} src={defaultPic} alt="照片"/>);
+
             }},
             { title: '是否有效', dataIndex: 'isValid', key: 'isValid',textAlign:'center', width: 120,
             render(text,record,index) {

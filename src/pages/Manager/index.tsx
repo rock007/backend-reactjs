@@ -151,11 +151,14 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
             { title: '姓名', dataIndex: 'trueName', key: 'trueName',textAlign:'center', width: 100 ,render(text,record,index) {
 
                 //return <Link to={'/manager/'+record.userId}>{text}</Link>;
-                return <Label  className='link-go' onClick={()=>{me.go2Page('/manager/'+record.userId,'社工详细',false)}}>{text}</Label>;
+                return <Label  className='link-go' onClick={()=>{me.go2Page('/manager/'+record.id,'社工详细',false)}}>{text}</Label>;
              
               }
             },
-            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
+            { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 ,render(text,record,index) {
+
+                return text==1?'男':text==0?'女':'';
+            }},
             { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
                 sorter: (pre, after) => {return pre.c - after.c},
             },
@@ -253,7 +256,7 @@ export  class ManagerList extends React.Component<IPageProps,IPageState> {
 
                 }else{
 
-                    let ids=this.state.checkedRows.map(m=>m.userId).join(',');
+                    let ids=this.state.checkedRows.map(m=>m.id).join(',');
                     this.go2Page('/manager-link/'+ids,"关联戒毒人员",false);
                 }
             }

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Panel, Navbar,Icon,Select, FormControl,Row, Col,Label,Form,Radio, Breadcrumb } from 'tinper-bee';
-import { Link } from 'react-router-dom';
 
 import Grid from '../../components/Grid';
 
@@ -111,12 +110,7 @@ interface IPageState {
 
         const me=this;
         const columns = [
-          { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 ,render(text,record,index) {
-
-            return <Label  className='link-go' onClick={()=>{me.go2Page('/location-man/'+record.id,'人员轨迹查看',false)}}>{text}</Label>;
-            
-          }
-        },
+        { title: '姓名', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 100 },
         { title: '性别', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 80 },
         { title: '联系方式', dataIndex: 'linkPhone', key: 'linkPhone',textAlign:'center', width: 120 ,
             sorter: (pre, after) => {return pre.c - after.c},

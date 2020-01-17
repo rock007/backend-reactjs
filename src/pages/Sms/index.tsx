@@ -107,9 +107,9 @@ class SmsListPage extends React.Component<IPageProps,IPageState> {
         const { getFieldProps, getFieldError } = this.props.form;
         const me=this;
         const columns = [
-            { title: '手机号', dataIndex: 'realName', key: 'realName',textAlign:'center', width: 120},
-            { title: '接收者', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 120 },
-            { title: '角色', dataIndex: 'sex', key: 'sex', textAlign:'center',width: 150 },
+            { title: '手机号', dataIndex: 'mobile', key: 'mobile',textAlign:'center', width: 120},
+            { title: '接收者', dataIndex: 'userName', key: 'userName', textAlign:'center',width: 120 },
+            { title: '角色', dataIndex: 'userRole', key: 'userRole', textAlign:'center',width: 150 },
 
             { title: '内容', dataIndex: 'content', key: 'content',textAlign:'center', width: 300 },
             { title: '发送时间 ', dataIndex: 'createDate', key: 'createDate',textAlign:'center', width: 150 },

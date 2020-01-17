@@ -62,9 +62,6 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
             if(values.createDate){
                 values.createDate=values.createDate[0].format('YYYY-MM-DD')+'~'+values.createDate[1].format('YYYY-MM-DD');
             }
-            if(values.visitorDate){
-                values.visitorDate=values.visitorDate[0].format('YYYY-MM-DD')+'~'+values.visitorDate[1].format('YYYY-MM-DD');
-            }
 
             this.setState({isLoading:true});
             this.loadData(values);
@@ -90,10 +87,6 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
 
     clear=()=>{
         this.props.form.resetFields()
-    }
-     
-    export = ()=>{
-        console.log('export=======');
     }
   
     go2Page=(url,title:string='查看',isPage:boolean=true,size:'sm'|'lg'|"xlg"='lg')=>{
@@ -203,8 +196,6 @@ class NoticePage extends React.Component<IPageProps,IPageState> {
                             placeholder={'开始 ~ 结束'}
                             dateInputPlaceholder={['开始', '结束']}
                             showClear={true}
-                            onChange={()=>{}}
-                            onPanelChange={(v)=>{console.log('onPanelChange',v)}}
                             showClose={true}
                         />
                     </FormItem>

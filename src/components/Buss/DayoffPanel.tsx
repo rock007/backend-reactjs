@@ -31,10 +31,11 @@ export default class DayoffPanel extends React.Component<IPanelProps,IPanelState
     }
     componentDidMount() {
 
-      this.loadData({});
+      this.loadData();
     }
-    loadData=async (args:any)=>{
+    loadData=async ()=>{
         
+      let args={manId:this.props.manId,processId:this.props.processId};
       //args['orderby']=this.orderBy;
       let page = await ManService.searchDayoff(args,this.pageIndex,this.pageSize) as PageModel<any>;
       this.setState({page:page,isLoading:false});
@@ -45,7 +46,7 @@ export default class DayoffPanel extends React.Component<IPanelProps,IPanelState
       this.pageIndex=pageIndex;
       this.pageSize=pageSize;
       //this.orderBy=orderBy;
-      //this.search();
+      this.loadData();
     }
     render() {
         

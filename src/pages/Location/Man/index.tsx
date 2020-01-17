@@ -1,17 +1,18 @@
 import * as React from 'react';
-import {Panel,  Form,Label,Button,Icon } from 'tinper-bee';
+import {Panel,  Form,Label,Button,Icon,Loading} from 'tinper-bee';
 import MapView from '../../../components/MapView';
 import ManService from '../../../services/ManService';
 import DatePicker from "bee-datepicker";
 import { relative } from 'path';
 import { IPageDetailProps, IPageDetailState, PageModel } from '../../../services/Model/Models';
+import { Info } from '../../../utils';
 
 interface IOtherProps {
     
 } 
 
 interface IOtherState {
- dateRange:string[],
+ dateRange?:string[],
  data:Array<any>
 }
 
@@ -25,7 +26,7 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
     state:IPageState={
         isLoading:false,
         record:{},
-        dateRange:[],
+        //dateRange:[],
         data:[]
     }
     
@@ -46,7 +47,7 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
 
         if(this.id!='0'){
 
-          //  this.loadData(this.id);
+            this.handler_search();
         }
     }
 
@@ -55,6 +56,11 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
         this.setState({isLoading:true});
 
         let result = await ManService.searchLocation(args) as PageModel<any>;
+
+        if(result.data.length==0){
+
+            Info("暂无记录");
+        }
 
         this.setState({data:result.data,isLoading:false});
     }
@@ -70,7 +76,7 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
 
         var args={
             manId:this.id,
-            createDate:this.state.dateRange==null?"":this.state.dateRange[0]+'~'+this.state.dateRange[1]
+            createDate:this.state.dateRange==null||this.state.dateRange.length==0?"":this.state.dateRange[0]+'~'+this.state.dateRange[1]
         };
         this.loadData(args);
     }
@@ -83,7 +89,7 @@ class ManLocation extends React.Component<IPageProps,IPageState> {
     render() {
 
         return (<div>
-
+            <Loading container={this} show={this.state.isLoading}/>
             <MapView width={730} height={500} locations={this.state.data} />
             <div style={{padding:'5px',backgroundColor:"lightgray", position:'absolute',left:'10px',top:'15px'}}>
             <ul style={{display:'flex'}}>
