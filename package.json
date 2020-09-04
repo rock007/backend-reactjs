@@ -22,7 +22,7 @@
     "mobx-react": "^6.0.3",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.23",
-    "node-sass": "4.12.0",
+    "node-sass": "4.13.1",
     "pap-refer": "^1.0.9",
     "query-string": "^6.2.0",
     "react": "^16.10.2",
